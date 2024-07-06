@@ -26,4 +26,8 @@ public class Favorite {
             joinColumns = @JoinColumn(name = "favorite_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     List<Product> products;
+
+    @ManyToOne
+    @JoinColumn (name = "user_id")
+    User user;
 }

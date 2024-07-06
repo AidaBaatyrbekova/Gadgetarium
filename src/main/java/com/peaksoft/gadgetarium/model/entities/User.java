@@ -53,4 +53,7 @@ public class User {
 
     @OneToMany (mappedBy = "user")
     List<OrderHistory> orderHistories;
+
+    @OneToMany (mappedBy = "user")
+    List<Favorite> favoriteProducts;
 }
