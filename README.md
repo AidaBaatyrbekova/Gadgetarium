@@ -1,0 +1,1 @@
+![Gadjetarium.diagramm-Page-1.drawio.png](Gadjetarium.diagramm-Page-1.drawio.png)
