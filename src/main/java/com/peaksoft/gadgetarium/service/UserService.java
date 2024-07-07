@@ -1,6 +1,9 @@
 package com.peaksoft.gadgetarium.service;
 
+import com.peaksoft.gadgetarium.mapper.AuthMapper;
 import com.peaksoft.gadgetarium.model.User;
+import com.peaksoft.gadgetarium.model.dto.UserRequest;
+import com.peaksoft.gadgetarium.model.dto.UserResponse;
 import com.peaksoft.gadgetarium.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +20,20 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
+    AuthMapper authMapper;
 
-    public User registerUser(User user) {
-        return userRepository.save(user);
+    public UserResponse createUser(UserRequest request){
+User user=authMapper.mapToUser(request);
+        if (userRepository.findAll().isEmpty()){
+            for (User user1 : userRepository.findAll()) {
+                if (user1.getEmail().equals(request.getEmail())){
+                    throw new RuntimeException("Такой email уже существует");
+                }
+            }
+        }
+        userRepository.save(user);
+        log.info("Successfully created User "+user.getId());
+        return authMapper.mapToResponse(user);
     }
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
 }

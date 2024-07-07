@@ -1,20 +1,15 @@
-package com.peaksoft.gadgetarium.model;
+package com.peaksoft.gadgetarium.model.dto;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-@Entity
 @Getter
 @Setter
-@NoArgsConstructor
-@Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+public class UserRequest {
     String name;
 
     @Column(name = "last-Name")

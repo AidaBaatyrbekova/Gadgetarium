@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<com.peaksoft.gadgetarium.model.User, Long>{
-    User findByUsername(String username);
+    @Query("select user from User user where user.email=:email")
+    Optional<User> findByEmail(@Param("email") String email);
 }

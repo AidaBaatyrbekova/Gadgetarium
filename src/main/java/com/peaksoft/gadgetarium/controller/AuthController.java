@@ -1,9 +1,11 @@
 package com.peaksoft.gadgetarium.controller;
 
-import com.peaksoft.gadgetarium.mapper.AuthMapper;
-import com.peaksoft.gadgetarium.model.User;
-import com.peaksoft.gadgetarium.model.UserDto;
+import com.peaksoft.gadgetarium.model.dto.UserRequest;
+import com.peaksoft.gadgetarium.model.dto.UserResponse;
 import com.peaksoft.gadgetarium.service.UserService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,17 +13,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@RequestMapping("/api/users")
 public class AuthController {
 
     @Autowired
-    private UserService userService;
-    AuthMapper authMapper;
+    UserService userService;
+
 
     @PostMapping("/sign-up")
-    public UserDto registerUser(@RequestBody UserDto userDto) {
-        User user = authMapper.fromDto(userDto);
-        User registeredUser = userService.registerUser(user);
-        return authMapper.toDto(registeredUser);
+    public UserResponse createUser(@RequestBody UserRequest request) {
+        return userService.createUser(request);
     }
 }

@@ -1,7 +1,8 @@
 package com.peaksoft.gadgetarium.mapper;
 
 import com.peaksoft.gadgetarium.model.User;
-import com.peaksoft.gadgetarium.model.UserDto;
+import com.peaksoft.gadgetarium.model.dto.UserRequest;
+import com.peaksoft.gadgetarium.model.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -9,29 +10,34 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AuthMapper {
 
-    public User fromDto(UserDto userDto) {
-        User user1 = new User();
-        user1.setName(userDto.getName());
-        user1.setEmail(userDto.getEmail());
-        user1.setLastname(userDto.getLastname());
-        user1.setPassword(userDto.getPassword());
-        user1.setLocal(userDto.getLocal());
-        user1.setGender(userDto.getGender());
-        user1.setPhoneNumber(userDto.getPhoneNumber());
-        user1.setConfirm_the_password(userDto.getConfirm_the_password());
-        return user1;
+    public User mapToUser(UserRequest request) {
+        User user = new User();
+        if (request.getName().length() < 2) {
+            throw new RuntimeException("Иья студента должно состоить больше 2 символа");
+        }
+        user.setName(request.getName());
+        user.setLastname(request.getLastname());
+        user.setEmail(request.getEmail());
+        user.setLocal(request.getLocal());
+        user.setGender(request.getGender());
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setConfirm_the_password(request.getConfirm_the_password());
+        user.setPassword(request.getPassword());
+        if (request.getPassword().length() < 4) {
+            throw new RuntimeException("Пороль должен содержить больше 5 символа");
+        }
+        return user;
     }
 
-    public UserDto toDto(User user) {
-        UserDto userDto = new UserDto();
-        userDto.setName(user.getName());
-        userDto.setEmail(user.getEmail());
-        userDto.setLastname(user.getLastname());
-        userDto.setPassword(user.getPassword());
-        userDto.setLocal(user.getLocal());
-        userDto.setGender(user.getGender());
-        userDto.setPhoneNumber(user.getPhoneNumber());
-        userDto.setConfirm_the_password(user.getConfirm_the_password());
-        return userDto;
+    public UserResponse mapToResponse(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .lastname(user.getLastname())
+                .email(user.getEmail())
+                .local(user.getLocal())
+                .Confirm_the_password(user.getConfirm_the_password())
+                .gender(user.getGender())
+                .build();
     }
 }
