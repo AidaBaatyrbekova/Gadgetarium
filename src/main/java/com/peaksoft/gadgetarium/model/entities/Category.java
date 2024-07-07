@@ -23,7 +23,6 @@ public class Category {
 
     String electronicType;
 
-
     @OneToMany(cascade = {
             CascadeType.ALL} , mappedBy = "categoryOfSubCategory")
     List<SubCategory> subCategories;

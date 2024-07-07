@@ -36,7 +36,7 @@ public class User {
 
     String password;
 
-    String Confirm_the_password;
+    String confirm_the_password;
 
     String gender;
 

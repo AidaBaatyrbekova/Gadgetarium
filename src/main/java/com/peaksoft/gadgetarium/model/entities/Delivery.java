@@ -33,7 +33,6 @@ public class Delivery {
     List<Product> products;
 
 
-
     @OneToOne(cascade = {
             CascadeType.MERGE , CascadeType.REFRESH , CascadeType.PERSIST , CascadeType.DETACH})
     @JoinColumn(name = "order_history_id")
