@@ -1,8 +1,8 @@
 package com.peaksoft.gadgetarium.mapper;
 
-import com.peaksoft.gadgetarium.model.User;
 import com.peaksoft.gadgetarium.model.dto.UserRequest;
 import com.peaksoft.gadgetarium.model.dto.UserResponse;
+import com.peaksoft.gadgetarium.model.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +16,7 @@ public class AuthMapper {
             throw new RuntimeException("Иья студента должно состоить больше 2 символа");
         }
         user.setName(request.getName());
-        user.setLastname(request.getLastname());
+        user.setLastName(request.getLastname());
         user.setEmail(request.getEmail());
         user.setLocal(request.getLocal());
         user.setGender(request.getGender());
@@ -33,7 +33,7 @@ public class AuthMapper {
         return UserResponse.builder()
                 .id(user.getId())
                 .name(user.getName())
-                .lastname(user.getLastname())
+                .lastname(user.getLastName())
                 .email(user.getEmail())
                 .local(user.getLocal())
                 .Confirm_the_password(user.getConfirm_the_password())
