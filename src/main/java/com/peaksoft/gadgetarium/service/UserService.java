@@ -27,13 +27,15 @@ public class UserService {
         if (userRepository.findAll().isEmpty()) {
             for (User user1 : userRepository.findAll()) {
                 if (user1.getEmail().equals(request.getEmail())) {
-                    throw new RuntimeException("Такой email уже существует");
+                    if (user1.getPassword().equals(request.getPassword())) {
+                        throw new RuntimeException("Такой email уже существует");
+                    }
                 }
             }
+            userRepository.save(user);
+            log.info("Successfully created User " + user.getId());
+            return authMapper.mapToResponse(user);
         }
-        userRepository.save(user);
-        log.info("Successfully created User " + user.getId());
-        return authMapper.mapToResponse(user);
     }
 
 }
