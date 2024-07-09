@@ -34,8 +34,8 @@ public class UserService {
             }
             userRepository.save(user);
             log.info("Successfully created User " + user.getId());
-            return authMapper.mapToResponse(user);
         }
+        return authMapper.mapToResponse(user);
     }
 
 }
