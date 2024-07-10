@@ -18,10 +18,8 @@ public class AuthMapper {
         user.setName(request.getName());
         user.setLastName(request.getLastname());
         user.setEmail(request.getEmail());
-        user.setLocal(request.getLocal());
-        user.setGender(request.getGender());
-        user.setPhoneNumber(request.getPhoneNumber());
         user.setConfirm_the_password(request.getConfirm_the_password());
+        user.setPhoneNumber(request.getPhoneNumber());
         user.setPassword(request.getPassword());
         if (request.getPassword().length() < 4) {
             throw new RuntimeException("Пороль должен содержить больше 5 символа");
@@ -35,9 +33,7 @@ public class AuthMapper {
                 .name(user.getName())
                 .lastname(user.getLastName())
                 .email(user.getEmail())
-                .local(user.getLocal())
-                .Confirm_the_password(user.getConfirm_the_password())
-                .gender(user.getGender())
+                .phoneNumber(user.getPhoneNumber())
                 .build();
     }
 }

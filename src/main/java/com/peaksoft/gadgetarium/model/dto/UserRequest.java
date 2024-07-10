@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRequest {
+
     String name;
 
     @Column(name = "last-Name")
@@ -20,9 +21,9 @@ public class UserRequest {
 
     String password;
 
-    @Column(name = "phone_number")
-    String phoneNumber;
-    String Confirm_the_password;
-    String gender;
-    String local;
+     String confirm_the_password;
+
+    private String phoneNumber;
+
+
 }

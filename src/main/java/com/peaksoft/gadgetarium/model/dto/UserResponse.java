@@ -20,10 +20,6 @@ public class UserResponse {
 
     @Column(unique = true)
     String email;
+     String phoneNumber;
 
-    @Column(name = "phone_number")
-    String phoneNumber;
-    String Confirm_the_password;
-    String gender;
-    String local;
 }
