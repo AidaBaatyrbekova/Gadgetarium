@@ -38,6 +38,8 @@ public class User {
 
     String confirm_the_password;
 
+    String resetPasswordToken;
+
     String gender;
 
     String local;
