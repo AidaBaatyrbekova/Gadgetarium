@@ -9,7 +9,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,27 +17,15 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
 
-    @Autowired
     UserRepository userRepository;
     AuthMapper authMapper;
 
     public UserResponse createUser(UserRequest request) {
         User user = authMapper.mapToUser(request);
-        if (userRepository.findAll().isEmpty()) {
-            for (User user1 : userRepository.findAll()) {
-                if (user1.getEmail().equals(request.getEmail())) {
-                    throw new RuntimeException("Такой email уже существует");
-                }
-            }
-        }
-        if(!request.getPassword().equals(request.getConfirm_the_password())){
-            throw new RuntimeException("пороль не совпадает");
-        }
         userRepository.save(user);
         log.info("Successfully created User " + user.getId());
         return authMapper.mapToResponse(user);
     }
-
 }
 
 

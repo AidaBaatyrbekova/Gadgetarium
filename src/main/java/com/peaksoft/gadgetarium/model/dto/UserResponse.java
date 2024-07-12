@@ -1,6 +1,5 @@
 package com.peaksoft.gadgetarium.model.dto;
 
-import jakarta.persistence.Column;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,12 +13,8 @@ public class UserResponse {
 
     Long id;
     String name;
-
-    @Column(name = "last-Name")
     String lastname;
-
-    @Column(unique = true)
     String email;
-     String phoneNumber;
+    String phoneNumber;
 
 }
