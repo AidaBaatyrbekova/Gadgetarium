@@ -12,30 +12,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * Утилита для работы с JWT (JSON Web Token).
- */
 @Service
 public class JwtUtil {
 
     @Value("${secret}")
     private String secret;
 
-    private final long TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000L; // token for 1 week
+    private final long ACCESS_TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000L;
 
-    public String createToken(Map<String, Object> claims, String subject) {
+    public String createAccessToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRATION))
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateAccessToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        return createAccessToken(claims, userDetails.getUsername());
     }
 
     private Claims getAllClaimsFromToken(String token) {
@@ -54,7 +51,7 @@ public class JwtUtil {
         return getClaimsFromToken(token, Claims::getExpiration);
     }
 
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateToken(token);
         return expiration.before(new Date());
     }
