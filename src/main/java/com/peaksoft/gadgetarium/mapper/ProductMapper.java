@@ -18,18 +18,18 @@ public class ProductMapper {
 
     public Product productMapper(ProductRequest request) {
         Product product = new Product();
-        product.setProductName(request.getProductName());
-        product.setProductStatus(request.getProductStatus());
-        product.setMemory(request.getMemory());
-        product.setColor(request.getColor());
         product.setOperationMemory(request.getOperationMemory());
-        product.setScreen(request.getScreen());
         product.setOperationSystem(request.getOperationSystem());
         product.setDateOfRelease(request.getDateOfRelease());
-        product.setSimCard(request.getSimCard());
+        product.setProductStatus(request.getProductStatus());
+        product.setProductName(request.getProductName());
         product.setProcessor(request.getProcessor());
-        product.setWeight(request.getWeight());
         product.setGuarantee(request.getGuarantee());
+        product.setSimCard(request.getSimCard());
+        product.setMemory(request.getMemory());
+        product.setScreen(request.getScreen());
+        product.setWeight(request.getWeight());
+        product.setColor(request.getColor());
         product.setPrice(request.getPrice());
 
         Optional<Category> category = categoryRepository.findById(request.getCategoryId());
@@ -37,7 +37,6 @@ public class ProductMapper {
 
         Optional<Brand> brand = brandRepository.findById(request.getBrandId());
         brand.ifPresent(product::setBrandOfProduct);
-
         return product;
     }
 

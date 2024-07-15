@@ -19,12 +19,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Slf4j
 public class ProductService {
-    final ProductMapper productMapper;
-    final ProductRepository productRepository;
+
+    ProductMapper productMapper;
+    ProductRepository productRepository;
     CategoryRepository categoryRepository;
     BrandRepository brandRepository;
 
@@ -40,7 +41,6 @@ public class ProductService {
                 .map(productMapper::mapToResponse).toList();
     }
 
-
     public ProductResponse getProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id " + id));
@@ -50,39 +50,37 @@ public class ProductService {
     public Product updateProduct(Long id, ProductRequest request) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> {
-                    log.warn("User not found by id:{}", id);
-                    return new RuntimeException("Not found User by id" + id);
+                    log.warn("Product not found by id:{}", id);
+                    return new RuntimeException("Not found product by id " + id);
                 });
         product.setProductName(request.getProductName());
         product.setProductStatus(request.getProductStatus());
-        product.setMemory(request.getMemory());
-        product.setColor(request.getColor());
         product.setOperationMemory(request.getOperationMemory());
-        product.setScreen(request.getScreen());
         product.setOperationSystem(request.getOperationSystem());
         product.setOperationSystemNum(request.getOperationSystemNum());
         product.setDateOfRelease(request.getDateOfRelease());
-        product.setSimCard(request.getSimCard());
         product.setProcessor(request.getProcessor());
-        product.setWeight(request.getWeight());
         product.setGuarantee(request.getGuarantee());
-        product.setPrice(request.getPrice());
         product.setCreateDate(request.getCreateDate());
+        product.setSimCard(request.getSimCard());
+        product.setScreen(request.getScreen());
+        product.setMemory(request.getMemory());
+        product.setWeight(request.getWeight());
+        product.setColor(request.getColor());
+        product.setPrice(request.getPrice());
+
         Optional<Category> category = categoryRepository.findById(request.getCategoryId());
         category.ifPresent(product::setCategory);
 
         Optional<Brand> brand = brandRepository.findById(request.getBrandId());
         brand.ifPresent(product::setBrandOfProduct);
-        return product;
+        return productRepository.save(product);
     }
-
 
     public String deleteProduct(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Not found User by id" + id));
+                .orElseThrow(() -> new RuntimeException("Not found Product by id" + id));
         productRepository.delete(product);
-        return "Successfully deleted user by id" + id;
+        return "Successfully deleted product by id" + id;
     }
-
-
 }

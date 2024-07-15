@@ -14,43 +14,25 @@ import java.time.LocalDate;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductResponse {
+
     Long id;
-
     String productName;
-
     ProductStatus productStatus;
-
-    Long categoryId;
-
-    Memory memory;
-
-    Color color;
-
     OperationMemory operationMemory;
-
-    String screen;
-
     OperationSystem operationSystem;
-
-    String operationSystemNum;
-
-    String dateOfRelease;
-
-    String simCard;
-
-    String processor;
-
-    int weight;
-
-    String guarantee;
-
-    String rating;
-
-    int discount;
-
-    int price;
-
     LocalDate createDate;
-
+    Memory memory;
+    Color color;
+    Long categoryId;
     Long brandId;
+    String operationSystemNum;
+    String dateOfRelease;
+    String processor;
+    String guarantee;
+    String screen;
+    String simCard;
+    String rating;
+    int discount;
+    int weight;
+    int price;
 }
