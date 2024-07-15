@@ -1,5 +1,8 @@
 package com.peaksoft.gadgetarium.service;
 
+import com.peaksoft.gadgetarium.mapper.AuthMapper;
+import com.peaksoft.gadgetarium.model.dto.UserRequest;
+import com.peaksoft.gadgetarium.model.dto.UserResponse;
 import com.peaksoft.gadgetarium.model.dto.request.UserSignInRequest;
 import com.peaksoft.gadgetarium.model.dto.request.UserUpdatePasswordRequest;
 import com.peaksoft.gadgetarium.model.dto.response.UserLoginResponse;
@@ -31,6 +34,7 @@ public class UserService {
     JwtUtil jwtUtil;
     AuthenticationManager authenticationManager;
     PasswordEncoder passwordEncoder;
+    AuthMapper authMapper;
 
     public UserLoginResponse login(UserSignInRequest request) {
         try {
@@ -102,4 +106,13 @@ public class UserService {
         user.setPassword(hashedPassword);
         userRepository.save(user);
     }
+
+    public UserResponse createUser(UserRequest request) {
+        User user = authMapper.mapToUser(request);
+        userRepository.save(user);
+        log.info("Successfully created User " + user.getId());
+        return authMapper.mapToResponse(user);
+    }
 }
+
+

@@ -38,13 +38,9 @@ public class User implements UserDetails {
 
     @Column(name = "phone_number")
     String phoneNumber;
-
     String password;
-
     String confirm_the_password;
-
     String gender;
-
     String local;
 
     @Enumerated(EnumType.STRING)
