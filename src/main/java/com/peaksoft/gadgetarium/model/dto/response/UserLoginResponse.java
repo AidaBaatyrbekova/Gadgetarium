@@ -4,9 +4,6 @@ import com.peaksoft.gadgetarium.model.enums.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-/**
- * Ответ DTO для операции входа пользователя.
- */
 @Getter
 @Setter
 @Builder

@@ -3,9 +3,6 @@ package com.peaksoft.gadgetarium.model.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-/**
- * DTO для запроса на обновление пароля пользователя.
- */
 @Getter
 @Setter
 @Builder

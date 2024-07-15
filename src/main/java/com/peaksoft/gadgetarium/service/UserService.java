@@ -1,8 +1,8 @@
 package com.peaksoft.gadgetarium.service;
 
 import com.peaksoft.gadgetarium.mapper.AuthMapper;
-import com.peaksoft.gadgetarium.model.dto.UserRequest;
-import com.peaksoft.gadgetarium.model.dto.UserResponse;
+import com.peaksoft.gadgetarium.model.dto.response.UserRequest;
+import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
 import com.peaksoft.gadgetarium.model.dto.request.UserSignInRequest;
 import com.peaksoft.gadgetarium.model.dto.request.UserUpdatePasswordRequest;
 import com.peaksoft.gadgetarium.model.dto.response.UserLoginResponse;
@@ -21,9 +21,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/**
- * Сервисный класс для управления операциями пользователей, такими как аутентификация и авторизация.
- */
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -45,12 +42,14 @@ public class UserService {
 
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("Неверный email или пароль!"));
-        String jwt = jwtUtil.generateToken(user);
+        String jwt = jwtUtil.generateAccessToken(user);
+        log.info("Successfully logged in! ");
         return UserLoginResponse.builder()
                 .userName(user.getUsername())
                 .role(user.getRole())
                 .token(jwt)
                 .build();
+
     }
 
     public boolean isPasswordSecure(String newPassword) {
