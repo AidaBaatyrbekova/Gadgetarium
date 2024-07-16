@@ -2,6 +2,7 @@ package com.peaksoft.gadgetarium.service;
 
 import com.peaksoft.gadgetarium.model.dto.request.PasswordResetRequest;
 import com.peaksoft.gadgetarium.model.dto.request.PasswordResetTokenRequest;
+import com.peaksoft.gadgetarium.model.dto.request.UpdatePasswordRequest;
 import com.peaksoft.gadgetarium.model.entities.User;
 import com.peaksoft.gadgetarium.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -87,5 +88,35 @@ public class UserService {
         String subject = "Password Reset Request";
         String message = "Your password reset code is: " + token;
         mailService.sendSimpleMessage(email, subject, message);
+    }
+
+    @Transactional
+    public void updatePassword(UpdatePasswordRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь с таким email не найден"));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Неверный текущий пароль!");
+        }
+
+        if (request.getNewPassword() == null || request.getNewPassword().isEmpty()) {
+            throw new RuntimeException("Введите новый пароль!");
+        }
+
+        if (request.getNewConfirmPassword() == null || request.getNewConfirmPassword().isEmpty()) {
+            throw new RuntimeException("Подтвердите новый пароль!");
+        }
+
+        if (!request.getNewPassword().equals(request.getNewConfirmPassword())) {
+            throw new RuntimeException("Новые пароли не совпадают!");
+        }
+
+        if (!isPasswordSecure(request.getNewPassword())) {
+            throw new RuntimeException("Новый пароль ненадежен! Пароль должен содержать как минимум 8 символов, включая заглавные и строчные буквы, цифры и специальные символы.");
+        }
+
+        String hashedPassword = passwordEncoder.encode(request.getNewPassword());
+        user.setPassword(hashedPassword);
+        userRepository.save(user);
     }
 }
