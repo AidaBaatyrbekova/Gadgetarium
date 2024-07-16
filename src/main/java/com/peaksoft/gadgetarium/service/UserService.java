@@ -16,11 +16,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/**
- * Сервисный класс для управления операциями пользователей, такими как аутентификация и авторизация.
- */
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -53,6 +51,9 @@ public class UserService {
 
     public UserResponse createUser(UserRequest request) {
         User user = authMapper.mapToUser(request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setConfirm_the_password(passwordEncoder.encode(request.getConfirmThePassword()));
+        user.setRole(Role.USER);
         userRepository.save(user);
         log.info("Successfully created User " + user.getId());
         return authMapper.mapToResponse(user);
