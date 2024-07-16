@@ -3,7 +3,6 @@ package com.peaksoft.gadgetarium.controller;
 import com.peaksoft.gadgetarium.model.dto.response.UserRequest;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
 import com.peaksoft.gadgetarium.model.dto.request.UserSignInRequest;
-import com.peaksoft.gadgetarium.model.dto.request.UserUpdatePasswordRequest;
 import com.peaksoft.gadgetarium.model.dto.response.UserLoginResponse;
 import com.peaksoft.gadgetarium.service.UserService;
 import jakarta.validation.Valid;
@@ -28,10 +27,5 @@ public class AuthController {
     @PostMapping("/login")
     public UserLoginResponse login(@RequestBody UserSignInRequest request) {
         return userService.login(request);
-    }
-
-    @PutMapping("/updatePassword")
-    public void updatePassword(@RequestBody UserUpdatePasswordRequest request) {
-        userService.updatePassword(request);
     }
 }
