@@ -1,22 +1,25 @@
 package com.peaksoft.gadgetarium.service;
 
 import com.peaksoft.gadgetarium.mapper.ProductMapper;
+import com.peaksoft.gadgetarium.model.dto.request.ProductRequest;
+import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Brand;
 import com.peaksoft.gadgetarium.model.entities.Category;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
 import com.peaksoft.gadgetarium.repository.CategoryRepository;
 import com.peaksoft.gadgetarium.repository.ProductRepository;
-import com.peaksoft.gadgetarium.request.ProductRequest;
-import com.peaksoft.gadgetarium.response.ProductResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -26,6 +29,7 @@ public class ProductService {
 
     ProductMapper productMapper;
     ProductRepository productRepository;
+
     CategoryRepository categoryRepository;
     BrandRepository brandRepository;
 

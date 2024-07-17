@@ -1,8 +1,7 @@
-package com.peaksoft.gadgetarium.response;
+package com.peaksoft.gadgetarium.model.dto.request;
 
 import com.peaksoft.gadgetarium.model.enums.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
@@ -11,11 +10,9 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductResponse {
+public class ProductRequest {
 
-    Long id;
     String productName;
     ProductStatus productStatus;
     OperationMemory operationMemory;
@@ -31,8 +28,6 @@ public class ProductResponse {
     String guarantee;
     String screen;
     String simCard;
-    String rating;
-    int discount;
     int weight;
     int price;
 }

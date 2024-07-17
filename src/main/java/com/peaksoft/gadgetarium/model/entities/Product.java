@@ -59,7 +59,7 @@ public class Product {
 
     String guarantee;
 
-    String rating;
+    Double rating;
 
     int discount;
 
