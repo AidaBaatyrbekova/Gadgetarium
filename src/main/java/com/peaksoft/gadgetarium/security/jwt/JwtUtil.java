@@ -12,9 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * Утилита для работы с JWT (JSON Web Token).
- */
 @Service
 public class JwtUtil {
 
@@ -33,7 +30,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateAccessToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
     }
@@ -54,7 +51,7 @@ public class JwtUtil {
         return getClaimsFromToken(token, Claims::getExpiration);
     }
 
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateToken(token);
         return expiration.before(new Date());
     }

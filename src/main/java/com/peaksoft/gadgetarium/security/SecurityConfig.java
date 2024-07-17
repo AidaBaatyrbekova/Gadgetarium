@@ -19,9 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/**
- * Конфигурация Spring Security для настройки аутентификации и авторизации.
- */
 @Configuration
 @EnableWebSecurity
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -58,11 +55,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(
-                        authorize -> {
-                            authorize.requestMatchers(HttpMethod.POST, "/api/users", "/api/users/login", "/api/user/updatePassword", "api/users/resetPassword", "api/users/resetPasswordToken").permitAll()
-                                    .anyRequest().authenticated();
-                        })
+                .authorizeHttpRequests(authorize -> {
+                    authorize.requestMatchers(HttpMethod.POST, "/api/auth", "/api/auth/login", "/api/auth/sign-up").permitAll()
+                            .anyRequest().authenticated();
+                })
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

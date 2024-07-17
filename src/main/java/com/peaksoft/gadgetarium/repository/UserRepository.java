@@ -9,10 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-
-/**
- * Репозиторий для доступа к данным пользователей.
- */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
