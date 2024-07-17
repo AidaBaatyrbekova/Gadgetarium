@@ -33,9 +33,13 @@ public class User {
 
     @Column(name = "phone_number")
     String phoneNumber;
+
     String password;
-    String confirm_the_password;
+
+    String confirmThePassword;
+
     String gender;
+
     String local;
 
     @Enumerated(EnumType.STRING)

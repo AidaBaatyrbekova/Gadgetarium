@@ -7,10 +7,10 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,5 +23,10 @@ public class AuthController {
     @PostMapping("/sign-up")
     public UserResponse createUser(@RequestBody @Valid UserRequest request) {
         return userService.createUser(request);
+    }
+
+    @GetMapping("/sign-in-with-google")
+    public Map<String, Object> registerWithGoogle(OAuth2AuthenticationToken oAuth2AuthenticationToken) {
+        return userService.saveWithGoogle(oAuth2AuthenticationToken);
     }
 }
