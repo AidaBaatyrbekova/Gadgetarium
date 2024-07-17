@@ -1,4 +1,4 @@
-package com.peaksoft.gadgetarium.model.dto;
+package com.peaksoft.gadgetarium.model.dto.response;
 
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
