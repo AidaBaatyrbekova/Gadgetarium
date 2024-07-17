@@ -37,14 +37,15 @@ values (1, 'Smartphones'),
        (1, 'Android Tablets'),
        (1, 'iOS Tablets');
 
-insert into products (product_name, product_status, category_id, memory, color, operation_memory, screen,
-                      operation_system, operation_system_num, date_of_release, sim_card, processor, weight, guarantee,
-                      rating, discount, price, create_date, brand_id)
 
-values ('iPhone 13', 'AVAILABLE', 1, '128GB', 'BLACK', ' GB_16', '6.1', 'IOS', '15', '2021-09-14', 'Nano-SIM',
-        'A15 Bionic', 174, '1 Year', '4.5', 10, 79900, 2021-09-14, 1),
-       ('Galaxy S21', 'AVAILABLE', 1, '256GB', 'WHITE', ' GB_16', '6.2', 'ANDROID', '11', '2021-01-14', 'Nano-SIM',
-        'Exynos 2100', 169, '1 Year', '4.4', 15, 69900, 2021-01-14, 2);
+insert into products(create_date, discount, price, weight, brand_id, category_id, color, date_of_release, guarantee,
+                     memory, operation_memory,
+                     operation_system, operation_system_num, processor, product_name, product_status, rating, screen,
+                     sim_card)
+values ('17-07-2024', 10, 10000, 200, 1, 1, 'BLACK', '01-01-2022', '1 Year', 'GB_128', 'GB_16', 'IOS', '10',
+        'A15 Bionic', 'iPhone 13', 'NEW_DEVICES', '4', '6.1', 'Nano-SIM'),
+       ('17-07-2024', 15, 90000, 300, 1, 2, 'WHITE', '01-01-2023', '2 Year', 'GB_512', 'GB_16', 'IOS', '10',
+        'A10 Bionic', 'iPAD PRO','SALES', '5', '6.5', 'Nano-SIM');
 
 
 -- insert into basket_products(basket_id,product_id)
