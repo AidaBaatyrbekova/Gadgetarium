@@ -1,23 +1,22 @@
 package com.peaksoft.gadgetarium.service;
 
 import com.peaksoft.gadgetarium.mapper.AuthMapper;
-import com.peaksoft.gadgetarium.model.dto.request.PasswordResetRequest;
-import com.peaksoft.gadgetarium.model.dto.request.PasswordResetTokenRequest;
-import com.peaksoft.gadgetarium.model.dto.request.UpdatePasswordRequest;
+import com.peaksoft.gadgetarium.model.dto.request.*;
 import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
 import com.peaksoft.gadgetarium.model.entities.User;
 import com.peaksoft.gadgetarium.model.enums.Role;
 import com.peaksoft.gadgetarium.repository.UserRepository;
+import com.peaksoft.gadgetarium.security.jwt.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +31,9 @@ public class UserService {
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
     MailService mailService;
-    BCryptPasswordEncoder passwordEncoder;
+    AuthenticationManager authenticate;
     AuthMapper authMapper;
+    JwtUtil jwtUtil;
 
     public boolean isPasswordSecure(String newPassword) {
         if (newPassword.length() < 8) {
@@ -131,7 +131,7 @@ public class UserService {
 
     public LoginResponse login(LoginRequest request) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+            authenticate.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException("Неверный email или пароль!");
         }
@@ -151,7 +151,7 @@ public class UserService {
     public UserResponse createUser(UserRequest request) {
         User user = authMapper.mapToUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setConfirm_the_password(passwordEncoder.encode(request.getConfirmThePassword()));
+        user.setConfirmThePassword(passwordEncoder.encode(request.getConfirmThePassword()));
         user.setRole(Role.USER);
         userRepository.save(user);
         log.info("Successfully created User " + user.getId());

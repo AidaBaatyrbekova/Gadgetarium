@@ -16,7 +16,7 @@ public class AuthMapper {
         if(!request.getPassword().equals(request.getConfirmThePassword())){
             throw new RuntimeException("Password does not match");
         }
-        user.setConfirm_the_password(request.getConfirmThePassword());
+        user.setConfirmThePassword(request.getConfirmThePassword());
         user.setPhoneNumber(request.getPhoneNumber());
         user.setPassword(request.getPassword());
         return user;
