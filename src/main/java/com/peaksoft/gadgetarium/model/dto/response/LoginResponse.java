@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserLoginResponse {
+public class LoginResponse {
 
     String userName;
     Role role;

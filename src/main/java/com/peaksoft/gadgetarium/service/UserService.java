@@ -1,9 +1,9 @@
 package com.peaksoft.gadgetarium.service;
 
 import com.peaksoft.gadgetarium.mapper.AuthMapper;
-import com.peaksoft.gadgetarium.model.dto.request.UserSignInRequest;
-import com.peaksoft.gadgetarium.model.dto.response.UserLoginResponse;
-import com.peaksoft.gadgetarium.model.dto.response.UserRequest;
+import com.peaksoft.gadgetarium.model.dto.request.LoginRequest;
+import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
+import com.peaksoft.gadgetarium.model.dto.request.UserRequest;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
 import com.peaksoft.gadgetarium.model.entities.User;
 import com.peaksoft.gadgetarium.model.enums.Role;
@@ -32,7 +32,7 @@ public class UserService {
     BCryptPasswordEncoder passwordEncoder;
     AuthMapper authMapper;
 
-    public UserLoginResponse login(UserSignInRequest request) {
+    public LoginResponse login(LoginRequest request) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         } catch (BadCredentialsException e) {
@@ -43,7 +43,7 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("Неверный email или пароль!"));
         String jwt = jwtUtil.generateAccessToken(user);
         log.info("Successfully logged in! ");
-        return UserLoginResponse.builder()
+        return LoginResponse.builder()
                 .userName(user.getUsername())
                 .role(user.getRole())
                 .token(jwt)

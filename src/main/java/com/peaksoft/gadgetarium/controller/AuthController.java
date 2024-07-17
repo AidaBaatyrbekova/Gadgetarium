@@ -1,9 +1,9 @@
 package com.peaksoft.gadgetarium.controller;
 
-import com.peaksoft.gadgetarium.model.dto.response.UserRequest;
+import com.peaksoft.gadgetarium.model.dto.request.UserRequest;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
-import com.peaksoft.gadgetarium.model.dto.request.UserSignInRequest;
-import com.peaksoft.gadgetarium.model.dto.response.UserLoginResponse;
+import com.peaksoft.gadgetarium.model.dto.request.LoginRequest;
+import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
 import com.peaksoft.gadgetarium.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -25,7 +25,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public UserLoginResponse login(@RequestBody UserSignInRequest request) {
+    public LoginResponse login(@RequestBody LoginRequest request) {
         return userService.login(request);
     }
 }
