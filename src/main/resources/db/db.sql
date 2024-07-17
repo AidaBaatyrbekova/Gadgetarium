@@ -37,17 +37,15 @@ values (1, 'Smartphones'),
        (1, 'Android Tablets'),
        (1, 'iOS Tablets');
 
-insert into products (id, product_name, product_status, category_id, memory, color, operation_memory, screen,
-    operation_system, operation_system_num, date_of_release, sim_card, processor, weight,
-    guarantee, rating, discount, price, create_date, brand_id)
+insert into products (product_name, product_status, category_id, memory, color, operation_memory, screen,
+                      operation_system, operation_system_num, date_of_release, sim_card, processor, weight, guarantee,
+                      rating, discount, price, create_date, brand_id)
 
-           values ( 1, 'iPhone 14', 'AVAILABLE', 1, '64GB', 'BLACK', '4GB', '6.1 дюйма',
-             'iOS', '16.0', '2023-09-01', 'Dual SIM', 'A15 Bionic', 174,
-             '1 год', '4.5', 10, 99900, '2024-07-15', 1),
+values ('iPhone 13', 'AVAILABLE', 1, '128GB', 'BLACK', ' GB_16', '6.1', 'IOS', '15', '2021-09-14', 'Nano-SIM',
+        'A15 Bionic', 174, '1 Year', '4.5', 10, 79900, 2021-09-14, 1),
+       ('Galaxy S21', 'AVAILABLE', 1, '256GB', 'WHITE', ' GB_16', '6.2', 'ANDROID', '11', '2021-01-14', 'Nano-SIM',
+        'Exynos 2100', 169, '1 Year', '4.4', 15, 69900, 2021-01-14, 2);
 
-            ( 2, 'Galaxy S23', 'AVAILABLE', 1, '128GB', 'WHITE', '8GB', '6.5 дюйма',
-             'Android', '13', '2023-02-11', 'Single SIM', 'Snapdragon 8 Gen 2', 196,
-             '2 года', '4.7', 15, 89900, '2024-07-15', 2 );
 
 -- insert into basket_products(basket_id,product_id)
 -- values (),
