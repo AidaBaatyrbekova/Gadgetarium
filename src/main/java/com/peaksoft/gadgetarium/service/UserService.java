@@ -1,5 +1,6 @@
 package com.peaksoft.gadgetarium.service;
 
+import com.peaksoft.gadgetarium.exception.UserAlreadyExistsException;
 import com.peaksoft.gadgetarium.mapper.AuthMapper;
 import com.peaksoft.gadgetarium.model.dto.request.LoginRequest;
 import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
@@ -48,10 +49,12 @@ public class UserService {
                 .role(user.getRole())
                 .token(jwt)
                 .build();
-
     }
 
     public UserResponse createUser(UserRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("Пользователь с таким email уже существует.");
+        }
         User user = authMapper.mapToUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setConfirm_the_password(passwordEncoder.encode(request.getConfirmThePassword()));
@@ -59,7 +62,10 @@ public class UserService {
         userRepository.save(user);
         log.info("Successfully created User " + user.getId());
         return authMapper.mapToResponse(user);
+
     }
 }
+
+
 
 
