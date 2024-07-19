@@ -24,4 +24,4 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-}
+
