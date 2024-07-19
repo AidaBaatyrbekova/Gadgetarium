@@ -25,7 +25,7 @@ public class AuthController {
         return userService.createUser(request);
     }
 
-    @GetMapping("/sign-in-with-google")
+    @GetMapping("/sign-up-with-google")
     public Map<String, Object> registerWithGoogle(OAuth2AuthenticationToken oAuth2AuthenticationToken) {
         return userService.saveWithGoogle(oAuth2AuthenticationToken);
     }
