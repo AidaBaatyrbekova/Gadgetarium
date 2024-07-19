@@ -1,6 +1,6 @@
 package com.peaksoft.gadgetarium.mapper;
 
-import com.peaksoft.gadgetarium.model.dto.response.UserRequest;
+import com.peaksoft.gadgetarium.model.dto.request.UserRequest;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
 import com.peaksoft.gadgetarium.model.entities.User;
 import org.springframework.stereotype.Component;

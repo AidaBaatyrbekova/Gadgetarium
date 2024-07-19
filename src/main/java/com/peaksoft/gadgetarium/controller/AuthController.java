@@ -3,21 +3,21 @@ package com.peaksoft.gadgetarium.controller;
 import com.peaksoft.gadgetarium.model.dto.response.UserRequest;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
 import com.peaksoft.gadgetarium.model.dto.request.UserSignInRequest;
-import com.peaksoft.gadgetarium.model.dto.request.UserUpdatePasswordRequest;
 import com.peaksoft.gadgetarium.model.dto.response.UserLoginResponse;
 import com.peaksoft.gadgetarium.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/api/auth")
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthController {
 
     UserService userService;
