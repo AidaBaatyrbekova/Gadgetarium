@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.List;
 
@@ -23,10 +24,8 @@ public class Category {
 
     String electronicType;
 
+    @JsonIgnore
     @OneToMany(cascade = {
-            CascadeType.ALL} , mappedBy = "categoryOfSubCategory")
+            CascadeType.ALL}, mappedBy = "categoryOfSubCategory")
     List<SubCategory> subCategories;
-
-    @OneToOne( mappedBy = "category")
-    Product product;
 }

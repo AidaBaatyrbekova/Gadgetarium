@@ -38,10 +38,15 @@ public class User implements UserDetails {
 
     @Column(name = "phone_number")
     String phoneNumber;
+
     String password;
+
     String confirmThePassword;
+
     String resetPasswordToken;
+
     String gender;
+
     String local;
 
     @Enumerated(EnumType.STRING)
