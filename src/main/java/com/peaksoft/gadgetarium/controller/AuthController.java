@@ -1,8 +1,6 @@
 package com.peaksoft.gadgetarium.controller;
 
 import com.peaksoft.gadgetarium.model.dto.request.*;
-import com.peaksoft.gadgetarium.model.dto.request.LoginRequest;
-import com.peaksoft.gadgetarium.model.dto.request.UserRequest;
 import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
 import com.peaksoft.gadgetarium.service.UserService;
