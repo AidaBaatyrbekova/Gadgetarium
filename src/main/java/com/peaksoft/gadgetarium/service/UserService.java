@@ -1,6 +1,6 @@
 package com.peaksoft.gadgetarium.service;
 
-import com.peaksoft.gadgetarium.exception.UserAlreadyExistsException;
+import com.peaksoft.gadgetarium.exception.NotFoundException;
 import com.peaksoft.gadgetarium.mapper.AuthMapper;
 import com.peaksoft.gadgetarium.model.dto.request.LoginRequest;
 import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
@@ -19,12 +19,18 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Slf4j
 public class UserService {
 
     UserRepository userRepository;
@@ -49,23 +55,38 @@ public class UserService {
                 .role(user.getRole())
                 .token(jwt)
                 .build();
+
     }
 
     public UserResponse createUser(UserRequest request) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new UserAlreadyExistsException("Пользователь с таким email уже существует.");
-        }
         User user = authMapper.mapToUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setConfirm_the_password(passwordEncoder.encode(request.getConfirmThePassword()));
+        user.setConfirmThePassword(passwordEncoder.encode(request.getConfirmThePassword()));
         user.setRole(Role.USER);
         userRepository.save(user);
         log.info("Successfully created User " + user.getId());
         return authMapper.mapToResponse(user);
+    }
 
+    public Map<String, Object> saveWithGoogle(OAuth2AuthenticationToken oAuth2AuthenticationToken) {
+        OAuth2AuthenticatedPrincipal principal = oAuth2AuthenticationToken.getPrincipal();
+        if (oAuth2AuthenticationToken == null) {
+            throw new NotFoundException("The token must not be null");
+        }
+        Map<String, Object> attributes = principal.getAttributes();
+        User user = new User();
+        user.setName((String) attributes.get("given_name"));
+        user.setLastName((String) attributes.get("family_name"));
+        user.setEmail((String) attributes.get("email"));
+        user.setPassword(passwordEncoder.encode((String)attributes.get("given_name")));
+        user.setCreateDate(LocalDate.now());
+        user.setRole(Role.USER);
+        userRepository.save(user);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("name", user.getName());
+        response.put("lastName", user.getLastName());
+        response.put("email", user.getEmail());
+        response.put("creatDate", user.getCreateDate());
+        return response;
     }
 }
-
-
-
-
