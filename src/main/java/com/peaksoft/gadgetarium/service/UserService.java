@@ -1,5 +1,6 @@
 package com.peaksoft.gadgetarium.service;
 
+import com.peaksoft.gadgetarium.exception.GlobalExceptionHandler;
 import com.peaksoft.gadgetarium.exception.NotFoundException;
 import com.peaksoft.gadgetarium.exception.UserAlreadyExistsException;
 import com.peaksoft.gadgetarium.mapper.AuthMapper;
@@ -7,14 +8,17 @@ import com.peaksoft.gadgetarium.model.dto.request.LoginRequest;
 import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
 import com.peaksoft.gadgetarium.model.dto.request.UserRequest;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
+import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.User;
 import com.peaksoft.gadgetarium.model.enums.Role;
+import com.peaksoft.gadgetarium.repository.ProductRepository;
 import com.peaksoft.gadgetarium.repository.UserRepository;
 import com.peaksoft.gadgetarium.security.jwt.JwtUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,6 +43,7 @@ public class UserService {
     AuthenticationManager authenticationManager;
     BCryptPasswordEncoder passwordEncoder;
     AuthMapper authMapper;
+    ProductRepository productRepository;
 
     public LoginResponse login(LoginRequest request) {
         try {
@@ -82,7 +87,7 @@ public class UserService {
         user.setName((String) attributes.get("given_name"));
         user.setLastName((String) attributes.get("family_name"));
         user.setEmail((String) attributes.get("email"));
-        user.setPassword(passwordEncoder.encode((String)attributes.get("given_name")));
+        user.setPassword(passwordEncoder.encode((String) attributes.get("given_name")));
         user.setCreateDate(LocalDate.now());
         user.setRole(Role.USER);
         userRepository.save(user);
@@ -92,5 +97,21 @@ public class UserService {
         response.put("email", user.getEmail());
         response.put("creatDate", user.getCreateDate());
         return response;
+    }
+
+    public User addUserFavorite(Long userId, Long productId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserAlreadyExistsException.UserNotFoundException("User not found"));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new UserAlreadyExistsException.ProductNotFoundException("Product not found"));
+        user.getFavorites().add(product);
+        return userRepository.save(user);
+    }
+
+    public User clearUserFavorites(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserAlreadyExistsException.UserNotFoundException("User not found"));
+        user.getFavorites().clear();
+        return userRepository.save(user);
     }
 }
