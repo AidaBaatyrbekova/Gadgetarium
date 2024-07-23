@@ -28,6 +28,4 @@ public class Category {
             CascadeType.ALL}, mappedBy = "categoryOfSubCategory")
     List<SubCategory> subCategories;
 
-    @OneToOne(mappedBy = "category")
-    Product product;
 }
