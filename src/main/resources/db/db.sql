@@ -36,12 +36,12 @@ values ('Smartphones'),
 insert into sub_categories (category_id, name_of_sub_category)
 values (1, 'Smartphones'),
        (1, 'Feature Phones'),
-       (1, 'Ultrabooks'),
-       (1, 'Gaming Laptops'),
-       (1, 'Android Tablets'),
-       (1, 'iOS Tablets'),
-       (1, 'Smartwatches'),
-       (1, 'Fitness Bands');
+       (2, 'Ultrabooks'),
+       (2,'Gaming Laptops'),
+       (3, 'Android Tablets'),
+       (3, 'iOS Tablets'),
+       (4, 'Smartwatches'),
+       (4, 'Fitness Bands');
 
 insert into products (create_date, discount, price, weight, brand_id, category_id, color,
                       date_of_release, guarantee, memory,
@@ -65,11 +65,3 @@ values (1),
        (3),
        (4);
 
-insert into basket_products (basket_id, product_id)
-values (1, 1),
-       (1, 2),
-       (1, 3),
-       (1, 4),
-       (1, 5),
-       (1, 6),
-       (1, 7);
