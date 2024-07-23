@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,17 +38,17 @@ public class AuthController {
     }
 
     @PostMapping("/resetPassword")
-    public void resetPassword(@RequestBody PasswordResetRequest request) {
-        userService.resetPassword(request);
+    public ResponseEntity<String> resetPassword(@RequestBody PasswordResetRequest request) {
+        return userService.resetPassword(request);
     }
 
     @PostMapping("/resetPasswordToken")
-    public void resetPasswordToken(@RequestBody PasswordResetTokenRequest request) {
-        userService.resetPasswordToken(request);
+    public ResponseEntity<String> resetPasswordToken(@RequestBody PasswordResetTokenRequest request) {
+        return userService.resetPasswordToken(request);
     }
 
     @PutMapping("/updatePassword")
-    public void updatePassword(@RequestBody UpdatePasswordRequest request) {
-        userService.updatePassword(request);
+    public ResponseEntity<String> updatePassword(@RequestBody UpdatePasswordRequest request) {
+        return userService.updatePassword(request);
     }
 }
