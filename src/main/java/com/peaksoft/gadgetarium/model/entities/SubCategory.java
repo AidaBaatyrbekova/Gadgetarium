@@ -1,5 +1,6 @@
 package com.peaksoft.gadgetarium.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -28,6 +29,7 @@ public class SubCategory {
     @JoinColumn(name = "category_id")
     Category categoryOfSubCategory;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subCategory")
     List<Product> products;
 }

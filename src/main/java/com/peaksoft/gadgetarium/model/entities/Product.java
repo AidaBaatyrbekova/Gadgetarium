@@ -89,4 +89,7 @@ public class Product {
 
     @OneToOne (mappedBy = "product")
     Feedback feedback;
+
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    SubCategory subCategory;
 }
