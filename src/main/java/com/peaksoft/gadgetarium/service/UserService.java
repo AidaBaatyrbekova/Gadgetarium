@@ -45,6 +45,9 @@ public class UserService {
 
     public UserResponse createUser(UserRequest request) {
         User user = authMapper.mapToUser(request);
+        if (!isPasswordSecure(request.getPassword())) {
+            throw new IllegalArgumentException("The new password is not secure! The password must contain at least 8 characters, including uppercase and lowercase letters, numbers and special characters!");
+        }
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setConfirmThePassword(passwordEncoder.encode(request.getConfirmThePassword()));
         user.setRole(Role.USER);
@@ -79,7 +82,7 @@ public class UserService {
     @Transactional
     public ResponseEntity<String> resetPassword(PasswordResetRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь с таким email не найден"));
+                .orElseThrow(() -> new UsernameNotFoundException("User with this email was not found!"));
 
         String token = UUID.randomUUID().toString().substring(0, 6);
         user.setResetPasswordToken(token);
@@ -87,31 +90,31 @@ public class UserService {
 
         sendResetPasswordEmail(user.getEmail(), token);
 
-        return new ResponseEntity<>("Вам отправлено сообщение на вашу почту!", HttpStatus.OK);
+        return new ResponseEntity<>("A message has been sent to your email to reset your password!", HttpStatus.OK);
     }
 
     @Transactional
     public ResponseEntity<String> resetPasswordToken(PasswordResetTokenRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь с таким email не найден"));
+                .orElseThrow(() -> new UsernameNotFoundException("User with this email was not found!"));
 
         if (!user.getResetPasswordToken().equals(request.getToken())) {
-            throw new IllegalArgumentException("Неверный токен сброса пароля!");
+            throw new IllegalArgumentException("Invalid password reset token!");
         }
 
         if (!request.getNewPassword().equals(request.getConfirmNewPassword())) {
-            throw new IllegalArgumentException("Новые пароли не совпадают!");
+            throw new IllegalArgumentException("New passwords don't match!");
         }
 
         if (!isPasswordSecure(request.getNewPassword())) {
-            throw new IllegalArgumentException("Новый пароль ненадежен! Пароль должен содержать как минимум 8 символов, включая заглавные и строчные буквы, цифры и специальные символы.");
+            throw new IllegalArgumentException("The new password is not secure! The password must contain at least 8 characters, including uppercase and lowercase letters, numbers and special characters!");
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         user.setResetPasswordToken(null);
         userRepository.save(user);
 
-        return new ResponseEntity<>("Пароль успешно обновлен!", HttpStatus.OK);
+        return new ResponseEntity<>("Password successfully updated!", HttpStatus.OK);
     }
 
     private void sendResetPasswordEmail(String email, String token) {
@@ -123,44 +126,44 @@ public class UserService {
     @Transactional
     public ResponseEntity<String> updatePassword(UpdatePasswordRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь с таким email не найден"));
+                .orElseThrow(() -> new UsernameNotFoundException("User with this email was not found!"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Неверный текущий пароль!");
+            throw new RuntimeException("The current password is incorrect!");
         }
 
         if (request.getNewPassword() == null || request.getNewPassword().isEmpty()) {
-            throw new RuntimeException("Введите новый пароль!");
+            throw new RuntimeException("Enter a new password!");
         }
 
         if (request.getNewConfirmPassword() == null || request.getNewConfirmPassword().isEmpty()) {
-            throw new RuntimeException("Подтвердите новый пароль!");
+            throw new RuntimeException("Confirm your new password!");
         }
 
         if (!request.getNewPassword().equals(request.getNewConfirmPassword())) {
-            throw new RuntimeException("Новые пароли не совпадают!");
+            throw new RuntimeException("New passwords don't match!");
         }
 
         if (!isPasswordSecure(request.getNewPassword())) {
-            throw new RuntimeException("Новый пароль ненадежен! Пароль должен содержать как минимум 8 символов, включая заглавные и строчные буквы, цифры и специальные символы.");
+            throw new RuntimeException("The new password is not secure! The password must contain at least 8 characters, including uppercase and lowercase letters, numbers and special characters!");
         }
 
         String hashedPassword = passwordEncoder.encode(request.getNewPassword());
         user.setPassword(hashedPassword);
         userRepository.save(user);
 
-        return new ResponseEntity<>("Пароль успешно обновлен!", HttpStatus.OK);
+        return new ResponseEntity<>("Password successfully updated!", HttpStatus.OK);
     }
 
     public LoginResponse login(LoginRequest request) {
         try {
             authenticate.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("Неверный email или пароль!");
+            throw new BadCredentialsException("Invalid email or password!");
         }
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("Неверный email или пароль!"));
+                .orElseThrow(() -> new UsernameNotFoundException("Invalid email or password!"));
         String jwt = jwtUtil.generateAccessToken(user);
         log.info("Successfully logged in! ");
         return LoginResponse.builder()
