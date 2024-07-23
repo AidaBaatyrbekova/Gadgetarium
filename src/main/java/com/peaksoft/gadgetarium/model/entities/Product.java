@@ -28,6 +28,11 @@ public class Product {
     @Enumerated(EnumType.STRING)
     ProductStatus productStatus;
 
+    @ManyToOne(cascade = {
+            CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.DETACH})
+    @JoinColumn(name = "category_id")
+    SubCategory category;
+
     @Enumerated(EnumType.STRING)
     Memory memory;
 
