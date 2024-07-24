@@ -1,6 +1,7 @@
 package com.peaksoft.gadgetarium.controller;
 
 import com.peaksoft.gadgetarium.model.dto.request.*;
+import com.peaksoft.gadgetarium.model.dto.response.FavoriteResponse;
 import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
 import com.peaksoft.gadgetarium.service.UserService;
@@ -51,4 +52,17 @@ public class AuthController {
     public ResponseEntity<String> updatePassword(@RequestBody UpdatePasswordRequest request) {
         return userService.updatePassword(request);
     }
+
+    @PostMapping("/favorites")
+    public ResponseEntity<FavoriteResponse> addFavorite(@RequestBody FavoriteRequest request) {
+        FavoriteResponse response = userService.addFavorite(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> clearFavorites(@PathVariable Long userId) {
+        userService.clearFavorites(userId);
+        return ResponseEntity.noContent().build();
+    }
 }
+

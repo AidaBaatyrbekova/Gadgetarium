@@ -1,12 +1,16 @@
 package com.peaksoft.gadgetarium.service;
 
 import com.peaksoft.gadgetarium.exception.NotFoundException;
+import com.peaksoft.gadgetarium.exception.UserAlreadyExistsException;
 import com.peaksoft.gadgetarium.mapper.AuthMapper;
 import com.peaksoft.gadgetarium.model.dto.request.*;
+import com.peaksoft.gadgetarium.model.dto.response.FavoriteResponse;
 import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
+import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.User;
 import com.peaksoft.gadgetarium.model.enums.Role;
+import com.peaksoft.gadgetarium.repository.ProductRepository;
 import com.peaksoft.gadgetarium.repository.UserRepository;
 import com.peaksoft.gadgetarium.security.jwt.JwtUtil;
 import jakarta.transaction.Transactional;
@@ -42,6 +46,7 @@ public class UserService {
     AuthenticationManager authenticate;
     AuthMapper authMapper;
     JwtUtil jwtUtil;
+    ProductRepository productRepository;
 
     public UserResponse createUser(UserRequest request) {
         User user = authMapper.mapToUser(request);
@@ -194,5 +199,24 @@ public class UserService {
         response.put("email", user.getEmail());
         response.put("creatDate", user.getCreateDate());
         return response;
+    }
+
+    public FavoriteResponse addFavorite(FavoriteRequest request) {
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new UserAlreadyExistsException.UserNotFoundException("User not found"));
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new UserAlreadyExistsException.ProductNotFoundException("Product not found"));
+
+        user.getFavorites().add(product);
+        userRepository.save(user);
+
+        return new FavoriteResponse(user.getId(), product.getId(), product.getProductName());
+    }
+
+    public void clearFavorites(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserAlreadyExistsException.UserNotFoundException("User not found"));
+        user.getFavorites().clear();
+        userRepository.save(user);
     }
 }
