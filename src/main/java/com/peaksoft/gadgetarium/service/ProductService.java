@@ -8,7 +8,6 @@ import com.peaksoft.gadgetarium.model.entities.Category;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.SubCategory;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
-import com.peaksoft.gadgetarium.repository.CategoryRepository;
 import com.peaksoft.gadgetarium.repository.ProductRepository;
 import com.peaksoft.gadgetarium.repository.SubCategoryRepository;
 import lombok.AccessLevel;
@@ -29,7 +28,7 @@ public class ProductService {
     ProductRepository productRepository;
     SubCategoryRepository subCategoryRepository;
     BrandRepository brandRepository;
-    CategoryRepository categoryRepository;
+    SubCategoryRepository categoryRepository;
 
     public ProductResponse createProduct(ProductRequest request) {
         Product product = productMapper.productMapper(request);
@@ -72,7 +71,7 @@ public class ProductService {
 
         if (request.getCategoryId() != null) {
             Category category = categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found with id " + request.getCategoryId()));
+                    .orElseThrow(() -> new RuntimeException("Category not found with id " + request.getCategoryId())).getCategoryOfSubCategory();
             product.setCategory(category);
         }
         return productRepository.save(product);

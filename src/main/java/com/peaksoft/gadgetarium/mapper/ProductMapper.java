@@ -7,7 +7,6 @@ import com.peaksoft.gadgetarium.model.entities.Category;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.SubCategory;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
-import com.peaksoft.gadgetarium.repository.CategoryRepository;
 import com.peaksoft.gadgetarium.repository.SubCategoryRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +18,11 @@ import org.springframework.stereotype.Component;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductMapper {
 
-     BrandRepository brandRepository;
-     SubCategoryRepository subCategoryRepository;
-     CategoryRepository categoryRepository;
+    BrandRepository brandRepository;
+    SubCategoryRepository subCategoryRepository;
+    SubCategoryRepository categoryRepository;
 
-     public Product productMapper(ProductRequest request) {
+    public Product productMapper(ProductRequest request) {
         Product product = new Product();
         product.setProductName(request.getProductName());
         product.setProductStatus(request.getProductStatus());
@@ -44,8 +43,9 @@ public class ProductMapper {
         product.setDiscount(request.getDiscount());
 
         if (request.getCategoryId() != null) {
+
             Category category = categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found with id " + request.getCategoryId()));
+                    .orElseThrow(() -> new RuntimeException("Category not found with id " + request.getCategoryId())).getCategoryOfSubCategory();
             product.setCategory(category);
         }
 
