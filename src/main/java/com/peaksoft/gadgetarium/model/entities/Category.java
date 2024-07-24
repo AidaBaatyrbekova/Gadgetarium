@@ -1,13 +1,12 @@
 package com.peaksoft.gadgetarium.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import net.minidev.json.annotate.JsonIgnore;
-
 import java.util.List;
 
 @Getter
@@ -28,4 +27,5 @@ public class Category {
     @OneToMany(cascade = {
             CascadeType.ALL}, mappedBy = "categoryOfSubCategory")
     List<SubCategory> subCategories;
+
 }
