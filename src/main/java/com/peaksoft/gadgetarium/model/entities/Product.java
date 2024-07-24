@@ -28,7 +28,7 @@ public class Product {
     @Enumerated(EnumType.STRING)
     ProductStatus productStatus;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "category_id")
     Category category;
 
@@ -82,14 +82,14 @@ public class Product {
     List<Delivery> deliveries;
 
     @ManyToOne(cascade = {
-            CascadeType.ALL})
+            CascadeType.PERSIST})
     @JoinColumn(name = "brand_id")
     Brand brandOfProduct;
 
     @OneToOne(mappedBy = "product")
     Feedback feedback;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "sub_category_id")
     SubCategory subCategory;
 }

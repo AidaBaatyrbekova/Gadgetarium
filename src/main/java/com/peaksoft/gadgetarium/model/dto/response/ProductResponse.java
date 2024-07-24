@@ -1,6 +1,5 @@
 package com.peaksoft.gadgetarium.model.dto.response;
 
-import com.peaksoft.gadgetarium.model.entities.SubCategory;
 import com.peaksoft.gadgetarium.model.enums.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -9,6 +8,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+
 
 @Getter
 @Setter
