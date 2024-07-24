@@ -18,21 +18,21 @@ public class JwtUtil {
     @Value("${secret}")
     private String secret;
 
-    private final long ACCESS_TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000L;
+    private final long TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000L; // token for 1 week
 
-    public String createAccessToken(Map<String, Object> claims, String subject) {
+    public String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
+                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRATION))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
     public String generateAccessToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createAccessToken(claims, userDetails.getUsername());
+        return createToken(claims, userDetails.getUsername());
     }
 
     private Claims getAllClaimsFromToken(String token) {

@@ -56,7 +56,8 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> {
-                    authorize.requestMatchers(HttpMethod.POST, "/api/auth", "/api/auth/login", "/api/auth/sign-up").permitAll()
+                    authorize.requestMatchers(HttpMethod.POST, "/api/auth", "/api/auth/login", "/api/auth/sign-up", "/api/auth/resetPassword", "/api/auth/resetPasswordToken").permitAll()
+                            .requestMatchers(HttpMethod.PUT, "/api/auth/updatePassword").permitAll()
                             .anyRequest().authenticated();
                 })
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

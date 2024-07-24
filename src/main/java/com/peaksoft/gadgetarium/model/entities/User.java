@@ -43,6 +43,8 @@ public class User implements UserDetails {
 
     String confirmThePassword;
 
+    String resetPasswordToken;
+
     String gender;
 
     String local;
