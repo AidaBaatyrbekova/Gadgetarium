@@ -1,10 +1,8 @@
 package com.peaksoft.gadgetarium.controller;
 
-import com.peaksoft.gadgetarium.model.dto.request.LoginRequest;
-import com.peaksoft.gadgetarium.model.dto.request.UserRequest;
+import com.peaksoft.gadgetarium.model.dto.request.*;
 import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
-import com.peaksoft.gadgetarium.model.entities.User;
 import com.peaksoft.gadgetarium.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -39,15 +37,18 @@ public class AuthController {
         return userService.login(request);
     }
 
-    @PostMapping("/{userId}/favorite/{productId}")
-    public ResponseEntity<User> addFavorite(@PathVariable Long userId, @PathVariable Long productId){
-        User user =userService.addUserFavorite(userId,productId);
-        return ResponseEntity.ok(user);
+    @PostMapping("/resetPassword")
+    public ResponseEntity<String> resetPassword(@RequestBody PasswordResetRequest request) {
+        return userService.resetPassword(request);
     }
 
-    @DeleteMapping("/{userId}/favorites")
-    public ResponseEntity<User> clearFavorites(@PathVariable Long userId) {
-        User user = userService.clearUserFavorites(userId);
-        return ResponseEntity.ok(user);
+    @PostMapping("/resetPasswordToken")
+    public ResponseEntity<String> resetPasswordToken(@RequestBody PasswordResetTokenRequest request) {
+        return userService.resetPasswordToken(request);
+    }
+
+    @PutMapping("/updatePassword")
+    public ResponseEntity<String> updatePassword(@RequestBody UpdatePasswordRequest request) {
+        return userService.updatePassword(request);
     }
 }
