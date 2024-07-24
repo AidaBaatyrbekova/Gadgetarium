@@ -6,15 +6,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ProductCompareMapper {
+
     public ProductCompareResponse toProductCompareResponse(Product product) {
         return ProductCompareResponse.builder()
                 .id(product.getId())
                 .productName(product.getProductName())
-                .brandId(product.getBrandOfProduct().getId())
+                .brandId(product.getBrandOfProduct() != null ? product.getBrandOfProduct().getId() : null)
+                .operationSystem(product.getOperationSystem() != null ? product.getOperationSystem().name() : null)
                 .screen(product.getScreen())
-                .processor(product.getProcessor())
+                .color(product.getColor() != null ? product.getColor().name() : null)
+                .memory(product.getMemory() != null ? product.getMemory().name() : null)
                 .weight(product.getWeight())
-                .price(product.getPrice())
+                .simCard(product.getSimCard())
                 .build();
     }
 }

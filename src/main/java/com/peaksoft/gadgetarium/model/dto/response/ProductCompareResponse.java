@@ -12,10 +12,14 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductCompareResponse {
     Long id;
+    Long categoryId;
+    Long brandId;
+    String operationSystem;
     String productName;
     String screen;
-    String processor;
-    int weight;
-    int price;
-    Long brandId;
+    String color;
+    String memory;
+    Integer weight;
+    String simCard;
+    boolean showDifferencesOnly;
 }

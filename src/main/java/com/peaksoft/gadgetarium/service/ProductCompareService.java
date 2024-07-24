@@ -15,68 +15,41 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductCompareService {
 
-     ProductCompareRepository productCompareRepository;
-     ProductCompareMapper productCompareMapper;
+    ProductCompareRepository productCompareRepository;
+    ProductCompareMapper productCompareMapper;
 
-    public List<ProductCompareResponse> compareProducts(ProductCompareRequest request) {
-        // Получаем все продукты
-        List<Product> products = productCompareRepository.findAll();
+    public List<ProductCompareResponse> compareProducts(Long categoryId, boolean showDifferencesOnly) {
+        List<Product> products = productCompareRepository.findByCategoryId(categoryId);
 
-        // Применяем фильтрацию в зависимости от наличия параметров запроса
-        products = products.stream()
-                .filter(product -> filterByCategory(product, request.getCategoryId()))
-                .filter(product -> filterByBrand(product, request.getBrandId()))
-                .filter(product -> filterByOperationSystem(product, request.getOperationSystem()))
-                .filter(product -> filterByProductName(product, request.getProductName()))
-                .filter(product -> filterByScreen(product, request.getScreen()))
-                .filter(product -> filterByWeight(product, request.getWeight()))
-                .filter(product -> filterByPrice(product, request.getPrice()))
-                .filter(product -> filterBySimCard(product, request.getSimCard()))
-                .collect(Collectors.toList());
+        if (showDifferencesOnly) {
+            products = filterDifferences(products);
+        }
 
-        // Возвращаем отфильтрованные продукты в виде ответов
         return products.stream()
                 .map(productCompareMapper::toProductCompareResponse)
                 .collect(Collectors.toList());
     }
 
-    // Фильтрация по категории
-    private boolean filterByCategory(Product product, Long categoryId) {
-        return categoryId == null || (product.getCategory() != null && product.getCategory().getId().equals(categoryId));
+    private List<Product> filterDifferences(List<Product> products) {
+        if (products.isEmpty()) {
+            return products;
+        }
+
+        Product referenceProduct = products.get(0);
+
+        return products.stream()
+                .filter(product -> !areProductsEqual(product, referenceProduct))
+                .collect(Collectors.toList());
     }
 
-    // Фильтрация по бренду
-    private boolean filterByBrand(Product product, Long brandId) {
-        return brandId == null || (product.getBrandOfProduct() != null && product.getBrandOfProduct().getId().equals(brandId));
+    private boolean areProductsEqual(Product p1, Product p2) {
+        return (p1.getBrandOfProduct() != null && p1.getBrandOfProduct().equals(p2.getBrandOfProduct())) &&
+                (p1.getScreen() != null && p1.getScreen().equals(p2.getScreen())) &&
+                (p1.getColor() != null && p1.getColor().equals(p2.getColor())) &&
+                (p1.getOperationSystem() != null && p1.getOperationSystem().equals(p2.getOperationSystem())) &&
+                (p1.getMemory() != null && p1.getMemory().equals(p2.getMemory())) &&
+                (p1.getWeight() == p2.getWeight()) &&
+                (p1.getSimCard() != null && p1.getSimCard().equals(p2.getSimCard()));
     }
 
-    // Фильтрация по операционной системе
-    private boolean filterByOperationSystem(Product product, String operationSystem) {
-        return operationSystem == null || (product.getOperationSystem() != null && product.getOperationSystem().name().equals(operationSystem));
-    }
-
-    // Фильтрация по названию продукта
-    private boolean filterByProductName(Product product, String productName) {
-        return productName == null || (product.getProductName() != null && product.getProductName().equals(productName));
-    }
-
-    // Фильтрация по экрану
-    private boolean filterByScreen(Product product, String screen) {
-        return screen == null || (product.getScreen() != null && product.getScreen().equals(screen));
-    }
-
-    // Фильтрация по весу
-    private boolean filterByWeight(Product product, Integer weight) {
-        return weight == null || product.getWeight() == weight;
-    }
-
-    // Фильтрация по цене
-    private boolean filterByPrice(Product product, Integer price) {
-        return price == null || product.getPrice() == price;
-    }
-
-    // Фильтрация по SIM-карте
-    private boolean filterBySimCard(Product product, String simCard) {
-        return simCard == null || (product.getSimCard() != null && product.getSimCard().equals(simCard));
-    }
 }

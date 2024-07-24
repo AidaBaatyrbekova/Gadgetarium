@@ -11,13 +11,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductCompareRequest {
-     Long categoryId;
-     Long brandId;
-     String operationSystem;
-     String productName;
-     String screen;
-     Integer weight;
-     Integer price;
-     String simCard;
-     boolean showDifferencesOnly;
+       Long categoryId;
+       boolean showDifferencesOnly;
 }
