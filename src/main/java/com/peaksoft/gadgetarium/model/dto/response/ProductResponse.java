@@ -1,5 +1,6 @@
 package com.peaksoft.gadgetarium.model.dto.response;
 
+import com.peaksoft.gadgetarium.model.entities.SubCategory;
 import com.peaksoft.gadgetarium.model.enums.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,6 +21,7 @@ public class ProductResponse {
     ProductStatus productStatus;
     OperationMemory operationMemory;
     OperationSystem operationSystem;
+    Long subCategoryId;
     LocalDate createDate;
     Memory memory;
     Color color;

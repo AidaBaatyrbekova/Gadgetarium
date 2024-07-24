@@ -4,10 +4,10 @@ import com.peaksoft.gadgetarium.mapper.ProductMapper;
 import com.peaksoft.gadgetarium.model.dto.request.ProductRequest;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Brand;
-import com.peaksoft.gadgetarium.model.entities.Category;
+import com.peaksoft.gadgetarium.model.entities.SubCategory;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
-import com.peaksoft.gadgetarium.repository.CategoryRepository;
+import com.peaksoft.gadgetarium.repository.SubCategoryRepository;
 import com.peaksoft.gadgetarium.repository.ProductRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +15,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -29,8 +26,7 @@ public class ProductService {
 
     ProductMapper productMapper;
     ProductRepository productRepository;
-
-    CategoryRepository categoryRepository;
+    SubCategoryRepository subCategoryRepository;
     BrandRepository brandRepository;
 
     public ProductResponse createProduct(ProductRequest request) {
@@ -42,7 +38,8 @@ public class ProductService {
     public List<ProductResponse> findAll() {
         return productRepository.findAll()
                 .stream()
-                .map(productMapper::mapToResponse).toList();
+                .map(productMapper::mapToResponse)
+                .toList();
     }
 
     public ProductResponse getProductById(Long id) {
@@ -73,11 +70,21 @@ public class ProductService {
         product.setColor(request.getColor());
         product.setPrice(request.getPrice());
 
-        Optional<Category> category = categoryRepository.findById(request.getCategoryId());
-        category.ifPresent(product::setCategory);
+        // Обновляем SubCategory, если она указана
+        if (request.getSubCategoryId() != null) {
+            SubCategory subCategory = subCategoryRepository.findById(request.getSubCategoryId())
+                    .orElseThrow(() -> new RuntimeException("SubCategory not found with id " + request.getSubCategoryId()));
+            product.setSubCategory(subCategory);
+        }
 
-        Optional<Brand> brand = brandRepository.findById(request.getBrandId());
-        brand.ifPresent(product::setBrandOfProduct);
+        // Обновляем Brand, если он указан
+        if (request.getBrandId() != null) {
+            Brand brand = brandRepository.findById(request.getBrandId())
+                    .orElseThrow(() -> new RuntimeException("Brand not found with id " + request.getBrandId()));
+            product.setBrandOfProduct(brand);
+        }
+
+
         return productRepository.save(product);
     }
 
