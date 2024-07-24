@@ -3,9 +3,11 @@ package com.peaksoft.gadgetarium.mapper;
 import com.peaksoft.gadgetarium.model.dto.request.ProductRequest;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Brand;
+import com.peaksoft.gadgetarium.model.entities.Category;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.SubCategory;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
+import com.peaksoft.gadgetarium.repository.CategoryRepository;
 import com.peaksoft.gadgetarium.repository.SubCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,8 @@ public class ProductMapper {
     BrandRepository brandRepository;
     @Autowired
     SubCategoryRepository subCategoryRepository;
+    @Autowired
+    CategoryRepository categoryRepository;
 
 
     public Product productMapper(ProductRequest request) {
@@ -36,6 +40,14 @@ public class ProductMapper {
         product.setWeight(request.getWeight());
         product.setColor(request.getColor());
         product.setPrice(request.getPrice());
+        product.setRating(request.getRating());
+
+        if (request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found with id " + request.getCategoryId()));
+            product.setCategory(category);
+        }
+
 
         if (request.getSubCategoryId() != null) {
             SubCategory subCategory = subCategoryRepository.findById(request.getSubCategoryId())
@@ -48,13 +60,14 @@ public class ProductMapper {
                     .orElseThrow(() -> new RuntimeException("Brand not found with id " + request.getBrandId()));
             product.setBrandOfProduct(brand);
         }
-            return product;
+
+        return product;
     }
 
     public ProductResponse mapToResponse(Product product) {
         Long categoryId = null;
-        if (product.getSubCategory() != null) {
-            categoryId = product.getSubCategory().getCategoryOfSubCategory().getId();
+        if (product.getCategory() != null) {
+            categoryId = product.getCategory().getId();
         }
 
         Long subCategoryId = null;
@@ -91,4 +104,5 @@ public class ProductMapper {
                 .createDate(product.getCreateDate())
                 .build();
     }
+
 }

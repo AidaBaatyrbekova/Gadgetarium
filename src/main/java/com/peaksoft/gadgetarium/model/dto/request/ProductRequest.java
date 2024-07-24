@@ -30,6 +30,7 @@
         String guarantee;
         String screen;
         String simCard;
+        Double rating;;
         int weight;
         int price;
     }
