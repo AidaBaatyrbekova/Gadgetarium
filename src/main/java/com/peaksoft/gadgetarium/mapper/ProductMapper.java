@@ -9,21 +9,21 @@ import com.peaksoft.gadgetarium.model.entities.SubCategory;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
 import com.peaksoft.gadgetarium.repository.CategoryRepository;
 import com.peaksoft.gadgetarium.repository.SubCategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductMapper {
 
-    @Autowired
-    BrandRepository brandRepository;
-    @Autowired
-    SubCategoryRepository subCategoryRepository;
-    @Autowired
-    CategoryRepository categoryRepository;
+     BrandRepository brandRepository;
+     SubCategoryRepository subCategoryRepository;
+     CategoryRepository categoryRepository;
 
-
-    public Product productMapper(ProductRequest request) {
+     public Product productMapper(ProductRequest request) {
         Product product = new Product();
         product.setProductName(request.getProductName());
         product.setProductStatus(request.getProductStatus());
@@ -41,13 +41,13 @@ public class ProductMapper {
         product.setColor(request.getColor());
         product.setPrice(request.getPrice());
         product.setRating(request.getRating());
+        product.setDiscount(request.getDiscount());
 
         if (request.getCategoryId() != null) {
             Category category = categoryRepository.findById(request.getCategoryId())
                     .orElseThrow(() -> new RuntimeException("Category not found with id " + request.getCategoryId()));
             product.setCategory(category);
         }
-
 
         if (request.getSubCategoryId() != null) {
             SubCategory subCategory = subCategoryRepository.findById(request.getSubCategoryId())
@@ -60,7 +60,6 @@ public class ProductMapper {
                     .orElseThrow(() -> new RuntimeException("Brand not found with id " + request.getBrandId()));
             product.setBrandOfProduct(brand);
         }
-
         return product;
     }
 
@@ -105,4 +104,23 @@ public class ProductMapper {
                 .build();
     }
 
+    public void updateProductFromRequest(ProductRequest request, Product product) {
+        product.setProductName(request.getProductName());
+        product.setProductStatus(request.getProductStatus());
+        product.setOperationMemory(request.getOperationMemory());
+        product.setOperationSystem(request.getOperationSystem());
+        product.setOperationSystemNum(request.getOperationSystemNum());
+        product.setDateOfRelease(request.getDateOfRelease());
+        product.setProcessor(request.getProcessor());
+        product.setGuarantee(request.getGuarantee());
+        product.setCreateDate(request.getCreateDate());
+        product.setSimCard(request.getSimCard());
+        product.setScreen(request.getScreen());
+        product.setMemory(request.getMemory());
+        product.setWeight(request.getWeight());
+        product.setColor(request.getColor());
+        product.setPrice(request.getPrice());
+        product.setRating(request.getRating());
+        product.setDiscount(request.getDiscount());
+    }
 }
