@@ -1,7 +1,6 @@
 package com.peaksoft.gadgetarium.controller;
 
-import com.peaksoft.gadgetarium.model.dto.request.LoginRequest;
-import com.peaksoft.gadgetarium.model.dto.request.UserRequest;
+import com.peaksoft.gadgetarium.model.dto.request.*;
 import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
 import com.peaksoft.gadgetarium.service.UserService;
@@ -9,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,5 +35,20 @@ public class AuthController {
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
         return userService.login(request);
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<String> resetPassword(@RequestBody PasswordResetRequest request) {
+        return userService.resetPassword(request);
+    }
+
+    @PostMapping("/resetPasswordToken")
+    public ResponseEntity<String> resetPasswordToken(@RequestBody PasswordResetTokenRequest request) {
+        return userService.resetPasswordToken(request);
+    }
+
+    @PutMapping("/updatePassword")
+    public ResponseEntity<String> updatePassword(@RequestBody UpdatePasswordRequest request) {
+        return userService.updatePassword(request);
     }
 }
