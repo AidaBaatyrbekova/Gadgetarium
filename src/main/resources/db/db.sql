@@ -58,10 +58,3 @@ values ('2023-07-01', 1000, 69999, 150, 1, 1, 'BLACK', '2023-06-15', '24 months'
         'Snapdragon 895', 'OnePlus 9 Pro', 'BY_INCREASING_THE_PRICE', '4.8', '6.7 inches', 'Dual'),
        ('2023-06-25', 8, 89999, 165, 1, 1, 'GREEN', '2023-06-01', '24 months', 'GB_256', 'GB_12', 'ANDROID', '11.0',
         'Kirin 9000', 'Huawei P40 Pro', 'SALES', '4.6', '6.6 inches', 'Dual');
-
-insert into baskets (id)
-values (1),
-       (2),
-       (3),
-       (4);
-

@@ -21,6 +21,10 @@ public class Basket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    User user;
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "basket_products",
             joinColumns = @JoinColumn(name = "basket_id"),
