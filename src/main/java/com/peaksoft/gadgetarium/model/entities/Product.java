@@ -1,5 +1,6 @@
 package com.peaksoft.gadgetarium.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.peaksoft.gadgetarium.model.enums.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -68,6 +69,7 @@ public class Product {
     LocalDate createDate;
 
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "products")
+    @JsonIgnore
     List<Basket> baskets;
 
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "products")
@@ -85,6 +87,7 @@ public class Product {
     @ManyToOne(cascade = {
             CascadeType.ALL})
     @JoinColumn(name = "brand_id")
+    @JsonIgnore
     Brand brandOfProduct;
 
     @OneToOne (mappedBy = "product")

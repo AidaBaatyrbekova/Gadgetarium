@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers(HttpMethod.POST, "/api/auth", "/api/auth/login", "/api/auth/sign-up",
                                     "/api/auth/resetPassword", "/api/auth/resetPasswordToken", "/api/basket",
-                                    "/api/basket/addProduct").permitAll()
+                                    "/api/basket/addProduct", "/api/basket/getProduct", "/api/basket/deleteProduct").permitAll()
                             .requestMatchers(HttpMethod.PUT, "/api/auth/updatePassword").permitAll()
                             .anyRequest().authenticated();
                 })
