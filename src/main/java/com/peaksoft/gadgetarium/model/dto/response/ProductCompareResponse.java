@@ -15,7 +15,6 @@ public class ProductCompareResponse {
     Long categoryId;
     Long brandId;
     String operationSystem;
-    String productName;
     String screen;
     String color;
     String memory;
