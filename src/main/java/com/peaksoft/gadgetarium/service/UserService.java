@@ -6,6 +6,7 @@ import com.peaksoft.gadgetarium.mapper.AuthMapper;
 import com.peaksoft.gadgetarium.model.dto.request.*;
 import com.peaksoft.gadgetarium.model.dto.response.FavoriteResponse;
 import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
+import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.User;
@@ -32,7 +33,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -204,11 +204,6 @@ public class UserService {
 
     public FavoriteResponse addFavorite(FavoriteRequest request) {
 
-        Optional<User> optionalUser=userRepository.findByUsername(request.getUsername());
-        if (optionalUser.isEmpty()){
-            throw new UsernameNotFoundException("User not found");
-        }
-
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new UserAlreadyExistsException.UserNotFoundException("User not found"));
         Product product = productRepository.findById(request.getProductId())
@@ -217,8 +212,35 @@ public class UserService {
         user.getFavorites().add(product);
         userRepository.save(user);
 
-        return new FavoriteResponse(user.getId(), product.getId(), product.getProductName());
+        ProductResponse productResponse =
+                ProductResponse.builder()
+                        .id(product.getId())
+                        .productName(product.getProductName())
+                        .productStatus(product.getProductStatus())
+                        .memory(product.getMemory())
+                        .color(product.getColor())
+                        .operationMemory(product.getOperationMemory())
+                        .screen(product.getScreen())
+                        .operationSystem(product.getOperationSystem())
+                        .operationSystemNum(product.getOperationSystemNum())
+                        .dateOfRelease(product.getDateOfRelease())
+                        .simCard(product.getSimCard())
+                        .processor(product.getProcessor())
+                        .weight(product.getWeight())
+                        .guarantee(product.getGuarantee())
+                        .rating(String.valueOf(product.getRating()))
+                        .discount(product.getDiscount())
+                        .price(product.getPrice())
+                        .createDate(product.getCreateDate())
+                        .build();
+
+        return FavoriteResponse.builder()
+                .userId(user.getId())
+                .productId(product.getId())
+                .productResponse(productResponse)
+                .build();
     }
+
 
     public void clearFavorites(Long userId) {
         User user = userRepository.findById(userId)

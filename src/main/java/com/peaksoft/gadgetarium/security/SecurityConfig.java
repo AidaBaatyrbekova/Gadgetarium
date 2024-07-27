@@ -60,6 +60,7 @@ public class SecurityConfig {
                                     "/api/auth/",
                                     "/api/auth/login",
                                     "/api/auth/sign-up",
+                                    "/api/favorites/**",
                                     "/api/auth/resetPassword",
                                     "/api/auth/resetPasswordToken").permitAll()
                             .requestMatchers(HttpMethod.PUT, "/api/auth/updatePassword").permitAll()
