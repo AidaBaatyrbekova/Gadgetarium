@@ -16,8 +16,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 public class FavoriteConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Bean(name = "favoriteSecurityFilterChain")
+    public SecurityFilterChain favoriteSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
@@ -28,17 +28,17 @@ public class FavoriteConfig {
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
+    @Bean(name = "favoriteUserDetailsService")
+    public UserDetailsService favoriteUserDetailsService() {
         UserDetails user = User.withUsername("user")
-                .password(passwordEncoder().encode("password"))
+                .password(favoritePasswordEncoder().encode("password"))
                 .roles("USER")
                 .build();
         return new InMemoryUserDetailsManager(user);
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
+    @Bean(name = "favoritePasswordEncoder")
+    public PasswordEncoder favoritePasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

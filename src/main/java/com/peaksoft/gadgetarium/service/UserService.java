@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -202,6 +203,12 @@ public class UserService {
     }
 
     public FavoriteResponse addFavorite(FavoriteRequest request) {
+
+        Optional<User> optionalUser=userRepository.findByUsername(request.getUsername());
+        if (optionalUser.isEmpty()){
+            throw new UsernameNotFoundException("User not found");
+        }
+
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new UserAlreadyExistsException.UserNotFoundException("User not found"));
         Product product = productRepository.findById(request.getProductId())

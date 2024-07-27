@@ -11,4 +11,5 @@ import lombok.experimental.FieldDefaults;
 public class FavoriteRequest {
     Long userId;
     Long productId;
+    String username;
 }
