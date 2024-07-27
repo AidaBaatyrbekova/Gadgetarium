@@ -212,11 +212,29 @@ public class UserService {
         user.getFavorites().add(product);
         userRepository.save(user);
 
+        Long categoryId = null;
+        if (product.getCategory() != null) {
+            categoryId = product.getCategory().getId();
+        }
+
+        Long subCategoryId = null;
+        if (product.getSubCategory() != null) {
+            subCategoryId = product.getSubCategory().getId();
+        }
+
+        Long brandId = null;
+        if (product.getBrandOfProduct() != null) {
+            brandId = product.getBrandOfProduct().getId();
+        }
+
         ProductResponse productResponse =
                 ProductResponse.builder()
                         .id(product.getId())
                         .productName(product.getProductName())
                         .productStatus(product.getProductStatus())
+                        .subCategoryId(subCategoryId)
+                        .categoryId(categoryId)
+                        .brandId(brandId)
                         .memory(product.getMemory())
                         .color(product.getColor())
                         .operationMemory(product.getOperationMemory())
