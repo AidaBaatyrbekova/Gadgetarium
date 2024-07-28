@@ -11,6 +11,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductCompareRequest {
-       Long categoryId;
-       boolean showDifferencesOnly;
+    Long categoryId;
+    boolean showDifferencesOnly;
 }

@@ -1,10 +1,8 @@
 package com.peaksoft.gadgetarium.controller;
 
-import com.peaksoft.gadgetarium.model.dto.request.ProductCompareRequest;
 import com.peaksoft.gadgetarium.model.dto.response.ProductCompareResponse;
 import com.peaksoft.gadgetarium.service.ProductCompareService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,8 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductCompareController {
 
-    @Autowired
-    ProductCompareService productCompareService;
+    final ProductCompareService productCompareService;
 
     @GetMapping("/{categoryId}")
     public List<ProductCompareResponse> compareProducts(
@@ -23,5 +20,4 @@ public class ProductCompareController {
             @RequestParam boolean showDifferencesOnly) {
         return productCompareService.compareProducts(categoryId, showDifferencesOnly);
     }
-
 }

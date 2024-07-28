@@ -7,8 +7,7 @@ import com.peaksoft.gadgetarium.repository.ProductCompareRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,13 +17,15 @@ public class ProductCompareService {
     final ProductCompareRepository productCompareRepository;
     final ProductCompareMapper productCompareMapper;
 
+    // Основной метод для сравнения продуктов по категории
     public List<ProductCompareResponse> compareProducts(Long categoryId, boolean showDifferencesOnly) {
         List<Product> products = productCompareRepository.findByCategoryId(categoryId);
 
-        if (products.isEmpty()) {
-            return List.of(); // Возвращаем пустой список, если нет продуктов
+        if (products == null || products.isEmpty()) {
+            throw new NoSuchElementException("No products found for category ID: " + categoryId);
         }
 
+        // Фильтрация только различающихся продуктов
         if (showDifferencesOnly) {
             products = filterDifferences(products);
         }
@@ -35,20 +36,27 @@ public class ProductCompareService {
                 .collect(Collectors.toList());
     }
 
+    // Метод для фильтрации только различающихся продуктов
     private List<Product> filterDifferences(List<Product> products) {
-        if (products.isEmpty()) {
-            return products;
+        Set<Product> differentProducts = new HashSet<>(products);
+
+        // Двойной цикл для сравнения всех возможных пар продуктов
+        for (int i = 0; i < products.size(); i++) {
+            for (int j = i + 1; j < products.size(); j++) {
+                Product p1 = products.get(i);
+                Product p2 = products.get(j);
+
+                // Если два продукта равны, удаляем их из множества
+                if (areProductsEqual(p1, p2)) {
+                    differentProducts.remove(p1);
+                    differentProducts.remove(p2);
+                }
+            }
         }
-
-        // Выбираем первый продукт как эталон
-        Product referenceProduct = products.get(0);
-
-        // Фильтруем продукты, оставляя только те, которые отличаются от эталонного продукта
-        return products.stream()
-                .filter(product -> !areProductsEqual(product, referenceProduct))
-                .collect(Collectors.toList());
+        return new ArrayList<>(differentProducts);
     }
 
+    // Метод для сравнения двух продуктов
     private boolean areProductsEqual(Product p1, Product p2) {
         return Objects.equals(p1.getBrandOfProduct(), p2.getBrandOfProduct()) &&
                 Objects.equals(p1.getScreen(), p2.getScreen()) &&
