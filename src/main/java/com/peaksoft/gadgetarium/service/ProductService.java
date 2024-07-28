@@ -83,4 +83,25 @@ public class ProductService {
         productRepository.delete(product);
         return "Successfully deleted product by id " + id;
     }
+
+    public List<ProductResponse> findDiscountedProducts() {
+        return productRepository.findDiscounted()
+                .stream()
+                .map(productMapper::mapToResponse)
+                .toList();
+    }
+
+    public List<ProductResponse> findNewArrivals() {
+        return productRepository.findNewArrivals()
+                .stream()
+                .map(productMapper::mapToResponse)
+                .toList();
+    }
+
+    public List<ProductResponse> findRecommendedProducts() {
+        return productRepository.findRecommended()
+                .stream()
+                .map(productMapper::mapToResponse)
+                .toList();
+    }
 }
