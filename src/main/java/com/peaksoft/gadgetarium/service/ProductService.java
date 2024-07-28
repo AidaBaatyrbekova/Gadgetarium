@@ -85,6 +85,7 @@ public class ProductService {
     }
 
     public List<ProductResponse> findDiscountedProducts() {
+        log.info("Fetching discounted products");
         return productRepository.findDiscounted()
                 .stream()
                 .map(productMapper::mapToResponse)
@@ -92,6 +93,7 @@ public class ProductService {
     }
 
     public List<ProductResponse> findNewArrivals() {
+        log.info("Fetching new arrival products");
         return productRepository.findNewArrivals()
                 .stream()
                 .map(productMapper::mapToResponse)
@@ -99,6 +101,7 @@ public class ProductService {
     }
 
     public List<ProductResponse> findRecommendedProducts() {
+        log.info("Fetching recommended products");
         return productRepository.findRecommended()
                 .stream()
                 .map(productMapper::mapToResponse)
