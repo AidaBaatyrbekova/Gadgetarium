@@ -13,9 +13,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/main")
 public class MainPage {
-
     private final ProductService productService;
-
     @Autowired
     public MainPage(ProductService productService) {
         this.productService = productService;
