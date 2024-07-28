@@ -107,4 +107,5 @@ public class ProductService {
                 .map(productMapper::mapToResponse)
                 .toList();
     }
-}
+    }
+
