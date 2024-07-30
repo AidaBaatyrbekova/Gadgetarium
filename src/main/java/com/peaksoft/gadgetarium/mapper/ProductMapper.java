@@ -1,17 +1,22 @@
 package com.peaksoft.gadgetarium.mapper;
 
+import com.peaksoft.gadgetarium.exception.ExceptionMassage;
+import com.peaksoft.gadgetarium.exception.NotFoundException;
 import com.peaksoft.gadgetarium.model.dto.request.ProductRequest;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Brand;
-import com.peaksoft.gadgetarium.model.entities.Category;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.SubCategory;
+import com.peaksoft.gadgetarium.model.entities.Category;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
 import com.peaksoft.gadgetarium.repository.SubCategoryRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
 
 @Component
 @RequiredArgsConstructor
@@ -20,7 +25,6 @@ public class ProductMapper {
 
     BrandRepository brandRepository;
     SubCategoryRepository subCategoryRepository;
-    SubCategoryRepository categoryRepository;
 
     public Product productMapper(ProductRequest request) {
         Product product = new Product();
@@ -32,7 +36,7 @@ public class ProductMapper {
         product.setDateOfRelease(request.getDateOfRelease());
         product.setProcessor(request.getProcessor());
         product.setGuarantee(request.getGuarantee());
-        product.setCreateDate(request.getCreateDate());
+        product.setCreateDate(LocalDate.now());
         product.setSimCard(request.getSimCard());
         product.setScreen(request.getScreen());
         product.setMemory(request.getMemory());
@@ -42,49 +46,31 @@ public class ProductMapper {
         product.setRating(request.getRating());
         product.setDiscount(request.getDiscount());
 
-        if (request.getCategoryId() != null) {
-
-            Category category = categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found with id " + request.getCategoryId())).getCategoryOfSubCategory();
-            product.setCategory(category);
-        }
-
         if (request.getSubCategoryId() != null) {
             SubCategory subCategory = subCategoryRepository.findById(request.getSubCategoryId())
-                    .orElseThrow(() -> new RuntimeException("SubCategory not found with id " + request.getSubCategoryId()));
+                    .orElseThrow(() -> new NotFoundException(ExceptionMassage.SUB_CATEGORY_NOT_FOUND_WITH_ID + request.getSubCategoryId()));
             product.setSubCategory(subCategory);
-        }
 
+        }
         if (request.getBrandId() != null) {
             Brand brand = brandRepository.findById(request.getBrandId())
-                    .orElseThrow(() -> new RuntimeException("Brand not found with id " + request.getBrandId()));
+                    .orElseThrow(() -> new NotFoundException(ExceptionMassage.BRAND_NOT_FOUND_WITH_ID + request.getBrandId()));
             product.setBrandOfProduct(brand);
         }
         return product;
     }
 
     public ProductResponse mapToResponse(Product product) {
-        Long categoryId = null;
-        if (product.getCategory() != null) {
-            categoryId = product.getCategory().getId();
-        }
-
-        Long subCategoryId = null;
-        if (product.getSubCategory() != null) {
-            subCategoryId = product.getSubCategory().getId();
-        }
-
-        Long brandId = null;
-        if (product.getBrandOfProduct() != null) {
-            brandId = product.getBrandOfProduct().getId();
-        }
+        SubCategory subCategory = product.getSubCategory();
+        Category category = (subCategory != null) ? subCategory.getCategoryOfSubCategory() : null;
+        Brand brand = product.getBrandOfProduct();
+        Long brandId = (brand != null) ? brand.getId() : null;
+        Long subCategoryId = (subCategory != null) ? subCategory.getId() : null;
 
         return ProductResponse.builder()
                 .id(product.getId())
                 .productName(product.getProductName())
                 .productStatus(product.getProductStatus())
-                .subCategoryId(subCategoryId)
-                .categoryId(categoryId)
                 .brandId(brandId)
                 .memory(product.getMemory())
                 .color(product.getColor())
@@ -97,10 +83,12 @@ public class ProductMapper {
                 .processor(product.getProcessor())
                 .weight(product.getWeight())
                 .guarantee(product.getGuarantee())
-                .rating(String.valueOf(product.getRating()))
+                .rating(product.getRating())
                 .discount(product.getDiscount())
                 .price(product.getPrice())
                 .createDate(product.getCreateDate())
+                .subCategoryId(subCategoryId)
+                .category(category)
                 .build();
     }
 
@@ -113,7 +101,6 @@ public class ProductMapper {
         product.setDateOfRelease(request.getDateOfRelease());
         product.setProcessor(request.getProcessor());
         product.setGuarantee(request.getGuarantee());
-        product.setCreateDate(request.getCreateDate());
         product.setSimCard(request.getSimCard());
         product.setScreen(request.getScreen());
         product.setMemory(request.getMemory());
