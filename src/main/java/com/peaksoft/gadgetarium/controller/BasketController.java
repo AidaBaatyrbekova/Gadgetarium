@@ -24,17 +24,17 @@ public class BasketController {
     }
 
     @GetMapping("/getAllProducts")
-    public BasketSummaryResponse getProductsFromBasket(@RequestBody BasketRequest request) {
-        return basketService.getProductsFromBasket(request);
+    public BasketSummaryResponse getProductsFromBasket(@RequestParam Long basketId) {
+        return basketService.getProductsFromBasket(basketId);
     }
 
-    @DeleteMapping("/deleteProduct")
-    public ResponseEntity<String> deleteProductFromBasket(@RequestBody BasketRequest request) {
-        return basketService.deleteProductFromBasket(request);
+    @DeleteMapping("/deleteProduct/{productId}")
+    public ResponseEntity<String> deleteProductFromBasket(@PathVariable Long productId, @RequestParam Long basketId) {
+        return basketService.deleteProductFromBasket(productId, basketId);
     }
 
-    @GetMapping("/getProductById")
-    public ProductResponse getProductById(@RequestBody BasketRequest request) {
-        return basketService.getProductById(request);
+    @GetMapping("/getProductById/{productId}")
+    public ProductResponse getProductById(@PathVariable Long productId, @RequestParam Long basketId) {
+        return basketService.getProductById(productId, basketId);
     }
 }

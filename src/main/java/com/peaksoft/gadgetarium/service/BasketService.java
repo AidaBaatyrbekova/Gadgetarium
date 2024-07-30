@@ -42,8 +42,8 @@ public class BasketService {
     }
 
     @Transactional
-    public BasketSummaryResponse getProductsFromBasket(BasketRequest request) {
-        Basket basket = basketRepository.findById(request.getBasketId())
+    public BasketSummaryResponse getProductsFromBasket(Long basketId) {
+        Basket basket = basketRepository.findById(basketId)
                 .orElseThrow(() -> new RuntimeException("Basket not found"));
 
         List<ProductResponse> productResponses = basket.getProducts().stream()
@@ -69,10 +69,10 @@ public class BasketService {
     }
 
     @Transactional
-    public ResponseEntity<String> deleteProductFromBasket(BasketRequest request) {
-        Basket basket = basketRepository.findById(request.getBasketId())
+    public ResponseEntity<String> deleteProductFromBasket(Long productId, Long basketId) {
+        Basket basket = basketRepository.findById(basketId)
                 .orElseThrow(() -> new RuntimeException("Basket not found"));
-        Product product = productRepository.findById(request.getProductId())
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         if (!basket.getProducts().contains(product)) {
@@ -86,10 +86,10 @@ public class BasketService {
     }
 
     @Transactional
-    public ProductResponse getProductById(BasketRequest request) {
-        Basket basket = basketRepository.findById(request.getBasketId())
+    public ProductResponse getProductById(Long productId, Long basketId) {
+        Basket basket = basketRepository.findById(basketId)
                 .orElseThrow(() -> new RuntimeException("Basket not found"));
-        Product product = productRepository.findById(request.getProductId())
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         if (!basket.getProducts().contains(product)) {
@@ -106,7 +106,7 @@ public class BasketService {
                 .productStatus(product.getProductStatus())
                 .operationMemory(product.getOperationMemory())
                 .operationSystem(product.getOperationSystem())
-                .subCategoryId(product.getSubCategory().getId())
+//                .subCategoryId(product.getSubCategory().getId())
                 .createDate(product.getCreateDate())
                 .memory(product.getMemory())
                 .color(product.getColor())
