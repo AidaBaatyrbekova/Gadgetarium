@@ -91,7 +91,6 @@ public class ProductService {
                 .map(productMapper::mapToResponse)
                 .toList();
     }
-
     public List<ProductResponse> findNewArrivals() {
         log.info("Fetching new arrival products");
         return productRepository.findNewArrivals()
@@ -99,7 +98,6 @@ public class ProductService {
                 .map(productMapper::mapToResponse)
                 .toList();
     }
-
     public List<ProductResponse> findRecommendedProducts() {
         log.info("Fetching recommended products");
         return productRepository.findRecommended()
@@ -107,5 +105,5 @@ public class ProductService {
                 .map(productMapper::mapToResponse)
                 .toList();
     }
-    }
+}
 
