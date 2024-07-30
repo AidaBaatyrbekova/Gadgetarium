@@ -46,19 +46,4 @@ public class ProductController {
     public String delete(@PathVariable("id") Long id) {
         return productService.deleteProduct(id);
     }
-
-    @GetMapping("/discounted")
-    public List<ProductResponse> getDiscountedProducts() {
-        return productService.findDiscountedProducts();
-    }
-
-    @GetMapping("/new-arrivals")
-    public List<ProductResponse> getNewArrivals() {
-        return productService.findNewArrivals();
-    }
-
-    @GetMapping("/recommended")
-    public List<ProductResponse> getRecommendedProducts() {
-        return productService.findRecommendedProducts();
-    }
 }
