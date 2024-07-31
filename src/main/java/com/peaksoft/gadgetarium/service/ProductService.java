@@ -83,6 +83,7 @@ public class ProductService {
         productRepository.delete(product);
         return "Successfully deleted product by id " + id;
     }
+
     public List<ProductResponse> findNewDevices() {
         log.info("Fetching new arrival products");
         return productRepository.findByProductStatus(ProductStatus.NEW_DEVICES)
@@ -106,7 +107,6 @@ public class ProductService {
                 .map(productMapper::mapToResponse)
                 .toList();
     }
-
 
     @Data
     @NoArgsConstructor
