@@ -1,6 +1,5 @@
 package com.peaksoft.gadgetarium.controller;
 
-import com.peaksoft.gadgetarium.model.dto.request.BasketRequest;
 import com.peaksoft.gadgetarium.model.dto.response.BasketSummaryResponse;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.service.BasketService;
@@ -10,6 +9,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/basket")
@@ -18,9 +19,9 @@ public class BasketController {
 
     BasketService basketService;
 
-    @PostMapping("/addProduct")
-    public ResponseEntity<String> addProductToBasket(@RequestBody BasketRequest request) {
-        return basketService.addProductToBasket(request);
+    @PostMapping("/addProduct/{productId}")
+    public ResponseEntity<String> addProductToBasket(@PathVariable Long productId, Principal principal) {
+        return basketService.addProductToBasket(productId, principal);
     }
 
     @GetMapping("/getAllProducts")

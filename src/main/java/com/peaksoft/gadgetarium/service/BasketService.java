@@ -1,12 +1,15 @@
 package com.peaksoft.gadgetarium.service;
 
-import com.peaksoft.gadgetarium.model.dto.request.BasketRequest;
+import com.peaksoft.gadgetarium.exception.ExceptionMassage;
+import com.peaksoft.gadgetarium.exception.NotFoundException;
 import com.peaksoft.gadgetarium.model.dto.response.BasketSummaryResponse;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Basket;
 import com.peaksoft.gadgetarium.model.entities.Product;
+import com.peaksoft.gadgetarium.model.entities.User;
 import com.peaksoft.gadgetarium.repository.BasketRepository;
 import com.peaksoft.gadgetarium.repository.ProductRepository;
+import com.peaksoft.gadgetarium.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,13 +31,21 @@ public class BasketService {
 
     BasketRepository basketRepository;
     ProductRepository productRepository;
+    UserRepository userRepository;
+
 
     @Transactional
-    public ResponseEntity<String> addProductToBasket(BasketRequest request) {
-        Basket basket = basketRepository.findById(request.getBasketId())
-                .orElseThrow(() -> new RuntimeException("Basket not found"));
-        Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+    public ResponseEntity<String> addProductToBasket(Long productId, Principal principal) {
+
+        String userEmail = principal.getName();
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
+
+        Basket basket = basketRepository.findByUser(user)
+                .orElseThrow(() -> new NotFoundException(ExceptionMassage.BASKET_NOT_FOUND));
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID));
 
         basket.getProducts().add(product);
         basketRepository.save(basket);
@@ -44,7 +56,7 @@ public class BasketService {
     @Transactional
     public BasketSummaryResponse getProductsFromBasket(Long basketId) {
         Basket basket = basketRepository.findById(basketId)
-                .orElseThrow(() -> new RuntimeException("Basket not found"));
+                .orElseThrow(() -> new NotFoundException(ExceptionMassage.BASKET_NOT_FOUND));
 
         List<ProductResponse> productResponses = basket.getProducts().stream()
                 .map(this::convertToProductResponse)
@@ -71,9 +83,9 @@ public class BasketService {
     @Transactional
     public ResponseEntity<String> deleteProductFromBasket(Long productId, Long basketId) {
         Basket basket = basketRepository.findById(basketId)
-                .orElseThrow(() -> new RuntimeException("Basket not found"));
+                .orElseThrow(() -> new NotFoundException(ExceptionMassage.BASKET_NOT_FOUND));
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID));
 
         if (!basket.getProducts().contains(product)) {
             return new ResponseEntity<>("Product not found in the basket", HttpStatus.NOT_FOUND);
@@ -88,12 +100,12 @@ public class BasketService {
     @Transactional
     public ProductResponse getProductById(Long productId, Long basketId) {
         Basket basket = basketRepository.findById(basketId)
-                .orElseThrow(() -> new RuntimeException("Basket not found"));
+                .orElseThrow(() -> new NotFoundException(ExceptionMassage.BASKET_NOT_FOUND));
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID));
 
         if (!basket.getProducts().contains(product)) {
-            throw new RuntimeException("Product not found in the basket");
+            throw new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_THE_BASKET);
         }
 
         return convertToProductResponse(product);
@@ -106,19 +118,18 @@ public class BasketService {
                 .productStatus(product.getProductStatus())
                 .operationMemory(product.getOperationMemory())
                 .operationSystem(product.getOperationSystem())
-//                .subCategoryId(product.getSubCategory().getId())
+                .subCategory(product.getSubCategory())
                 .createDate(product.getCreateDate())
                 .memory(product.getMemory())
                 .color(product.getColor())
-                .categoryId(product.getCategory().getId())
-                .brandId(product.getBrandOfProduct().getId())
+                .brand(product.getBrand())
                 .operationSystemNum(product.getOperationSystemNum())
                 .dateOfRelease(product.getDateOfRelease())
                 .processor(product.getProcessor())
                 .guarantee(product.getGuarantee())
                 .screen(product.getScreen())
                 .simCard(product.getSimCard())
-                .rating(String.valueOf(product.getRating()))
+                .rating(product.getRating())
                 .discount(product.getDiscount())
                 .weight(product.getWeight())
                 .price(product.getPrice())
