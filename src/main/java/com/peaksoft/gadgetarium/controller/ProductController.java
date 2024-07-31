@@ -1,5 +1,6 @@
 package com.peaksoft.gadgetarium.controller;
 
+import com.peaksoft.gadgetarium.exception.ExceptionMassage;
 import com.peaksoft.gadgetarium.model.dto.request.ProductRequest;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Product;
@@ -27,7 +28,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public Product update(@PathVariable("id") Long id, @RequestBody ProductRequest request) {
         if (id == null) {
-            throw new IllegalArgumentException("ID must not be null");
+            throw new IllegalArgumentException(ExceptionMassage.ID_MUST_NOT_BE_NULL);
         }
         return productService.updateProduct(id, request);
     }

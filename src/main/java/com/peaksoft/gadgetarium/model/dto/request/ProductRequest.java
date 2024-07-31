@@ -21,8 +21,6 @@ public class ProductRequest {
     @NotNull(message = "SubCategory ID is required")
     Long subCategoryId;
 
-    Long categoryId;
-
     @NotNull(message = "Brand ID is required")
     Long brandId;
 
@@ -37,14 +35,14 @@ public class ProductRequest {
     ProductStatus productStatus;
     OperationMemory operationMemory;
     OperationSystem operationSystem;
-    Memory memory;
     String operationSystemNum;
     String dateOfRelease;
     String guarantee;
-    Color color;
-    String screen;
     String simCard;
+    String screen;
     String processor;
+    Memory memory;
+    Color color;
     int weight;
     int price;
 }

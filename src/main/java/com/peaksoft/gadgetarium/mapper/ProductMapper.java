@@ -34,7 +34,6 @@ public class ProductMapper {
         product.setDateOfRelease(request.getDateOfRelease());
         product.setProcessor(request.getProcessor());
         product.setGuarantee(request.getGuarantee());
-        product.setCreateDate(LocalDate.now());
         product.setSimCard(request.getSimCard());
         product.setScreen(request.getScreen());
         product.setMemory(request.getMemory());
@@ -43,6 +42,7 @@ public class ProductMapper {
         product.setPrice(request.getPrice());
         product.setRating(request.getRating());
         product.setDiscount(request.getDiscount());
+        product.setCreateDate(LocalDate.now());
 
         if (request.getSubCategoryId() != null) {
             SubCategory subCategory = subCategoryRepository.findById(request.getSubCategoryId())
