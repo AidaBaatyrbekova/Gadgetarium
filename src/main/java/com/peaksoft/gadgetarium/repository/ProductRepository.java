@@ -1,5 +1,4 @@
 package com.peaksoft.gadgetarium.repository;
-
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.enums.ProductStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +16,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.productStatus = :status")
     List<Product> findByProductStatus(ProductStatus status);
 
-    @Query("SELECT p FROM Product p WHERE p.productStatus = com.peaksoft.gadgetarium.model.enums.ProductStatus.RECOMMENDATIONS")
+    @Query("SELECT p FROM Product p WHERE p.productStatus = com.peaksoft.gadgetarium.model.enums." +
+            "ProductStatus.RECOMMENDATIONS")
     List<Product> findRecommended();
 }
