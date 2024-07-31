@@ -7,13 +7,11 @@ import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Brand;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.SubCategory;
-import com.peaksoft.gadgetarium.model.entities.Category;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
 import com.peaksoft.gadgetarium.repository.SubCategoryRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -50,7 +48,7 @@ public class ProductMapper {
             SubCategory subCategory = subCategoryRepository.findById(request.getSubCategoryId())
                     .orElseThrow(() -> new NotFoundException(ExceptionMassage.SUB_CATEGORY_NOT_FOUND_WITH_ID + request.getSubCategoryId()));
             product.setSubCategory(subCategory);
-
+            product.setCategory(subCategory.getCategoryOfSubCategory());
         }
         if (request.getBrandId() != null) {
             Brand brand = brandRepository.findById(request.getBrandId())
@@ -62,10 +60,8 @@ public class ProductMapper {
 
     public ProductResponse mapToResponse(Product product) {
         SubCategory subCategory = product.getSubCategory();
-        Category category = (subCategory != null) ? subCategory.getCategoryOfSubCategory() : null;
         Brand brand = product.getBrandOfProduct();
-        Long brandId = (brand != null) ? brand.getId() : null;
-        Long subCategoryId = (subCategory != null) ? subCategory.getId() : null;
+        Long brandId = brand.getId();
 
         return ProductResponse.builder()
                 .id(product.getId())
@@ -87,8 +83,7 @@ public class ProductMapper {
                 .discount(product.getDiscount())
                 .price(product.getPrice())
                 .createDate(product.getCreateDate())
-                .subCategoryId(subCategoryId)
-                .category(category)
+                .subCategory(subCategory)
                 .build();
     }
 

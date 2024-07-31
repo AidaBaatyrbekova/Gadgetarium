@@ -60,7 +60,6 @@ public class ProductService {
                     .orElseThrow(() -> new NotFoundException(ExceptionMassage.SUB_CATEGORY_NOT_FOUND_WITH_ID + request.getSubCategoryId()));
             product.setSubCategory(subCategory);
         }
-
         if (request.getBrandId() != null) {
             Brand brand = brandRepository.findById(request.getBrandId())
                     .orElseThrow(() -> new NotFoundException(ExceptionMassage.BRAND_NOT_FOUND_WITH_ID + request.getBrandId()));
@@ -70,6 +69,7 @@ public class ProductService {
     }
 
     public String deleteProduct(Long id) {
+        log.info("Deleting product with id: {}", id);
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID + id));
         productRepository.delete(product);
