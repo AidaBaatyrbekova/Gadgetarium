@@ -22,10 +22,10 @@ public class ProductResponse {
     OperationMemory operationMemory;
     OperationSystem operationSystem;
     SubCategory subCategory;
+    Brand brand;
     LocalDate createDate;
     Memory memory;
     Color color;
-    Brand brand;
     String operationSystemNum;
     String dateOfRelease;
     String processor;

@@ -47,7 +47,7 @@ public class ProductService {
         return productMapper.mapToResponse(product);
     }
 
-    public Product updateProduct(Long id, ProductRequest request) {
+    public ProductResponse updateProduct(Long id, ProductRequest request) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Product not found by id: {}", id);
@@ -65,7 +65,7 @@ public class ProductService {
                     .orElseThrow(() -> new NotFoundException(ExceptionMassage.BRAND_NOT_FOUND_WITH_ID + request.getBrandId()));
             product.setBrand(brand);
         }
-        return productRepository.save(product);
+        return productMapper.mapToResponse(productRepository.save(product));
     }
 
     public String deleteProduct(Long id) {
