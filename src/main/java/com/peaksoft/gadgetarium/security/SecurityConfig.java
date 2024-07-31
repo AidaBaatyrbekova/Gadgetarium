@@ -63,6 +63,7 @@ public class SecurityConfig {
                                     "/api/auth/resetPassword",
                                     "/api/auth/resetPasswordToken").permitAll()
                             .requestMatchers(HttpMethod.PUT, "/api/auth/updatePassword").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/products/save").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/compare/{categoryId}").permitAll()
                             .anyRequest().authenticated();
                 })

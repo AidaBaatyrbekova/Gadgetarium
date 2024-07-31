@@ -81,7 +81,6 @@
             <artifactId>spring-security-oauth2-core</artifactId>
             <version>5.3.4.RELEASE</version>
         </dependency>
-
     </dependencies>
 
     <build>
