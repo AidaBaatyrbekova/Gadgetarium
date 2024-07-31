@@ -1,5 +1,6 @@
 package com.peaksoft.gadgetarium.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class Brand {
 
     String brandName;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "brandOfProduct")
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "brand")
     List<Product> products;
 }
