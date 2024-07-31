@@ -2,7 +2,7 @@ insert into users(create_date, confirm_the_password, email, gender, last_name, l
                   role)
 values ('05-12-2023', '$2a$12$nu7N9yBYeR5hH5QR3IhTSuMArPnYZp7xI/t1ce90kuCEGVxsDqCgm', 'admin@gmail.com', 'male',
         'Adminov', 'ky_KG', 'Admin',
-        '$2a$12$nu7N9yBYeR5hH5QR3IhTSuMArPnYZp7xI/t1ce90kuCEGVxsDqCgm',
+        '$2a$12$21dcsWqrwZuVaBst7YU/9uLY8IhkCVuRyB68JG/QOM5I45YaAG.ry',
         '+796657646',
         'ADMIN'),
        ('05-03-2024', '$2a$12$t9LPvZjsr04gTWJSB886dOS5bzpI5uW3Hm/nRnQltQ5awCqKuY3fK', 'user@gmail.com', 'female',

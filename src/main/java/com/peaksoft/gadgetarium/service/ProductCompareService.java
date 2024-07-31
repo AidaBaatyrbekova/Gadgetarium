@@ -17,12 +17,26 @@ public class ProductCompareService {
     final ProductCompareRepository productCompareRepository;
     final ProductCompareMapper productCompareMapper;
 
+    // Хранилище продуктов для сравнения по категориям
+    private final Map<Long, List<Product>> productComparisonStore = new HashMap<>();
+
+    // Метод для добавления товара в список сравнения по категории
+    public void addProductForComparison(Long categoryId, Product product) {
+        product.setCategoryId(categoryId);
+        productComparisonStore.computeIfAbsent(categoryId, k -> new ArrayList<>()).add(product);
+    }
+
+    // Метод для очистки списка товаров для сравнения по категории
+    public void clearComparisonList(Long categoryId) {
+        productComparisonStore.remove(categoryId);
+    }
+
     // Основной метод для сравнения продуктов по категории
     public List<ProductCompareResponse> compareProducts(Long categoryId, boolean showDifferencesOnly) {
-        List<Product> products = productCompareRepository.findByCategoryId(categoryId);
+        List<Product> products = productComparisonStore.get(categoryId);
 
         if (products == null || products.isEmpty()) {
-            throw new NoSuchElementException("No products found for category ID: " + categoryId);
+            throw new NoSuchElementException("Нет товаров для сравнения в категории с ID: " + categoryId);
         }
 
         // Фильтрация только различающихся продуктов
@@ -47,7 +61,7 @@ public class ProductCompareService {
                 Product product2 = products.get(j);
 
                 // Если два продукта равны, удаляем их из множества
-                if (ProductsEqual(product1, product2)) {
+                if (productsEqual(product1, product2)) {
                     differentProducts.remove(product1);
                     differentProducts.remove(product2);
                 }
@@ -57,7 +71,7 @@ public class ProductCompareService {
     }
 
     // Метод для сравнения двух продуктов
-    private boolean ProductsEqual(Product p1, Product p2) {
+    private boolean productsEqual(Product p1, Product p2) {
         return Objects.equals(p1.getBrandOfProduct(), p2.getBrandOfProduct()) &&
                 Objects.equals(p1.getScreen(), p2.getScreen()) &&
                 Objects.equals(p1.getColor(), p2.getColor()) &&
