@@ -40,10 +40,8 @@ public class BasketService {
         String userEmail = principal.getName();
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
-
         Basket basket = basketRepository.findByUser(user)
                 .orElseThrow(() -> new NotFoundException(ExceptionMassage.BASKET_NOT_FOUND));
-
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID));
 
@@ -54,8 +52,12 @@ public class BasketService {
     }
 
     @Transactional
-    public BasketSummaryResponse getProductsFromBasket(Long basketId) {
-        Basket basket = basketRepository.findById(basketId)
+    public BasketSummaryResponse getProductsFromBasket(Principal principal) {
+
+        String userEmail = principal.getName();
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
+        Basket basket = basketRepository.findByUser(user)
                 .orElseThrow(() -> new NotFoundException(ExceptionMassage.BASKET_NOT_FOUND));
 
         List<ProductResponse> productResponses = basket.getProducts().stream()
@@ -81,8 +83,12 @@ public class BasketService {
     }
 
     @Transactional
-    public ResponseEntity<String> deleteProductFromBasket(Long productId, Long basketId) {
-        Basket basket = basketRepository.findById(basketId)
+    public ResponseEntity<String> deleteProductFromBasket(Long productId, Principal principal) {
+
+        String userEmail = principal.getName();
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
+        Basket basket = basketRepository.findByUser(user)
                 .orElseThrow(() -> new NotFoundException(ExceptionMassage.BASKET_NOT_FOUND));
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID));
@@ -98,8 +104,12 @@ public class BasketService {
     }
 
     @Transactional
-    public ProductResponse getProductById(Long productId, Long basketId) {
-        Basket basket = basketRepository.findById(basketId)
+    public ProductResponse getProductById(Long productId, Principal principal) {
+
+        String userEmail = principal.getName();
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
+        Basket basket = basketRepository.findByUser(user)
                 .orElseThrow(() -> new NotFoundException(ExceptionMassage.BASKET_NOT_FOUND));
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID));
