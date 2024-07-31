@@ -2,7 +2,6 @@ package com.peaksoft.gadgetarium.controller;
 
 import com.peaksoft.gadgetarium.model.dto.request.ProductRequest;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
-import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.service.ProductService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +24,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public Product update(@PathVariable("id") Long id, @RequestBody ProductRequest request) {
-        if (id == null) {
-            throw new IllegalArgumentException("ID must not be null");
-        }
+    public ProductResponse update(@PathVariable("id") Long id, @RequestBody ProductRequest request) {
         return productService.updateProduct(id, request);
     }
 
