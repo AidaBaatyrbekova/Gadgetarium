@@ -212,29 +212,11 @@ public class UserService {
         user.getFavorites().add(product);
         userRepository.save(user);
 
-        Long categoryId = null;
-        if (product.getCategory() != null) {
-            categoryId = product.getCategory().getId();
-        }
-
-        Long subCategoryId = null;
-        if (product.getSubCategory() != null) {
-            subCategoryId = product.getSubCategory().getId();
-        }
-
-        Long brandId = null;
-        if (product.getBrandOfProduct() != null) {
-            brandId = product.getBrandOfProduct().getId();
-        }
-
         ProductResponse productResponse =
                 ProductResponse.builder()
                         .id(product.getId())
                         .productName(product.getProductName())
                         .productStatus(product.getProductStatus())
-                        .subCategoryId(subCategoryId)
-                        .categoryId(categoryId)
-                        .brandId(brandId)
                         .memory(product.getMemory())
                         .color(product.getColor())
                         .operationMemory(product.getOperationMemory())
@@ -246,7 +228,7 @@ public class UserService {
                         .processor(product.getProcessor())
                         .weight(product.getWeight())
                         .guarantee(product.getGuarantee())
-                        .rating(String.valueOf(product.getRating()))
+                        .rating(Double.valueOf(String.valueOf(product.getRating())))
                         .discount(product.getDiscount())
                         .price(product.getPrice())
                         .createDate(product.getCreateDate())
