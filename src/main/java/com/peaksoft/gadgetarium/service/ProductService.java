@@ -7,11 +7,11 @@ import com.peaksoft.gadgetarium.model.entities.Brand;
 import com.peaksoft.gadgetarium.model.entities.Category;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.SubCategory;
+import com.peaksoft.gadgetarium.model.enums.ProductStatus;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
 import com.peaksoft.gadgetarium.repository.ProductRepository;
 import com.peaksoft.gadgetarium.repository.SubCategoryRepository;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -83,6 +83,21 @@ public class ProductService {
         productRepository.delete(product);
         return "Successfully deleted product by id " + id;
     }
+    public List<ProductResponse> findNewDevices() {
+        log.info("Fetching new arrival products");
+        return productRepository.findByProductStatus(ProductStatus.NEW_DEVICES)
+                .stream()
+                .map(productMapper::mapToResponse)
+                .toList();
+    }
+
+    public List<ProductResponse> findRecommendedProducts() {
+        log.info("Fetching recommended products");
+        return productRepository.findByProductStatus(ProductStatus.RECOMMENDATIONS)
+                .stream()
+                .map(productMapper::mapToResponse)
+                .toList();
+    }
 
     public List<ProductResponse> findDiscountedProducts() {
         log.info("Fetching discounted products");
@@ -91,19 +106,25 @@ public class ProductService {
                 .map(productMapper::mapToResponse)
                 .toList();
     }
-    public List<ProductResponse> findNewArrivals() {
-        log.info("Fetching new arrival products");
-        return productRepository.findNewArrivals()
-                .stream()
-                .map(productMapper::mapToResponse)
-                .toList();
+
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MainPage {
+
+        private List<ProductResponse> newDevices;
+        private List<ProductResponse> recommendedProducts;
+        private List<ProductResponse> discountedProducts;
     }
-    public List<ProductResponse> findRecommendedProducts() {
-        log.info("Fetching recommended products");
-        return productRepository.findRecommended()
-                .stream()
-                .map(productMapper::mapToResponse)
-                .toList();
+
+
+    public MainPage getMainPage() {
+        List<ProductResponse> newDevices = findNewDevices();
+        List<ProductResponse> recommendedProducts = findRecommendedProducts();
+        List<ProductResponse> discountedProducts = findDiscountedProducts();
+
+        return new MainPage(newDevices, recommendedProducts, discountedProducts);
     }
 }
 
