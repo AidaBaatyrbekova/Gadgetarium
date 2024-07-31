@@ -27,9 +27,6 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public Product update(@PathVariable("id") Long id, @RequestBody ProductRequest request) {
-        if (id == null) {
-            throw new IllegalArgumentException(ExceptionMassage.ID_MUST_NOT_BE_NULL);
-        }
         return productService.updateProduct(id, request);
     }
 

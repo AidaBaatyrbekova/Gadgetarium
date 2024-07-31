@@ -63,7 +63,7 @@ public class ProductService {
         if (request.getBrandId() != null) {
             Brand brand = brandRepository.findById(request.getBrandId())
                     .orElseThrow(() -> new NotFoundException(ExceptionMassage.BRAND_NOT_FOUND_WITH_ID + request.getBrandId()));
-            product.setBrandOfProduct(brand);
+            product.setBrand(brand);
         }
         return productRepository.save(product);
     }

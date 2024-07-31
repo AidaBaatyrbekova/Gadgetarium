@@ -48,26 +48,21 @@ public class ProductMapper {
             SubCategory subCategory = subCategoryRepository.findById(request.getSubCategoryId())
                     .orElseThrow(() -> new NotFoundException(ExceptionMassage.SUB_CATEGORY_NOT_FOUND_WITH_ID + request.getSubCategoryId()));
             product.setSubCategory(subCategory);
-            product.setCategory(subCategory.getCategoryOfSubCategory());
         }
         if (request.getBrandId() != null) {
             Brand brand = brandRepository.findById(request.getBrandId())
                     .orElseThrow(() -> new NotFoundException(ExceptionMassage.BRAND_NOT_FOUND_WITH_ID + request.getBrandId()));
-            product.setBrandOfProduct(brand);
+            product.setBrand(brand);
         }
         return product;
     }
 
     public ProductResponse mapToResponse(Product product) {
-        SubCategory subCategory = product.getSubCategory();
-        Brand brand = product.getBrandOfProduct();
-        Long brandId = brand.getId();
-
         return ProductResponse.builder()
                 .id(product.getId())
                 .productName(product.getProductName())
                 .productStatus(product.getProductStatus())
-                .brandId(brandId)
+                .brand(product.getBrand())
                 .memory(product.getMemory())
                 .color(product.getColor())
                 .operationMemory(product.getOperationMemory())
@@ -83,7 +78,7 @@ public class ProductMapper {
                 .discount(product.getDiscount())
                 .price(product.getPrice())
                 .createDate(product.getCreateDate())
-                .subCategory(subCategory)
+                .subCategory(product.getSubCategory())
                 .build();
     }
 

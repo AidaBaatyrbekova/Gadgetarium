@@ -1,5 +1,6 @@
 package com.peaksoft.gadgetarium.model.dto.response;
 
+import com.peaksoft.gadgetarium.model.entities.Brand;
 import com.peaksoft.gadgetarium.model.entities.SubCategory;
 import com.peaksoft.gadgetarium.model.enums.*;
 import lombok.AccessLevel;
@@ -24,7 +25,7 @@ public class ProductResponse {
     LocalDate createDate;
     Memory memory;
     Color color;
-    Long brandId;
+    Brand brand;
     String operationSystemNum;
     String dateOfRelease;
     String processor;
