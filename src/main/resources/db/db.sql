@@ -37,7 +37,7 @@ insert into sub_categories (category_id, name_of_sub_category)
 values (1, 'Smartphones'),
        (1, 'Feature Phones'),
        (2, 'Ultrabooks'),
-       (2,'Gaming Laptops'),
+       (2, 'Gaming Laptops'),
        (3, 'Android Tablets'),
        (3, 'iOS Tablets'),
        (4, 'Smartwatches'),
@@ -59,9 +59,10 @@ values ('2023-07-01', 1000, 69999, 150, 1, 4, 'BLACK', '2023-06-15', '24 months'
        ('2023-06-25', 8, 89999, 165, 1, 4, 'GREEN', '2023-06-01', '24 months', 'GB_256', 'GB_12', 'ANDROID', '11.0',
         'Kirin 9000', 'Huawei P40 Pro', 'SALES', '4.6', '6.6 inches', 'Dual');
 
-insert into baskets (id)
-values (1),
-       (2),
-       (3),
-       (4);
+insert into baskets (id, user_id, quantity, total_amount, total_discount, total_sum)
+values
+(1, 1, 0, 0, 0, 0),
+(2, 2, 0, 0, 0, 0),
+(3, 3, 0, 0, 0, 0);
 
+select setval('baskets_id_seq', (SELECT MAX(id) FROM baskets));
