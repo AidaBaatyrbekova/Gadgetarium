@@ -1,10 +1,11 @@
 package com.peaksoft.gadgetarium.service;
 
+import com.peaksoft.gadgetarium.exception.ExceptionMassage;
+import com.peaksoft.gadgetarium.exception.NotFoundException;
 import com.peaksoft.gadgetarium.mapper.ProductMapper;
 import com.peaksoft.gadgetarium.model.dto.request.ProductRequest;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Brand;
-import com.peaksoft.gadgetarium.model.entities.Category;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.SubCategory;
 import com.peaksoft.gadgetarium.model.enums.ProductStatus;
@@ -28,12 +29,9 @@ public class ProductService {
     ProductRepository productRepository;
     SubCategoryRepository subCategoryRepository;
     BrandRepository brandRepository;
-    SubCategoryRepository categoryRepository;
 
     public ProductResponse createProduct(ProductRequest request) {
-        Product product = productMapper.productMapper(request);
-        Product savedProduct = productRepository.save(product);
-        return productMapper.mapToResponse(savedProduct);
+        return productMapper.mapToResponse(productRepository.save(productMapper.productMapper(request)));
     }
 
     public List<ProductResponse> findAll() {
@@ -45,86 +43,36 @@ public class ProductService {
 
     public ProductResponse getProductById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id " + id));
+                .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID + id));
         return productMapper.mapToResponse(product);
     }
 
-    public Product updateProduct(Long id, ProductRequest request) {
+    public ProductResponse updateProduct(Long id, ProductRequest request) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Product not found by id: {}", id);
-                    return new RuntimeException("Not found product by id " + id);
+                    return new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID + id);
                 });
         productMapper.updateProductFromRequest(request, product);
 
         if (request.getSubCategoryId() != null) {
             SubCategory subCategory = subCategoryRepository.findById(request.getSubCategoryId())
-                    .orElseThrow(() -> new RuntimeException("SubCategory not found with id " + request.getSubCategoryId()));
+                    .orElseThrow(() -> new NotFoundException(ExceptionMassage.SUB_CATEGORY_NOT_FOUND_WITH_ID + request.getSubCategoryId()));
             product.setSubCategory(subCategory);
         }
-
         if (request.getBrandId() != null) {
             Brand brand = brandRepository.findById(request.getBrandId())
-                    .orElseThrow(() -> new RuntimeException("Brand not found with id " + request.getBrandId()));
-            product.setBrandOfProduct(brand);
+                    .orElseThrow(() -> new NotFoundException(ExceptionMassage.BRAND_NOT_FOUND_WITH_ID + request.getBrandId()));
+            product.setBrand(brand);
         }
-
-        if (request.getCategoryId() != null) {
-            Category category = categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found with id " + request.getCategoryId())).getCategoryOfSubCategory();
-            product.setCategory(category);
-        }
-        return productRepository.save(product);
+        return productMapper.mapToResponse(productRepository.save(product));
     }
 
     public String deleteProduct(Long id) {
+        log.info("Deleting product with id: {}", id);
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Not found Product by id " + id));
+                .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID + id));
         productRepository.delete(product);
         return "Successfully deleted product by id " + id;
     }
-
-    public List<ProductResponse> findNewDevices() {
-        log.info("Fetching new arrival products");
-        return productRepository.findByProductStatus(ProductStatus.NEW_DEVICES)
-                .stream()
-                .map(productMapper::mapToResponse)
-                .toList();
-    }
-
-    public List<ProductResponse> findRecommendedProducts() {
-        log.info("Fetching recommended products");
-        return productRepository.findByProductStatus(ProductStatus.RECOMMENDATIONS)
-                .stream()
-                .map(productMapper::mapToResponse)
-                .toList();
-    }
-
-    public List<ProductResponse> findDiscountedProducts() {
-        log.info("Fetching discounted products");
-        return productRepository.findDiscounted()
-                .stream()
-                .map(productMapper::mapToResponse)
-                .toList();
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class MainPage {
-
-        private List<ProductResponse> newDevices;
-        private List<ProductResponse> recommendedProducts;
-        private List<ProductResponse> discountedProducts;
-    }
-
-
-    public MainPage getMainPage() {
-        List<ProductResponse> newDevices = findNewDevices();
-        List<ProductResponse> recommendedProducts = findRecommendedProducts();
-        List<ProductResponse> discountedProducts = findDiscountedProducts();
-
-        return new MainPage(newDevices, recommendedProducts, discountedProducts);
-    }
 }
-

@@ -1,5 +1,6 @@
 package com.peaksoft.gadgetarium.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.peaksoft.gadgetarium.model.enums.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -27,10 +28,6 @@ public class Product {
 
     @Enumerated(EnumType.STRING)
     ProductStatus productStatus;
-
-    @ManyToOne(cascade = {CascadeType.PERSIST})
-    @JoinColumn(name = "category_id")
-    Category category;
 
     @Enumerated(EnumType.STRING)
     Memory memory;
@@ -66,30 +63,36 @@ public class Product {
 
     LocalDate createDate;
 
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "products")
+    @ManyToMany(cascade = {
+            CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "products")
     List<Basket> baskets;
 
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "products")
+    @ManyToMany(cascade = {
+            CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "products")
     List<Favorite> favorites;
 
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "products")
+    @ManyToMany(cascade = {
+            CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "products")
     List<Order> orders;
 
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "products")
+    @ManyToMany(cascade = {
+            CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "products")
     List<OrderHistory> orderHistories;
 
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "products")
+    @ManyToMany(cascade = {
+            CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "products")
     List<Delivery> deliveries;
 
+    @JsonIgnore
     @ManyToOne(cascade = {
-            CascadeType.PERSIST})
+            CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "brand_id")
-    Brand brandOfProduct;
+    Brand brand;
 
     @OneToOne(mappedBy = "product")
     Feedback feedback;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "sub_category_id")
     SubCategory subCategory;
 }
