@@ -69,16 +69,11 @@ public class BasketService {
 
         ProductResponse productResponse = convertToProductResponse(product);
 
-        int quantityResponse = 1;
-        int price = productResponse.getPrice();
-        int discount = productResponse.getDiscount();
-        int totalSumResponse = price - discount;
-
         return ProductSummaryResponse.builder()
-                .quantity(quantityResponse)
-                .price(price)
-                .discount(discount)
-                .totalSum(totalSumResponse)
+                .quantity(quantity)
+                .price(totalAmount)
+                .discount(totalDiscount)
+                .totalSum(totalSum)
                 .productResponse(productResponse)
                 .build();
     }
