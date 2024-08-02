@@ -1,5 +1,6 @@
 package com.peaksoft.gadgetarium.service;
 
+import com.peaksoft.gadgetarium.exception.ExceptionMassage;
 import com.peaksoft.gadgetarium.exception.NotFoundException;
 import com.peaksoft.gadgetarium.exception.UserAlreadyExistsException;
 import com.peaksoft.gadgetarium.mapper.AuthMapper;
@@ -30,6 +31,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -202,11 +204,11 @@ public class UserService {
         return response;
     }
 
-    public FavoriteResponse addFavorite(FavoriteRequest request) {
-
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new UserAlreadyExistsException.UserNotFoundException("User not found"));
-        Product product = productRepository.findById(request.getProductId())
+    public FavoriteResponse addFavorite(Long productId, Principal principal){
+        String userEmail = principal.getName();
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new UserAlreadyExistsException.ProductNotFoundException("Product not found"));
 
         user.getFavorites().add(product);
