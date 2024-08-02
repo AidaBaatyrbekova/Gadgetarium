@@ -1,7 +1,7 @@
 package com.peaksoft.gadgetarium.controller;
 
 import com.peaksoft.gadgetarium.model.dto.response.BasketSummaryResponse;
-import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
+import com.peaksoft.gadgetarium.model.dto.response.ProductSummaryResponse;
 import com.peaksoft.gadgetarium.service.BasketService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class BasketController {
     BasketService basketService;
 
     @PostMapping("/addProduct/{productId}")
-    public ResponseEntity<String> addProductToBasket(@PathVariable Long productId, Principal principal) {
+    public ProductSummaryResponse addProductToBasket(@PathVariable Long productId, Principal principal) {
         return basketService.addProductToBasket(productId, principal);
     }
 
@@ -35,7 +35,7 @@ public class BasketController {
     }
 
     @GetMapping("/getProductById/{productId}")
-    public ProductResponse getProductById(@PathVariable Long productId, Principal principal) {
+    public ProductSummaryResponse getProductById(@PathVariable Long productId, Principal principal) {
         return basketService.getProductById(productId, principal);
     }
 }

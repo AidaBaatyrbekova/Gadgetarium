@@ -4,6 +4,7 @@ import com.peaksoft.gadgetarium.exception.ExceptionMassage;
 import com.peaksoft.gadgetarium.exception.NotFoundException;
 import com.peaksoft.gadgetarium.model.dto.response.BasketSummaryResponse;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
+import com.peaksoft.gadgetarium.model.dto.response.ProductSummaryResponse;
 import com.peaksoft.gadgetarium.model.entities.Basket;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.User;
@@ -35,7 +36,7 @@ public class BasketService {
 
 
     @Transactional
-    public ResponseEntity<String> addProductToBasket(Long productId, Principal principal) {
+    public ProductSummaryResponse addProductToBasket(Long productId, Principal principal) {
 
         String userEmail = principal.getName();
         User user = userRepository.findByEmail(userEmail)
@@ -46,9 +47,40 @@ public class BasketService {
                 .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID));
 
         basket.getProducts().add(product);
+
+        List<ProductResponse> productResponses = basket.getProducts().stream()
+                .map(this::convertToProductResponse)
+                .toList();
+
+        int quantity = productResponses.size();
+        int totalAmount = productResponses.stream()
+                .mapToInt(ProductResponse::getPrice)
+                .sum();
+        int totalDiscount = productResponses.stream()
+                .mapToInt(ProductResponse::getDiscount)
+                .sum();
+        int totalSum = totalAmount - totalDiscount;
+
+        basket.setQuantity(quantity);
+        basket.setTotalAmount(totalAmount);
+        basket.setTotalDiscount(totalDiscount);
+        basket.setTotalSum(totalSum);
         basketRepository.save(basket);
 
-        return ResponseEntity.ok("Product added to basket successfully");
+        ProductResponse productResponse = convertToProductResponse(product);
+
+        int quantityResponse = 1;
+        int price = productResponse.getPrice();
+        int discount = productResponse.getDiscount();
+        int totalSumResponse = price - discount;
+
+        return ProductSummaryResponse.builder()
+                .quantity(quantityResponse)
+                .price(price)
+                .discount(discount)
+                .totalSum(totalSumResponse)
+                .productResponse(productResponse)
+                .build();
     }
 
     @Transactional
@@ -80,11 +112,11 @@ public class BasketService {
         basketRepository.save(basket);
 
         return BasketSummaryResponse.builder()
-                .products(productResponses)
                 .quantity(quantity)
                 .price(totalAmount)
                 .discount(totalDiscount)
                 .totalSum(totalSum)
+                .products(productResponses)
                 .build();
     }
 
@@ -104,13 +136,33 @@ public class BasketService {
         }
 
         basket.getProducts().remove(product);
+
+        List<ProductResponse> productResponses = basket.getProducts().stream()
+                .map(this::convertToProductResponse)
+                .toList();
+
+        int quantity = productResponses.size();
+        int totalAmount = productResponses.stream()
+                .mapToInt(ProductResponse::getPrice)
+                .sum();
+        int totalDiscount = productResponses.stream()
+                .mapToInt(ProductResponse::getDiscount)
+                .sum();
+        int totalSum = totalAmount - totalDiscount;
+
+        basket.setQuantity(quantity);
+        basket.setTotalAmount(totalAmount);
+        basket.setTotalDiscount(totalDiscount);
+        basket.setTotalSum(totalSum);
+
         basketRepository.save(basket);
 
         return new ResponseEntity<>("Product removed from the basket successfully", HttpStatus.OK);
     }
 
+
     @Transactional
-    public ProductResponse getProductById(Long productId, Principal principal) {
+    public ProductSummaryResponse getProductById(Long productId, Principal principal) {
 
         String userEmail = principal.getName();
         User user = userRepository.findByEmail(userEmail)
@@ -124,7 +176,20 @@ public class BasketService {
             throw new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_THE_BASKET);
         }
 
-        return convertToProductResponse(product);
+        ProductResponse productResponse = convertToProductResponse(product);
+
+        int quantity = 1;
+        int price = productResponse.getPrice();
+        int discount = productResponse.getDiscount();
+        int totalSum = price - discount;
+
+        return ProductSummaryResponse.builder()
+                .quantity(quantity)
+                .price(price)
+                .discount(discount)
+                .totalSum(totalSum)
+                .productResponse(productResponse)
+                .build();
     }
 
     private ProductResponse convertToProductResponse(Product product) {
