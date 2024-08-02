@@ -25,6 +25,14 @@ public class Basket {
     @JoinColumn(name = "user_id")
     User user;
 
+    int quantity;
+
+    int totalAmount;
+
+    int totalDiscount;
+
+    int totalSum;
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "basket_products",
             joinColumns = @JoinColumn(name = "basket_id"),

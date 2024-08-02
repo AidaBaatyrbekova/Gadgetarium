@@ -73,6 +73,12 @@ public class BasketService {
                 .sum();
         int totalSum = totalAmount - totalDiscount;
 
+        basket.setQuantity(quantity);
+        basket.setTotalAmount(totalAmount);
+        basket.setTotalDiscount(totalDiscount);
+        basket.setTotalSum(totalSum);
+        basketRepository.save(basket);
+
         return BasketSummaryResponse.builder()
                 .products(productResponses)
                 .quantity(quantity)

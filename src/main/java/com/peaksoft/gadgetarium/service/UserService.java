@@ -56,12 +56,13 @@ public class UserService {
         user.setConfirmThePassword(passwordEncoder.encode(request.getConfirmThePassword()));
         user.setRole(Role.USER);
 
-        Basket basket = new Basket();
-        basketRepository.save(basket);
-        basket.setUser(user);
-        user.setBasket(basket);
-
         userRepository.save(user);
+
+        Basket basket = new Basket();
+        basket.setUser(user);
+        basketRepository.save(basket);
+
+        user.setBasket(basket);
 
         log.info("Successfully created User " + user.getId());
         return authMapper.mapToResponse(user);
