@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@Tag(name = "User")
+@Tag(name = "User Registration")
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -25,36 +25,36 @@ public class AuthController {
 
     UserService userService;
 
-    @Operation(summary = "Registration")
+    @Operation(summary = "The User can register")
     @PostMapping("/sign-up")
     public UserResponse createUser(@RequestBody @Valid UserRequest request) {
         return userService.createUser(request);
     }
 
-    @Operation(summary = "Registration with google")
+    @Operation(summary = "User register with google")
     @GetMapping("/sign-up-with-google")
     public Map<String, Object> registerWithGoogle(OAuth2AuthenticationToken oAuth2AuthenticationToken) {
         return userService.saveWithGoogle(oAuth2AuthenticationToken);
     }
 
-    @Operation(summary = "Login")
+    @Operation(summary = "User's Login")
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
         return userService.login(request);
     }
 
-    @Operation(summary = "Reset password")
+    @Operation(summary = "The User reset password")
     @PostMapping("/resetPassword")
     public ResponseEntity<String> resetPassword(@RequestBody PasswordResetRequest request) {
         return userService.resetPassword(request);
     }
-
+@Operation(summary = "The User can reset a password Token")
     @PostMapping("/resetPasswordToken")
     public ResponseEntity<String> resetPasswordToken(@RequestBody PasswordResetTokenRequest request) {
         return userService.resetPasswordToken(request);
     }
 
-    @Operation(summary = "Update password")
+    @Operation(summary = "User update password")
     @PutMapping("/updatePassword")
     public ResponseEntity<String> updatePassword(@RequestBody UpdatePasswordRequest request) {
         return userService.updatePassword(request);
