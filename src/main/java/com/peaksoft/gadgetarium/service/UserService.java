@@ -1,18 +1,14 @@
 package com.peaksoft.gadgetarium.service;
 
-import com.peaksoft.gadgetarium.exception.ExceptionMassage;
 import com.peaksoft.gadgetarium.exception.NotFoundException;
-import com.peaksoft.gadgetarium.exception.UserAlreadyExistsException;
 import com.peaksoft.gadgetarium.mapper.AuthMapper;
 import com.peaksoft.gadgetarium.model.dto.request.*;
-import com.peaksoft.gadgetarium.model.dto.response.FavoriteResponse;
 import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
-import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
-import com.peaksoft.gadgetarium.model.entities.Product;
+import com.peaksoft.gadgetarium.model.entities.Basket;
 import com.peaksoft.gadgetarium.model.entities.User;
 import com.peaksoft.gadgetarium.model.enums.Role;
-import com.peaksoft.gadgetarium.repository.ProductRepository;
+import com.peaksoft.gadgetarium.repository.BasketRepository;
 import com.peaksoft.gadgetarium.repository.UserRepository;
 import com.peaksoft.gadgetarium.security.jwt.JwtUtil;
 import jakarta.transaction.Transactional;
@@ -31,7 +27,6 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -44,22 +39,31 @@ import java.util.UUID;
 public class UserService {
 
     UserRepository userRepository;
+    BasketRepository basketRepository;
     PasswordEncoder passwordEncoder;
     MailService mailService;
     AuthenticationManager authenticate;
     AuthMapper authMapper;
     JwtUtil jwtUtil;
-    ProductRepository productRepository;
 
     public UserResponse createUser(UserRequest request) {
         User user = authMapper.mapToUser(request);
+
         if (!isPasswordSecure(request.getPassword())) {
             throw new IllegalArgumentException("The new password is not secure! The password must contain at least 8 characters, including uppercase and lowercase letters, numbers and special characters!");
         }
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setConfirmThePassword(passwordEncoder.encode(request.getConfirmThePassword()));
         user.setRole(Role.USER);
+
         userRepository.save(user);
+
+        Basket basket = new Basket();
+        basket.setUser(user);
+        basketRepository.save(basket);
+
+        user.setBasket(basket);
+
         log.info("Successfully created User " + user.getId());
         return authMapper.mapToResponse(user);
     }
@@ -202,52 +206,5 @@ public class UserService {
         response.put("email", user.getEmail());
         response.put("creatDate", user.getCreateDate());
         return response;
-    }
-
-    public FavoriteResponse addFavorite(Long productId, Principal principal){
-        String userEmail = principal.getName();
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new UserAlreadyExistsException.ProductNotFoundException("Product not found"));
-
-        user.getFavorites().add(product);
-        userRepository.save(user);
-
-        ProductResponse productResponse =
-                ProductResponse.builder()
-                        .id(product.getId())
-                        .productName(product.getProductName())
-                        .productStatus(product.getProductStatus())
-                        .memory(product.getMemory())
-                        .color(product.getColor())
-                        .operationMemory(product.getOperationMemory())
-                        .screen(product.getScreen())
-                        .operationSystem(product.getOperationSystem())
-                        .operationSystemNum(product.getOperationSystemNum())
-                        .dateOfRelease(product.getDateOfRelease())
-                        .simCard(product.getSimCard())
-                        .processor(product.getProcessor())
-                        .weight(product.getWeight())
-                        .guarantee(product.getGuarantee())
-                        .rating(Double.valueOf(String.valueOf(product.getRating())))
-                        .discount(product.getDiscount())
-                        .price(product.getPrice())
-                        .createDate(product.getCreateDate())
-                        .build();
-
-        return FavoriteResponse.builder()
-                .userId(user.getId())
-                .productId(product.getId())
-                .productResponse(productResponse)
-                .build();
-    }
-
-
-    public void clearFavorites(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserAlreadyExistsException.UserNotFoundException("User not found"));
-        user.getFavorites().clear();
-        userRepository.save(user);
     }
 }
