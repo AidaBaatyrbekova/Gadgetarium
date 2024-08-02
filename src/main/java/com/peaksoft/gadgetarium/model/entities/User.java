@@ -53,6 +53,9 @@ public class User implements UserDetails {
     @Column(name = "create_date")
     LocalDate createDate;
 
+    @OneToOne(mappedBy = "user")
+    Basket basket;
+
     @OneToMany(mappedBy = "user")
     List<Order> orders;
 

@@ -7,8 +7,10 @@ import com.peaksoft.gadgetarium.mapper.AuthMapper;
 import com.peaksoft.gadgetarium.model.dto.request.*;
 import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
+import com.peaksoft.gadgetarium.model.entities.Basket;
 import com.peaksoft.gadgetarium.model.entities.User;
 import com.peaksoft.gadgetarium.model.enums.Role;
+import com.peaksoft.gadgetarium.repository.BasketRepository;
 import com.peaksoft.gadgetarium.repository.UserRepository;
 import com.peaksoft.gadgetarium.security.jwt.JwtUtil;
 import jakarta.transaction.Transactional;
@@ -39,6 +41,7 @@ import java.util.UUID;
 public class UserService {
 
     UserRepository userRepository;
+    BasketRepository basketRepository;
     PasswordEncoder passwordEncoder;
     MailService mailService;
     AuthenticationManager authenticate;
@@ -47,6 +50,7 @@ public class UserService {
 
     public UserResponse createUser(UserRequest request) {
         User user = authMapper.mapToUser(request);
+
         if (!isPasswordSecure(request.getPassword())) {
             throw new InvalidPasswordException(ExceptionMassage.PASSWORD_NOT_SECURE);
         }
@@ -55,7 +59,15 @@ public class UserService {
         }
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.USER);
+
         userRepository.save(user);
+
+        Basket basket = new Basket();
+        basket.setUser(user);
+        basketRepository.save(basket);
+
+        user.setBasket(basket);
+
         log.info("Successfully created User " + user.getId());
         return authMapper.mapToResponse(user);
     }
