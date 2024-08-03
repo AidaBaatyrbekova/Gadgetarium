@@ -25,7 +25,7 @@ public class ComparisonList {
     @ManyToMany
     @JoinTable(
             name = "comparison_list_products",
-            joinColumns = @JoinColumn(name = "comparison_list_id"),
+            joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     Set<Product> products = new HashSet<>();

@@ -3,17 +3,17 @@ package com.peaksoft.gadgetarium.service;
 import com.peaksoft.gadgetarium.model.entities.Category;
 import com.peaksoft.gadgetarium.model.entities.ComparisonList;
 import com.peaksoft.gadgetarium.model.entities.Product;
+import com.peaksoft.gadgetarium.repository.CategoryRepository;
 import com.peaksoft.gadgetarium.repository.ComparisonListRepository;
 import com.peaksoft.gadgetarium.repository.ProductRepository;
-import com.peaksoft.gadgetarium.repository.SubCategoryRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,11 +22,11 @@ public class ProductCompareService {
 
     ProductRepository productRepository;
     ComparisonListRepository comparisonListRepository;
-    SubCategoryRepository subCategoryRepository;
+    CategoryRepository categoryRepository;
 
     // Создание нового списка сравнения
     public ComparisonList createComparisonList(Long categoryId) {
-        Category category = subCategoryRepository.findById(categoryId).orElse(null);
+        Category category = categoryRepository.findById(categoryId).orElse(null);
         if (category == null) {
             throw new IllegalArgumentException("Category not found");
         }

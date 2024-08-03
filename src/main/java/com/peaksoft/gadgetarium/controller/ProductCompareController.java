@@ -15,29 +15,30 @@ public class ProductCompareController {
 
     ProductCompareService productCompareService;
 
-    @PostMapping("/create")
-    public Long createComparisonList() {
-        ComparisonList comparisonList = productCompareService.createComparisonList();
-        return comparisonList.getId();
+    @PostMapping("/create/{categoryId}")
+    public void createComparisonList(@PathVariable Long categoryId) {
+        productCompareService.createComparisonList(categoryId);
     }
 
-    @PostMapping("/add/{comparisonListId}/{productId}")
-    public void addProductToComparisonList(@PathVariable Long comparisonListId, @PathVariable Long productId) {
-        productCompareService.addProductToComparisonList(comparisonListId, productId);
+    @PostMapping("/add/{productId}/{categoryId}")
+    public void addProductToComparisonList(@PathVariable Long productId, @PathVariable Long categoryId) {
+        productCompareService.addProductToComparisonList(productId, categoryId);
     }
 
-    @PostMapping("/remove/{comparisonListId}/{productId}")
-    public void removeProductFromComparisonList(@PathVariable Long comparisonListId, @PathVariable Long productId) {
-        productCompareService.removeProductFromComparisonList(comparisonListId, productId);
+    @PostMapping("/remove/{productId}/{categoryId}")
+    public void removeProductFromComparisonList(@PathVariable Long productId, @PathVariable Long categoryId) {
+        productCompareService.removeProductFromComparisonList(productId, categoryId);
     }
 
-    @PostMapping("/clear/{comparisonListId}")
-    public void clearComparisonList(@PathVariable Long comparisonListId) {
-        productCompareService.clearComparisonList(comparisonListId);
+    @PostMapping("/clear/{categoryId}")
+    public void clearComparisonList(@PathVariable Long categoryId) {
+        productCompareService.clearComparisonList(categoryId);
     }
 
-    @GetMapping("/compare/{comparisonListId}")
-    public String compareProducts(@PathVariable Long comparisonListId) {
-        return productCompareService.compareProducts(comparisonListId);
+    @GetMapping("/compare/{categoryId}")
+    public String compareProducts(@PathVariable Long categoryId,
+                                  @RequestParam(value = "showDifferences", defaultValue = "true") boolean showDifferences) {
+        return productCompareService.compareProducts(categoryId, showDifferences);
     }
+
 }
