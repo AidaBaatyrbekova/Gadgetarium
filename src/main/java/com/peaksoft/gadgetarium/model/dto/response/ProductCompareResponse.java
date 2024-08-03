@@ -6,19 +6,19 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductCompareResponse {
-    Long id;
-    Long categoryId;
-    Long brandId;
-    String operationSystem;
-    String screen;
-    String color;
-    String memory;
-    Integer weight;
-    String simCard;
-    boolean showDifferencesOnly;
+    List<String> differences;
+
+     public ProductCompareResponse() {}
+
+     public ProductCompareResponse(List<String> differences) {
+          this.differences = differences;
+     }
+
 }

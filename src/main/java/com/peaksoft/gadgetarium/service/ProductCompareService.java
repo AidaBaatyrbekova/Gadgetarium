@@ -1,83 +1,128 @@
 package com.peaksoft.gadgetarium.service;
 
-import com.peaksoft.gadgetarium.mapper.ProductCompareMapper;
-import com.peaksoft.gadgetarium.model.dto.response.ProductCompareResponse;
+import com.peaksoft.gadgetarium.model.entities.Category;
+import com.peaksoft.gadgetarium.model.entities.ComparisonList;
 import com.peaksoft.gadgetarium.model.entities.Product;
-import com.peaksoft.gadgetarium.repository.ProductCompareRepository;
+import com.peaksoft.gadgetarium.repository.ComparisonListRepository;
+import com.peaksoft.gadgetarium.repository.ProductRepository;
+import com.peaksoft.gadgetarium.repository.SubCategoryRepository;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductCompareService {
 
-    final ProductCompareRepository productCompareRepository;
-    final ProductCompareMapper productCompareMapper;
+    ProductRepository productRepository;
+    ComparisonListRepository comparisonListRepository;
+    SubCategoryRepository subCategoryRepository;
 
-    // Хранилище продуктов для сравнения по категориям
-    private final Map<Long, List<Product>> productComparisonStore = new HashMap<>();
-
-    // Метод для добавления товара в список сравнения по категории
-    public void addProductForComparison(Long categoryId, Product product) {
-        product.setCategoryId(categoryId);
-        productComparisonStore.computeIfAbsent(categoryId, k -> new ArrayList<>()).add(product);
-    }
-
-    // Метод для очистки списка товаров для сравнения по категории
-    public void clearComparisonList(Long categoryId) {
-        productComparisonStore.remove(categoryId);
-    }
-
-    // Основной метод для сравнения продуктов по категории
-    public List<ProductCompareResponse> compareProducts(Long categoryId, boolean showDifferencesOnly) {
-        List<Product> products = productComparisonStore.get(categoryId);
-
-        if (products == null || products.isEmpty()) {
-            throw new NoSuchElementException("Нет товаров для сравнения в категории с ID: " + categoryId);
+    // Создание нового списка сравнения
+    public ComparisonList createComparisonList(Long categoryId) {
+        Category category = subCategoryRepository.findById(categoryId).orElse(null);
+        if (category == null) {
+            throw new IllegalArgumentException("Category not found");
         }
 
-        // Фильтрация только различающихся продуктов
-        if (showDifferencesOnly) {
-            products = filterDifferences(products);
-        }
-
-        // Возвращаем список продуктов после фильтрации
-        return products.stream()
-                .map(productCompareMapper::toProductCompareResponse)
-                .collect(Collectors.toList());
+        ComparisonList comparisonList = new ComparisonList();
+        comparisonList.setCategory(category);
+        return comparisonListRepository.save(comparisonList);
     }
 
-    // Метод для фильтрации только различающихся продуктов
-    private List<Product> filterDifferences(List<Product> products) {
-        Set<Product> differentProducts = new HashSet<>(products);
+    // Добавление товара в список сравнения
+    public void addProductToComparisonList(Long productId, Long categoryId) {
+        Product product = productRepository.findById(productId).orElse(null);
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (product != null && category != null) {
+            ComparisonList comparisonList = comparisonListRepository.findByCategory(category).stream()
+                    .findFirst()
+                    .orElseGet(() -> createComparisonList(categoryId));
 
-        // Двойной цикл для сравнения всех возможных пар продуктов
-        for (int i = 0; i < products.size(); i++) {
-            for (int j = i + 1; j < products.size(); j++) {
-                Product product1 = products.get(i);
-                Product product2 = products.get(j);
+            comparisonList.getProducts().add(product);
+            comparisonListRepository.save(comparisonList);
+        }
+    }
 
-                // Если два продукта равны, удаляем их из множества
-                if (productsEqual(product1, product2)) {
-                    differentProducts.remove(product1);
-                    differentProducts.remove(product2);
-                }
+    // Удаление товара из списка сравнения
+    public void removeProductFromComparisonList(Long productId, Long categoryId) {
+        Product product = productRepository.findById(productId).orElse(null);
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (product != null && category != null) {
+            ComparisonList comparisonList = comparisonListRepository.findByCategory(category).stream()
+                    .findFirst()
+                    .orElse(null);
+
+            if (comparisonList != null) {
+                comparisonList.getProducts().remove(product);
+                comparisonListRepository.save(comparisonList);
             }
         }
-        return new ArrayList<>(differentProducts);
     }
 
-    // Метод для сравнения двух продуктов
-    private boolean productsEqual(Product p1, Product p2) {
-        return Objects.equals(p1.getBrandOfProduct(), p2.getBrandOfProduct()) &&
-                Objects.equals(p1.getScreen(), p2.getScreen()) &&
-                Objects.equals(p1.getColor(), p2.getColor()) &&
-                Objects.equals(p1.getOperationSystem(), p2.getOperationSystem()) &&
-                Objects.equals(p1.getMemory(), p2.getMemory()) &&
-                p1.getWeight() == p2.getWeight() &&
-                Objects.equals(p1.getSimCard(), p2.getSimCard());
+    // Очистка всего списка сравнения по категории
+    public void clearComparisonList(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (category != null) {
+            ComparisonList comparisonList = comparisonListRepository.findByCategory(category).stream()
+                    .findFirst()
+                    .orElse(null);
+
+            if (comparisonList != null) {
+                comparisonList.getProducts().clear();
+                comparisonListRepository.save(comparisonList);
+            }
+        }
+    }
+
+    // Сравнение товаров в списке по категории
+    public String compareProducts(Long categoryId, boolean showDifferences) {
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (category == null) {
+            return "Category not found.";
+        }
+
+        ComparisonList comparisonList = comparisonListRepository.findByCategory(category).stream()
+                .findFirst()
+                .orElse(null);
+
+        if (comparisonList == null || comparisonList.getProducts().size() < 2) {
+            return "Not enough products to compare.";
+        }
+
+        List<Product> products = comparisonList.getProducts().stream().collect(Collectors.toList());
+        Product p1 = products.get(0);
+        Product p2 = products.get(1);
+
+        // Определяем атрибуты для сравнения
+        Map<String, String[]> properties = Map.of(
+                "Brand", new String[]{p1.getBrand().toString(), p2.getBrand().toString()},
+                "Screen", new String[]{p1.getScreen(), p2.getScreen()},
+                "Color", new String[]{p1.getColor().toString(), p2.getColor().toString()},
+                "Operation System", new String[]{p1.getOperationSystem().toString(), p2.getOperationSystem().toString()},
+                "Memory", new String[]{p1.getMemory().toString(), p2.getMemory().toString()},
+                "Weight", new String[]{String.valueOf(p1.getWeight()), String.valueOf(p2.getWeight())},
+                "Sim Card", new String[]{p1.getSimCard(), p2.getSimCard()}
+        );
+
+        StringBuilder differences = new StringBuilder();
+
+        if (showDifferences) {
+            properties.forEach((key, value) -> {
+                if (!value[0].equals(value[1])) {
+                    differences.append(key).append(": ").append(value[0]).append(" vs ").append(value[1]).append("\n");
+                }
+            });
+        } else {
+            differences.append("Comparison done, but differences are not displayed.");
+        }
+
+        return differences.toString();
     }
 }
