@@ -81,6 +81,11 @@
             <artifactId>spring-security-oauth2-core</artifactId>
             <version>5.3.4.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
