@@ -79,7 +79,7 @@ public class ProductService {
         return "Successfully deleted product by id " + id;
     }
 
-    public static class MainPage {
+    public class MainPage {
         List<ProductResponse> discountedProducts;
         List<ProductResponse> newArrivals;
         List<ProductResponse> recommendedProducts;
@@ -103,24 +103,23 @@ public class ProductService {
     public List<ProductResponse> findDiscountedProducts() {
         List<Product> products = productRepository.findDiscounted();
         return products.stream()
-                .map(this::mapToResponse)
+                .map(productMapper::mapToResponse)
                 .collect(Collectors.toList());
     }
 
     public List<ProductResponse> findNewDevices() {
         List<Product> products = productRepository.findByProductStatus(ProductStatus.NEW_DEVICES);
         return products.stream()
-                .map(this::mapToResponse)
+                .map(productMapper::mapToResponse)
                 .collect(Collectors.toList());
     }
 
     public List<ProductResponse> findRecommendedProducts() {
         List<Product> products = productRepository.findRecommended();
         return products.stream()
-                .map(this::mapToResponse)
+                .map(productMapper::mapToResponse)
                 .collect(Collectors.toList());
     }
-    private ProductResponse mapToResponse(Product product) {
-        return new ProductResponse (product.getId(), product.getProductName(), product.getPrice(), product.getDiscount());
-    }
+
+
 }
