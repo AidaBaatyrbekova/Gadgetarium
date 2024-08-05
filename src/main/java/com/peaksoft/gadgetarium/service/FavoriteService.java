@@ -44,6 +44,7 @@ public class FavoriteService {
                 .build();
     }
 
+    //очищает все избранные товары текущего пользователя по его email.
     public void clearFavorites(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
@@ -63,6 +64,7 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    // удаляет один избранный товар по productId и email текущего пользователя.
     public void removeFavorite(Long productId, String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
