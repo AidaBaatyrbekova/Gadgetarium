@@ -214,49 +214,4 @@ public class UserService {
         response.put("creatDate", user.getCreateDate());
         return response;
     }
-
-
-    public FavoriteResponse addFavorite(Long productId, Principal principal){
-        String userEmail=principal.getName();
-        User user=userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new UserAlreadyExistsException.UserNotFoundException("User not found"));
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new UserAlreadyExistsException.ProductNotFoundException("Product not found"));
-        user.getFavorites().add(product);
-        userRepository.save(user);
-
-
-        ProductResponse productResponse =
-                ProductResponse.builder()
-                        .id(product.getId())
-                        .productName(product.getProductName())
-                        .productStatus(product.getProductStatus())
-                        .memory(product.getMemory())
-                        .color(product.getColor())
-                        .operationMemory(product.getOperationMemory())
-                        .screen(product.getScreen())
-                        .operationSystem(product.getOperationSystem())
-                        .operationSystemNum(product.getOperationSystemNum())
-                        .dateOfRelease(product.getDateOfRelease())
-                        .simCard(product.getSimCard())
-                        .processor(product.getProcessor())
-                        .weight(product.getWeight())
-                        .guarantee(product.getGuarantee())
-                        .rating(Double.valueOf(String.valueOf(product.getRating())))
-                        .discount(product.getDiscount())
-                        .price(product.getPrice())
-                        .createDate(product.getCreateDate())
-                        .build();
-        return FavoriteResponse.builder()
-                .userId(user.getId())
-                .productId(product.getId())
-                .productResponse(productResponse)
-                .build();
-    }
-    public void clearFavorites(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserAlreadyExistsException.UserNotFoundException("User not found"));
-        user.getFavorites().clear();
-        userRepository.save(user);
-    }
 }
