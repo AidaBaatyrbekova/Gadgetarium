@@ -32,6 +32,7 @@ public class ProductService {
     ProductRepository productRepository;
     SubCategoryRepository subCategoryRepository;
     BrandRepository brandRepository;
+    MainPageService mainPageService;
 
     public ProductResponse createProduct(ProductRequest request) {
         return productMapper.mapToResponse(productRepository.save(productMapper.productMapper(request)));
@@ -78,48 +79,4 @@ public class ProductService {
         productRepository.delete(product);
         return "Successfully deleted product by id " + id;
     }
-
-    public class MainPage {
-        List<ProductResponse> discountedProducts;
-        List<ProductResponse> newArrivals;
-        List<ProductResponse> recommendedProducts;
-
-        public MainPage(List<ProductResponse> discountedProducts, List<ProductResponse> newArrivals,
-                        List<ProductResponse> recommendedProducts) {
-            this.discountedProducts = discountedProducts;
-            this.newArrivals = newArrivals;
-            this.recommendedProducts = recommendedProducts;
-        }
-    }
-
-    public MainPage getMainPage() {
-        List<ProductResponse> discountedProducts = findDiscountedProducts();
-        List<ProductResponse> newArrivals = findNewDevices();
-        List<ProductResponse> recommendedProducts = findRecommendedProducts();
-
-        return new MainPage(discountedProducts, newArrivals, recommendedProducts);
-    }
-
-    public List<ProductResponse> findDiscountedProducts() {
-        List<Product> products = productRepository.findDiscounted();
-        return products.stream()
-                .map(productMapper::mapToResponse)
-                .collect(Collectors.toList());
-    }
-
-    public List<ProductResponse> findNewDevices() {
-        List<Product> products = productRepository.findByProductStatus(ProductStatus.NEW_DEVICES);
-        return products.stream()
-                .map(productMapper::mapToResponse)
-                .collect(Collectors.toList());
-    }
-
-    public List<ProductResponse> findRecommendedProducts() {
-        List<Product> products = productRepository.findRecommended();
-        return products.stream()
-                .map(productMapper::mapToResponse)
-                .collect(Collectors.toList());
-    }
-
-
 }

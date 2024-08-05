@@ -1,38 +1,41 @@
 package com.peaksoft.gadgetarium.controller;
-
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
-import com.peaksoft.gadgetarium.service.ProductService;
+import com.peaksoft.gadgetarium.service.MainPageService;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static lombok.AccessLevel.PRIVATE;
+
 @RestController
 @RequestMapping("/api/main")
 @RequiredArgsConstructor
+@FieldDefaults(level = PRIVATE, makeFinal = true)
 public class MainPageController {
 
-    private final ProductService productService;
+    MainPageService mainPageService;
 
     @GetMapping("/page")
-    public ProductService.MainPage getMainPage() {
-        return productService.getMainPage();
+    public MainPageService.MainPage getMainPage() {
+        return mainPageService.getMainPage();
     }
 
     @GetMapping("/discounted")
     public List<ProductResponse> getDiscountedProducts() {
-        return productService.findDiscountedProducts();
+        return mainPageService.findDiscountedProducts();
     }
 
     @GetMapping("/new-arrivals")
     public List<ProductResponse> getNewArrivals() {
-        return productService.findNewDevices();
+        return mainPageService.findNewDevices();
     }
 
     @GetMapping("/recommended")
     public List<ProductResponse> getRecommendedProducts() {
-        return productService.findRecommendedProducts();
+        return mainPageService.findRecommendedProducts();
     }
 }
