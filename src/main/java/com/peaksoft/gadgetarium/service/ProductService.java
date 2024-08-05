@@ -18,7 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Getter
+@Setter
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -74,5 +77,50 @@ public class ProductService {
                 .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID + id));
         productRepository.delete(product);
         return "Successfully deleted product by id " + id;
+    }
+
+    public static class MainPage {
+        List<ProductResponse> discountedProducts;
+        List<ProductResponse> newArrivals;
+        List<ProductResponse> recommendedProducts;
+
+        public MainPage(List<ProductResponse> discountedProducts, List<ProductResponse> newArrivals,
+                        List<ProductResponse> recommendedProducts) {
+            this.discountedProducts = discountedProducts;
+            this.newArrivals = newArrivals;
+            this.recommendedProducts = recommendedProducts;
+        }
+    }
+
+    public MainPage getMainPage() {
+        List<ProductResponse> discountedProducts = findDiscountedProducts();
+        List<ProductResponse> newArrivals = findNewDevices();
+        List<ProductResponse> recommendedProducts = findRecommendedProducts();
+
+        return new MainPage(discountedProducts, newArrivals, recommendedProducts);
+    }
+
+    public List<ProductResponse> findDiscountedProducts() {
+        List<Product> products = productRepository.findDiscounted();
+        return products.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductResponse> findNewDevices() {
+        List<Product> products = productRepository.findByProductStatus(ProductStatus.NEW_DEVICES);
+        return products.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductResponse> findRecommendedProducts() {
+        List<Product> products = productRepository.findRecommended();
+        return products.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+    private ProductResponse mapToResponse(Product product) {
+        return new ProductResponse (product.getId(), product.getProductName(), product.getPrice(), product.getDiscount());
     }
 }
