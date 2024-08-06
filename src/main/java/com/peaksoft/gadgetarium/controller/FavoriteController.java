@@ -26,20 +26,18 @@ public class FavoriteController {
     }
 
     @DeleteMapping("/clearFavorites")
-    public ResponseEntity<Void> clearFavorites(Principal principal) {
-        favoriteService.clearFavorites(principal.getName());
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> clearFavorites(Principal principal) {
+       return favoriteService.clearFavorites(principal.getName());
     }
 
-    @GetMapping
+    @GetMapping("/findAll")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(Principal principal) {
         List<FavoriteResponse> favorites = favoriteService.getFavorites(principal.getName());
         return ResponseEntity.ok(favorites);
     }
 
     @DeleteMapping("/removeFavorite/{productId}")
-    public ResponseEntity<Void> removeFavorite(@PathVariable Long productId, Principal principal) {
-        favoriteService.removeFavorite(productId, principal.getName());
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> removeFavorite(@PathVariable Long productId, Principal principal) {
+       return favoriteService.removeFavorite(productId, principal.getName());
     }
 }
