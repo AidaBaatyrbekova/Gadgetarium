@@ -1,6 +1,6 @@
 package com.peaksoft.gadgetarium.exception;
 
-public class ExceptionMassage {
+public class ExceptionMessage {
 
     public static final String SUB_CATEGORY_NOT_FOUND_WITH_ID = "SubCategory not found with id ";
     public static final String PRODUCT_NOT_FOUND_BY_ID = "Not found product by id ";

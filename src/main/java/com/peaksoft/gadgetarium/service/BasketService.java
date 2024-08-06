@@ -1,6 +1,6 @@
 package com.peaksoft.gadgetarium.service;
 
-import com.peaksoft.gadgetarium.exception.ExceptionMassage;
+import com.peaksoft.gadgetarium.exception.ExceptionMessage;
 import com.peaksoft.gadgetarium.exception.NotFoundException;
 import com.peaksoft.gadgetarium.model.dto.response.BasketSummaryResponse;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
@@ -40,11 +40,11 @@ public class BasketService {
 
         String userEmail = principal.getName();
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.USER_NOT_FOUND));
         Basket basket = basketRepository.findByUser(user)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.BASKET_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.BASKET_NOT_FOUND));
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID));
 
         basket.getProducts().add(product);
 
@@ -83,9 +83,9 @@ public class BasketService {
 
         String userEmail = principal.getName();
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.USER_NOT_FOUND));
         Basket basket = basketRepository.findByUser(user)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.BASKET_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.BASKET_NOT_FOUND));
 
         List<ProductResponse> productResponses = basket.getProducts().stream()
                 .map(this::convertToProductResponse)
@@ -120,11 +120,11 @@ public class BasketService {
 
         String userEmail = principal.getName();
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.USER_NOT_FOUND));
         Basket basket = basketRepository.findByUser(user)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.BASKET_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.BASKET_NOT_FOUND));
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID));
 
         if (!basket.getProducts().contains(product)) {
             return new ResponseEntity<>("Product not found in the basket", HttpStatus.NOT_FOUND);
@@ -161,14 +161,14 @@ public class BasketService {
 
         String userEmail = principal.getName();
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.USER_NOT_FOUND));
         Basket basket = basketRepository.findByUser(user)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.BASKET_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.BASKET_NOT_FOUND));
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID));
 
         if (!basket.getProducts().contains(product)) {
-            throw new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_THE_BASKET);
+            throw new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_THE_BASKET);
         }
 
         ProductResponse productResponse = convertToProductResponse(product);
