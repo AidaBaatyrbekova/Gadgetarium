@@ -9,4 +9,5 @@ public class ExceptionMassage {
     public static final String BASKET_NOT_FOUND = "Basket not found";
     public static final String PRODUCT_NOT_FOUND_THE_BASKET = "Product not found in the basket";
     public static final String USER_NOT_FOUND = "User not found";
+    public static final String FAVORITE_NOT_FOUND = "Favorite not found";
 }

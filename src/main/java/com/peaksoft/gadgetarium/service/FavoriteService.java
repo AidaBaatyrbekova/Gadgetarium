@@ -33,9 +33,15 @@ public class FavoriteService {
 
     public FavoriteResponse addFavorite(Long productId, Principal principal) {
         User user = userRepository.findByEmail(principal.getName())
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
+                .orElseThrow(() -> {
+                    log.error("User not found with email:{}", principal.getName());
+                    return new NotFoundException(ExceptionMassage.USER_NOT_FOUND);
+                });
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> {
+                    log.error("Product not found with Id:{}", productId);
+                    return new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID);
+                });
         user.getFavorites().add(product);
         userRepository.save(user);
         ProductResponse productResponse = productMapper.mapToResponse(product);
@@ -49,15 +55,22 @@ public class FavoriteService {
     //очищает все избранные товары текущего пользователя по его email.
     public ResponseEntity<String> clearFavorites(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
+                .orElseThrow(() -> {
+                    log.error("User not found with email: {}", email);
+                    return new NotFoundException(ExceptionMassage.USER_NOT_FOUND);
+                });
         user.getFavorites().clear();
         userRepository.save(user);
+        log.info("All favorites successfully deleted for user with email: {}", email);
         return new ResponseEntity<>("All favorite successfully deleted", HttpStatus.OK);
     }
 
     public List<FavoriteResponse> getFavorites(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
+                .orElseThrow(() -> {
+                    log.error("User not found with email: {}", email);
+                    return new NotFoundException(ExceptionMassage.USER_NOT_FOUND);
+                });
         return user.getFavorites().stream()
                 .map(product -> FavoriteResponse.builder()
                         .userId(user.getId())
@@ -70,11 +83,22 @@ public class FavoriteService {
     // удаляет один избранный товар по productId и email текущего пользователя.
     public ResponseEntity<String> removeFavorite(Long productId, String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.USER_NOT_FOUND));
+                .orElseThrow(() -> {
+                    log.error("User not found with email: {}", email);
+                    return new NotFoundException(ExceptionMassage.USER_NOT_FOUND);
+                });
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> {
+                    log.error("Product not found with ID: {}", productId);
+                    return new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID);
+                });
+        if (!user.getFavorites().contains(product)) {
+            log.error("Favorite not found with product ID: {} for user with email: {}", productId, email);
+            throw new NotFoundException(ExceptionMassage.FAVORITE_NOT_FOUND);
+        }
         user.getFavorites().remove(product);
         userRepository.save(user);
+        log.info("Favorite successfully deleted for user with email: {}", email);
         return new ResponseEntity<>("Favorite successfully deleted", HttpStatus.OK);
     }
 }
