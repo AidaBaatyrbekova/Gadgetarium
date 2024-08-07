@@ -46,7 +46,7 @@ public class ProductMapper {
 
         if (request.getSubCategoryId() != null) {
             SubCategory subCategory = subCategoryRepository.findById(request.getSubCategoryId())
-                    .orElseThrow(() -> new NotFoundException(ExceptionMassage.SUB_CATEGORY_NOT_FOUND_WITH_ID + request.getSubCategoryId()));
+                    .orElseThrow(() -> new NotFoundException(ExceptionMassage.SUB_CATEGORY_NOT_FOUND + request.getSubCategoryId()));
             product.setSubCategory(subCategory);
         }
         if (request.getBrandId() != null) {

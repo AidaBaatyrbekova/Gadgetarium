@@ -1,10 +1,12 @@
 package com.peaksoft.gadgetarium.controller;
 
-import com.peaksoft.gadgetarium.model.entities.ComparisonList;
+import com.peaksoft.gadgetarium.model.entities.Category;
+import com.peaksoft.gadgetarium.model.entities.Compare;
 import com.peaksoft.gadgetarium.service.ProductCompareService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,30 +17,37 @@ public class ProductCompareController {
 
     ProductCompareService productCompareService;
 
-    @PostMapping("/create/{categoryId}")
-    public void createComparisonList(@PathVariable Long categoryId) {
-        productCompareService.createComparisonList(categoryId);
+    @PostMapping("/create")
+    public ResponseEntity<Compare> createComparisonList(@RequestParam Category categoryId) {
+        Compare comparisonList = productCompareService.createComparisonList(categoryId.getId());
+        return ResponseEntity.ok(comparisonList);
     }
 
-    @PostMapping("/add/{productId}/{categoryId}")
-    public void addProductToComparisonList(@PathVariable Long productId, @PathVariable Long categoryId) {
-        productCompareService.addProductToComparisonList(productId, categoryId);
+    @PostMapping("/add")
+    public ResponseEntity<String> addProductToComparison(@RequestParam Long productId, @RequestParam Long categoryId) {
+        productCompareService.addProductComparisonList(productId, categoryId);
+        return ResponseEntity.ok("Product added to comparison list");
     }
 
-    @PostMapping("/remove/{productId}/{categoryId}")
-    public void removeProductFromComparisonList(@PathVariable Long productId, @PathVariable Long categoryId) {
-        productCompareService.removeProductFromComparisonList(productId, categoryId);
+    @DeleteMapping("/remove")
+    public ResponseEntity<String> removeProductFromComparison(
+            @RequestParam Long productId,
+            @RequestParam Long categoryId) {
+        productCompareService.removeProductComparisonList(productId, categoryId);
+        return ResponseEntity.ok("Product removed from comparison list");
     }
 
-    @PostMapping("/clear/{categoryId}")
-    public void clearComparisonList(@PathVariable Long categoryId) {
+    @DeleteMapping("/clear")
+    public ResponseEntity<String> clearComparisonList(@RequestParam Long categoryId) {
         productCompareService.clearComparisonList(categoryId);
+        return ResponseEntity.ok("Comparison list cleared");
     }
 
-    @GetMapping("/compare/{categoryId}")
-    public String compareProducts(@PathVariable Long categoryId,
-                                  @RequestParam(value = "showDifferences", defaultValue = "true") boolean showDifferences) {
-        return productCompareService.compareProducts(categoryId, showDifferences);
+    @PostMapping("/compare")
+    public ResponseEntity<String> compareProducts(
+            @RequestParam Long subCategoryId,
+            @RequestParam boolean showDifferences) {
+        String comparisonResult = productCompareService.compareProducts(subCategoryId, showDifferences);
+        return ResponseEntity.ok(comparisonResult);
     }
-
 }
