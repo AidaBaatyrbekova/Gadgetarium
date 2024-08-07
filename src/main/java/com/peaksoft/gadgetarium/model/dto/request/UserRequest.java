@@ -23,7 +23,7 @@ public class UserRequest {
     @Email(message = "Email should be valid")
     String email;
     @NotBlank(message = "password is mandatory!")
-    @Size(min = 6, max = 20, message = "password must be between 6 and 20 characters!")
+    @Size(min = 8, max = 20, message = "password must be between 8 and 20 characters!")
     String password;
     String confirmThePassword;
     @NotBlank(message = "phoneNumber should not be empty!")
