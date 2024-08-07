@@ -7,7 +7,6 @@ import com.peaksoft.gadgetarium.model.enums.ProductStatus;
 import com.peaksoft.gadgetarium.repository.ProductRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Setter
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -28,7 +26,6 @@ public class MainPageService {
         List<ProductResponse> discountedProducts = findDiscountedProducts();
         List<ProductResponse> newArrivals = findNewDevices();
         List<ProductResponse> recommendedProducts = findRecommendedProducts();
-
         return new MainPage(discountedProducts, newArrivals, recommendedProducts);
     }
 
