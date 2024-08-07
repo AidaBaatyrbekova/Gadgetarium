@@ -75,4 +75,8 @@ public class ProductService {
         productRepository.delete(product);
         return "Successfully deleted product by id " + id;
     }
+
+    public List<Product> findProductsByName(String name) {
+        return productRepository.findByProductNameContainingIgnoreCase(name);
+    }
 }

@@ -2,6 +2,7 @@ package com.peaksoft.gadgetarium.controller;
 
 import com.peaksoft.gadgetarium.model.dto.request.ProductRequest;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
+import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,5 +50,9 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Long id) {
         return productService.deleteProduct(id);
+    }
+    @GetMapping("/search/name")
+    public List<Product> searchByName(@RequestParam String name) {
+        return productService.findProductsByName(name);
     }
 }
