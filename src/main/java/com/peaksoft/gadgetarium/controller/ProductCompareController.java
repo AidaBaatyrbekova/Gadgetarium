@@ -17,36 +17,32 @@ public class ProductCompareController {
 
     ProductCompareService productCompareService;
 
-    @PostMapping("/create")
-    public ResponseEntity<Compare> createComparisonList(@RequestParam Category categoryId) {
-        Compare comparisonList = productCompareService.createComparisonList(categoryId.getId());
+    @PostMapping("/create/{categoryId}")
+    public ResponseEntity<Compare> createComparisonList(@PathVariable Long categoryId) {
+        Compare comparisonList = productCompareService.createComparisonList(categoryId);
         return ResponseEntity.ok(comparisonList);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<String> addProductToComparison(@RequestParam Long productId, @RequestParam Long categoryId) {
+    @PostMapping("/add/{categoryId}/{productId}")
+    public ResponseEntity<String> addProductToComparison(@PathVariable Long productId, @PathVariable Long categoryId) {
         productCompareService.addProductComparisonList(productId, categoryId);
         return ResponseEntity.ok("Product added to comparison list");
     }
 
-    @DeleteMapping("/remove")
-    public ResponseEntity<String> removeProductFromComparison(
-            @RequestParam Long productId,
-            @RequestParam Long categoryId) {
+    @DeleteMapping("/remove/{categoryId}/{productId}")
+    public ResponseEntity<String> removeProductFromComparison(@PathVariable Long productId, @PathVariable Long categoryId) {
         productCompareService.removeProductComparisonList(productId, categoryId);
         return ResponseEntity.ok("Product removed from comparison list");
     }
 
-    @DeleteMapping("/clear")
-    public ResponseEntity<String> clearComparisonList(@RequestParam Long categoryId) {
+    @DeleteMapping("/clear/{categoryId}")
+    public ResponseEntity<String> clearComparisonList(@PathVariable Long categoryId) {
         productCompareService.clearComparisonList(categoryId);
         return ResponseEntity.ok("Comparison list cleared");
     }
 
-    @PostMapping("/compare")
-    public ResponseEntity<String> compareProducts(
-            @RequestParam Long subCategoryId,
-            @RequestParam boolean showDifferences) {
+    @PostMapping("/compare/{subCategoryId}/{showDifferences}")
+    public ResponseEntity<String> compareProducts(@PathVariable Long subCategoryId, @PathVariable boolean showDifferences) {
         String comparisonResult = productCompareService.compareProducts(subCategoryId, showDifferences);
         return ResponseEntity.ok(comparisonResult);
     }
