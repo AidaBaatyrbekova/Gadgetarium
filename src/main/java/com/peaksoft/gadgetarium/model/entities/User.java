@@ -18,8 +18,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
 @Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User implements UserDetails {
@@ -40,8 +40,6 @@ public class User implements UserDetails {
     String phoneNumber;
 
     String password;
-
-    String confirmThePassword;
 
     String resetPasswordToken;
 

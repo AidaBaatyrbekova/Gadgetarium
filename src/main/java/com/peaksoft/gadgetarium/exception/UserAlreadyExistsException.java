@@ -1,8 +1,12 @@
 package com.peaksoft.gadgetarium.exception;
 
-public class UserAlreadyExistsException extends RuntimeException{
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-    public UserAlreadyExistsException(String message){
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class UserAlreadyExistsException extends RuntimeException {
+
+    public UserAlreadyExistsException(String message) {
         super(message);
     }
 }
