@@ -10,6 +10,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,39 +28,51 @@ public class ProductCompareService {
     ProductRepository productRepository;
     UserRepository userRepository;
 
-    // Метод для добавления продукта в список сравнения пользователя
-    public void addProductToComparison(Long userId, Long productId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(ExceptionMessage.USER_NOT_FOUND));
+    // Получить пользователя из контекста безопасности
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails userDetails)) {
+            throw new NotFoundException("User not authenticated");
+        }
+        String email = userDetails.getUsername();
+
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.error("User not found for email: {}", email);
+                    return new NotFoundException(ExceptionMessage.USER_NOT_FOUND);
+                });
+    }
+
+    // Добавить продукт в список сравнения
+    public void addProductToComparison(Long productId) {
+        User user = getCurrentUser();
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND));
         user.getComparedProducts().add(product);
         userRepository.save(user);
     }
 
-    // Метод для удаления продукта из списка сравнения пользователя
-    public void removeProductFromComparison(Long userId, Long productId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(ExceptionMessage.USER_NOT_FOUND));
+    // Удалить продукт из списка сравнения по id
+    public void removeProductFromComparison(Long productId) {
+        User user = getCurrentUser();
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND));
 
-        // Удаление продукта из списка сравнения
         user.getComparedProducts().remove(product);
         userRepository.save(user);
     }
 
-    // Метод для очистки списка сравнения пользователя
-    public void clearComparisonList(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(ExceptionMessage.USER_NOT_FOUND));
+    // Очистить список сравнения
+    public void clearComparisonList() {
+        User user = getCurrentUser();
         user.getComparedProducts().clear();
         userRepository.save(user);
     }
 
-    public String compareProductsByCategory(Long userId, Long categoryId, boolean showDifferences) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(ExceptionMessage.USER_NOT_FOUND));
+    // Сравнить продукты по категории
+    public String compareProductsByCategory(Long categoryId, boolean showDifferences) {
+        User user = getCurrentUser();
         List<Product> products = filterProductsByCategory(user.getComparedProducts(), categoryId);
         if (products.size() < 2) {
             return "Not enough products to compare in the selected category.";
@@ -87,13 +102,14 @@ public class ProductCompareService {
         return result.toString();
     }
 
+    // Фильтровать продукты по категории
     private List<Product> filterProductsByCategory(List<Product> products, Long categoryId) {
-        // Фильтрация продуктов по выбранной категории
         return products.stream()
                 .filter(product -> product.getSubCategory().getCategoryOfSubCategory().getId().equals(categoryId))
                 .collect(Collectors.toList());
     }
 
+    // Получить различия между двумя продуктами
     private String getDifferences(Map<String, String[]> properties) {
         StringBuilder differences = new StringBuilder();
         properties.forEach((key, value) -> {
@@ -104,6 +120,7 @@ public class ProductCompareService {
         return differences.toString();
     }
 
+    // Получить свойства двух продуктов для сравнения
     private Map<String, String[]> getProductProperties(Product p1, Product p2) {
         return Map.of(
                 "Brand", new String[]{p1.getBrand().getBrandName(), p2.getBrand().getBrandName()},
