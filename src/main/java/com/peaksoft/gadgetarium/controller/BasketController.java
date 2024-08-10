@@ -39,7 +39,8 @@ public class BasketController {
     public ResponseEntity<String> deleteProductFromBasket(@PathVariable Long productId, Principal principal) {
         return basketService.deleteProductFromBasket(productId, principal);
     }
-@Operation(summary = "get product by Id")
+
+    @Operation(summary = "get product by Id")
     @GetMapping("/getProductById/{productId}")
     public ProductSummaryResponse getProductById(@PathVariable Long productId, Principal principal) {
         return basketService.getProductById(productId, principal);
