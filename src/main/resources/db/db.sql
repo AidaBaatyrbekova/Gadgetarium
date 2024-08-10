@@ -1,4 +1,4 @@
-insert into users(create_date, confirm_the_password, email, gender, last_name, local, name, password, phone_number,
+insert into users(create_date, email, gender, last_name, local, name, password, phone_number,
                   role)
 values ('05-12-2023', 'admin@gmail.com', 'male',
         'Adminov', 'ky_KG', 'Admin',
@@ -60,9 +60,8 @@ values ('2023-07-01', 1000, 69999, 150, 1, 4, 'BLACK', '2023-06-15', '24 months'
         'Kirin 9000', 'Huawei P40 Pro', 'SALES', '4.6', '6.6 inches', 'Dual');
 
 insert into baskets (id, user_id, quantity, total_amount, total_discount, total_sum)
-values
-(1, 1, 0, 0, 0, 0),
-(2, 2, 0, 0, 0, 0),
-(3, 3, 0, 0, 0, 0);
+values (1, 1, 0, 0, 0, 0),
+       (2, 2, 0, 0, 0, 0),
+       (3, 3, 0, 0, 0, 0);
 
 select setval('baskets_id_seq', (SELECT MAX(id) FROM baskets));

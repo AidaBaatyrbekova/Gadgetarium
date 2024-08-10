@@ -1,6 +1,6 @@
 package com.peaksoft.gadgetarium.mapper;
 
-import com.peaksoft.gadgetarium.exception.ExceptionMassage;
+import com.peaksoft.gadgetarium.exception.ExceptionMessage;
 import com.peaksoft.gadgetarium.exception.NotFoundException;
 import com.peaksoft.gadgetarium.model.dto.request.ProductRequest;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
@@ -46,12 +46,12 @@ public class ProductMapper {
 
         if (request.getSubCategoryId() != null) {
             SubCategory subCategory = subCategoryRepository.findById(request.getSubCategoryId())
-                    .orElseThrow(() -> new NotFoundException(ExceptionMassage.SUB_CATEGORY_NOT_FOUND + request.getSubCategoryId()));
+                    .orElseThrow(() -> new NotFoundException(ExceptionMessage.SUB_CATEGORY_NOT_FOUND + request.getSubCategoryId()));
             product.setSubCategory(subCategory);
         }
         if (request.getBrandId() != null) {
             Brand brand = brandRepository.findById(request.getBrandId())
-                    .orElseThrow(() -> new NotFoundException(ExceptionMassage.BRAND_NOT_FOUND_WITH_ID + request.getBrandId()));
+                    .orElseThrow(() -> new NotFoundException(ExceptionMessage.BRAND_NOT_FOUND_WITH_ID + request.getBrandId()));
             product.setBrand(brand);
         }
         return product;
