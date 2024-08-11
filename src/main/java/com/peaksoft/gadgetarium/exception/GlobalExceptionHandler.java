@@ -21,15 +21,4 @@ public class GlobalExceptionHandler {
         return new ExceptionResponse(HttpStatus.NOT_FOUND, e.getMessage(), getClass().getName());
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ExceptionResponse handleGlobalException(Exception ex) {
-        return new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), getClass().getName());
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionResponse handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
-        return new ExceptionResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), getClass().getName());
-    }
 }
