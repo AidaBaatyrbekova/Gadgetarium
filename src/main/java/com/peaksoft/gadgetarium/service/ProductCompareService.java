@@ -35,8 +35,6 @@ public class ProductCompareService {
             throw new NotFoundException("User not authenticated");
         }
         String email = userDetails.getUsername();
-
-
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     log.error("User not found for email: {}", email);
@@ -49,6 +47,10 @@ public class ProductCompareService {
         User user = getCurrentUser();
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND));
+
+        if (user.getComparedProducts().contains(product)) {
+            throw new RuntimeException("Product is already in compare list");
+        }
         user.getComparedProducts().add(product);
         userRepository.save(user);
     }
