@@ -54,6 +54,8 @@ public class ProductController {
         return productService.deleteProduct(id);
     }
 
+    @Operation(summary = "Search Products by various criteria",
+            description = "Search products by name, price range, category, or brand.")
     @GetMapping("/search")
     public List<Product> searchProducts(
             @RequestParam(required = false) String name,
