@@ -22,8 +22,6 @@ import java.util.List;
 public class ProductController {
 
     ProductService productService;
-    ProductRepository productRepository;
-
     @Operation(summary = "Save Product")
     @PostMapping("/save")
     public ProductResponse save(@RequestBody ProductRequest request) {
