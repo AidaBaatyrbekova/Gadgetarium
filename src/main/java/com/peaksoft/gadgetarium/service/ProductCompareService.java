@@ -10,6 +10,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,33 +45,45 @@ public class ProductCompareService {
     }
 
     // Добавить продукт в список сравнения
-    public void addProductToComparison(Long productId) {
+    public ResponseEntity<String> addProductToComparison(Long productId) {
         User user = getCurrentUser();
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND));
 
         if (user.getComparedProducts().contains(product)) {
-            throw new RuntimeException("Product is already in compare list");
+            return ResponseEntity.ok("Product is already in the compare list");
         }
+
         user.getComparedProducts().add(product);
         userRepository.save(user);
+
+        return ResponseEntity.ok("Product added to compare successfully");
     }
 
     // Удалить продукт из списка сравнения по id
-    public void removeProductFromComparison(Long productId) {
+    public ResponseEntity<String> removeProductFromComparison(Long productId) {
         User user = getCurrentUser();
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND));
 
-        user.getComparedProducts().remove(product);
-        userRepository.save(user);
+        if (user.getComparedProducts().remove(product)) {
+            userRepository.save(user);
+            return ResponseEntity.ok("Product removed from compare successfully");
+        } else {
+            return ResponseEntity.ok("Product not found in the compare list");
+        }
     }
 
     // Очистить список сравнения
-    public void clearComparisonList() {
+    public ResponseEntity<String> clearComparisonList() {
         User user = getCurrentUser();
+        if (user.getComparedProducts().isEmpty()) {
+            return ResponseEntity.ok("Compare list is already empty");
+        }
         user.getComparedProducts().clear();
         userRepository.save(user);
+
+        return ResponseEntity.ok("Compare list cleared successfully");
     }
 
     // Сравнить продукты по категории

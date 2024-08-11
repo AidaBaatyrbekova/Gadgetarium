@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,34 +17,21 @@ public class ProductCompareController {
 
     ProductCompareService productCompareService;
 
+    // Добавить продукт в список сравнения
     @PostMapping("/add/{productId}")
     public ResponseEntity<String> addProductToComparison(@PathVariable Long productId) {
-        try {
-            productCompareService.addProductToComparison(productId);
-            return ResponseEntity.ok("Product added to compare successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding product to compare");
-        }
+        return productCompareService.addProductToComparison(productId);
     }
 
+    // Удалить продукт из списка сравнения
     @DeleteMapping("/remove/{productId}")
     public ResponseEntity<String> removeProductFromComparison(@PathVariable Long productId) {
-        try {
-            productCompareService.removeProductFromComparison(productId);
-            return ResponseEntity.ok("Product removed from compare successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error removing product from compare");
-        }
+        return productCompareService.removeProductFromComparison(productId);
     }
 
     @DeleteMapping("/clear")
     public ResponseEntity<String> clearComparisonList() {
-        try {
-            productCompareService.clearComparisonList();
-            return ResponseEntity.ok("Compare list cleared successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error clearing compare list");
-        }
+        return productCompareService.clearComparisonList();
     }
 
     // Сравнить продукты по категории
