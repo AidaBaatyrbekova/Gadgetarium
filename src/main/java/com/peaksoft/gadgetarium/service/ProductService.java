@@ -75,7 +75,20 @@ public class ProductService {
         productRepository.delete(product);
         return "Successfully deleted product by id " + id;
     }
-    public List<Product> findProductsByName(String name) {
+
+    public List<Product> searchByName(String name) {
         return productRepository.findByProductNameContainingIgnoreCase(name);
+    }
+
+    public List<Product> searchByPriceRange(int minPrice, int maxPrice) {
+        return productRepository.findByPriceBetween(minPrice, maxPrice);
+    }
+
+    public List<Product> searchByCategory(String categoryName) {
+        return productRepository.findBySubCategory_SubCategoryNameIgnoreCase(categoryName);
+    }
+
+    public List<Product> searchByBrand(String brandName) {
+        return productRepository.findByBrand_BrandNameIgnoreCase(brandName);
     }
 }

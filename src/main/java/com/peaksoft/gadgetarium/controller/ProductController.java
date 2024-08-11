@@ -55,7 +55,25 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public List<Product> searchProducts(@RequestParam String productName) {
-        return productRepository.findByProductNameContainingIgnoreCase(productName);
+    public List<Product> searchProducts(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String brand) {
+
+        if (name != null) {
+            return productService.searchByName(name);
+        }
+        if (minPrice != null && maxPrice != null) {
+            return productService.searchByPriceRange(minPrice, maxPrice);
+        }
+        if (category != null) {
+            return productService.searchByCategory(category);
+        }
+        if (brand != null) {
+            return productService.searchByBrand(brand);
+        }
+        return List.of();
     }
 }
