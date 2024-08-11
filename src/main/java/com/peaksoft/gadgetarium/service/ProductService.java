@@ -76,6 +76,7 @@ public class ProductService {
         productRepository.delete(product);
         return "Successfully deleted product by id " + id;
     }
+
     public List<ProductResponse> searchProducts(String name, Integer minPrice, Integer maxPrice, String category, String brand) {
         if (name != null) {
             return searchByName(name);
@@ -88,6 +89,7 @@ public class ProductService {
         }
         if (category != null) {
             return searchByCategory(category);
+
         }
         if (brand != null) {
             return searchByBrand(brand);

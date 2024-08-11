@@ -53,6 +53,7 @@ public class ProductController {
     public String delete(@PathVariable("id") Long id) {
         return productService.deleteProduct(id);
     }
+
     @Operation(summary = "Search Products by various criteria",
             description = "Search products by name, price range, category, or brand.")
     @GetMapping("/search")
