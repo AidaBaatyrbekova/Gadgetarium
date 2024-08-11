@@ -62,7 +62,6 @@ public class ProductController {
             @RequestParam(required = false) Integer maxPrice,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String brand) {
-
         return productService.searchProducts(name, minPrice, maxPrice, category, brand);
     }
 }
