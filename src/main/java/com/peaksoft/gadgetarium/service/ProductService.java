@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -75,20 +76,50 @@ public class ProductService {
         productRepository.delete(product);
         return "Successfully deleted product by id " + id;
     }
-
-    public List<Product> searchByName(String name) {
-        return productRepository.findByProductNameContainingIgnoreCase(name);
+    public List<ProductResponse> searchProducts(String name, Integer minPrice, Integer maxPrice, String category, String brand) {
+        if (name != null) {
+            return searchByName(name);
+        }
+        if (minPrice != null && maxPrice != null) {
+            if (minPrice > maxPrice) {
+                throw new IllegalArgumentException("minPrice cannot be greater than maxPrice");
+            }
+            return searchByPriceRange(minPrice, maxPrice);
+        }
+        if (category != null) {
+            return searchByCategory(category);
+        }
+        if (brand != null) {
+            return searchByBrand(brand);
+        }
+        return List.of();
     }
 
-    public List<Product> searchByPriceRange(int minPrice, int maxPrice) {
-        return productRepository.findByPriceBetween(minPrice, maxPrice);
+    private List<ProductResponse> searchByName(String name) {
+        List<Product> products = productRepository.findByProductNameContainingIgnoreCase(name);
+        return products.stream()
+                .map(productMapper::mapToResponse)
+                .collect(Collectors.toList());
     }
 
-    public List<Product> searchByCategory(String categoryName) {
-        return productRepository.findBySubCategory_SubCategoryNameIgnoreCase(categoryName);
+    private List<ProductResponse> searchByPriceRange(int minPrice, int maxPrice) {
+        List<Product> products = productRepository.findByPriceBetween(minPrice, maxPrice);
+        return products.stream()
+                .map(productMapper::mapToResponse)
+                .collect(Collectors.toList());
     }
 
-    public List<Product> searchByBrand(String brandName) {
-        return productRepository.findByBrand_BrandNameIgnoreCase(brandName);
+    private List<ProductResponse> searchByCategory(String categoryName) {
+        List<Product> products = productRepository.findBySubCategory_SubCategoryNameIgnoreCase(categoryName);
+        return products.stream()
+                .map(productMapper::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    private List<ProductResponse> searchByBrand(String brandName) {
+        List<Product> products = productRepository.findByBrand_BrandNameIgnoreCase(brandName);
+        return products.stream()
+                .map(productMapper::mapToResponse)
+                .collect(Collectors.toList());
     }
 }

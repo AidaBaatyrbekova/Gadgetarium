@@ -53,29 +53,16 @@ public class ProductController {
     public String delete(@PathVariable("id") Long id) {
         return productService.deleteProduct(id);
     }
-
     @Operation(summary = "Search Products by various criteria",
             description = "Search products by name, price range, category, or brand.")
     @GetMapping("/search")
-    public List<Product> searchProducts(
+    public List<ProductResponse> searchProducts(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer minPrice,
             @RequestParam(required = false) Integer maxPrice,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String brand) {
 
-        if (name != null) {
-            return productService.searchByName(name);
-        }
-        if (minPrice != null && maxPrice != null) {
-            return productService.searchByPriceRange(minPrice, maxPrice);
-        }
-        if (category != null) {
-            return productService.searchByCategory(category);
-        }
-        if (brand != null) {
-            return productService.searchByBrand(brand);
-        }
-        return List.of();
+        return productService.searchProducts(name, minPrice, maxPrice, category, brand);
     }
 }
