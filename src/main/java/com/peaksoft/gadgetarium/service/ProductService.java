@@ -110,7 +110,7 @@ public class ProductService {
     }
 
     private List<ProductResponse> searchByCategory(String categoryName) {
-        List<Product> products = productRepository.findBySubCategory_SubCategoryNameIgnoreCase(categoryName);
+        List<Product> products = productRepository.findBySubCategory_nameOfSubCategoryIgnoreCase(categoryName);
         return products.stream()
                 .map(productMapper::mapToResponse)
                 .collect(Collectors.toList());
