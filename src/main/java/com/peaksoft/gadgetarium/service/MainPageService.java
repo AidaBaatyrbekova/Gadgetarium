@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,11 +23,12 @@ public class MainPageService {
     ProductRepository productRepository;
     ProductMapper productMapper;
 
-    public MainPage getMainPage() {
-        List<ProductResponse> discountedProducts = findDiscountedProducts();
-        List<ProductResponse> newArrivals = findNewDevices();
-        List<ProductResponse> recommendedProducts = findRecommendedProducts();
-        return new MainPage(discountedProducts, newArrivals, recommendedProducts);
+    public List<ProductResponse> getMainPage() {
+        List<ProductResponse> resultResponse = new ArrayList<>();
+        resultResponse.addAll(findDiscountedProducts());
+        resultResponse.addAll(findNewDevices());
+        resultResponse.addAll(findRecommendedProducts());
+        return resultResponse;
     }
 
     public List<ProductResponse> findDiscountedProducts() {
@@ -49,7 +51,6 @@ public class MainPageService {
                 .map(productMapper::mapToResponse)
                 .collect(Collectors.toList());
     }
-
     public static class MainPage {
         List<ProductResponse> discountedProducts;
         List<ProductResponse> newArrivals;

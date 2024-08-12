@@ -21,10 +21,9 @@ public class MainPageController {
     MainPageService mainPageService;
 
     @GetMapping("/page")
-    public MainPageService.MainPage getMainPage() {
+    public List<ProductResponse> getMainPage() {
         return mainPageService.getMainPage();
     }
-
     @GetMapping("/discounted")
     public List<ProductResponse> getDiscountedProducts() {
         return mainPageService.findDiscountedProducts();
