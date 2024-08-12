@@ -51,16 +51,4 @@ public class MainPageService {
                 .map(productMapper::mapToResponse)
                 .collect(Collectors.toList());
     }
-    public static class MainPage {
-        List<ProductResponse> discountedProducts;
-        List<ProductResponse> newArrivals;
-        List<ProductResponse> recommendedProducts;
-
-        public MainPage(List<ProductResponse> discountedProducts, List<ProductResponse> newArrivals,
-                        List<ProductResponse> recommendedProducts) {
-            this.discountedProducts = discountedProducts;
-            this.newArrivals = newArrivals;
-            this.recommendedProducts = recommendedProducts;
-        }
-    }
 }
