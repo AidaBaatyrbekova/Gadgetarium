@@ -2,6 +2,7 @@ package com.peaksoft.gadgetarium.service;
 
 import com.peaksoft.gadgetarium.exception.ExceptionMessage;
 import com.peaksoft.gadgetarium.exception.NotFoundException;
+import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.User;
 import com.peaksoft.gadgetarium.repository.ProductRepository;
@@ -12,11 +13,9 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,13 +29,12 @@ public class ProductCompareService {
     ProductRepository productRepository;
     UserRepository userRepository;
 
-    // Получить пользователя из контекста безопасности
-    private User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails userDetails)) {
+    // Получить пользователя из контекста безопасности через Principal
+    private User getCurrentUser(Principal principal) {
+        if (principal == null) {
             throw new NotFoundException("User not authenticated");
         }
-        String email = userDetails.getUsername();
+        String email = principal.getName();
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     log.error("User not found for email: {}", email);
@@ -45,24 +43,27 @@ public class ProductCompareService {
     }
 
     // Добавить продукт в список сравнения
-    public ResponseEntity<String> addProductToComparison(Long productId) {
-        User user = getCurrentUser();
+    public ResponseEntity<String> addProductToComparison(Long productId, Principal principal) {
+        User user = getCurrentUser(principal);
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND));
 
         if (user.getComparedProducts().contains(product)) {
-            return ResponseEntity.ok("Product is already in the compare list");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Product is already in the compare list");
         }
 
         user.getComparedProducts().add(product);
         userRepository.save(user);
 
-        return ResponseEntity.ok("Product added to compare successfully");
+        // Получаем имя категории продукта
+        String categoryName = product.getSubCategory().getCategoryOfSubCategory().getElectronicType();
+
+        return ResponseEntity.ok("Product added to compare successfully. Category: " + categoryName);
     }
 
     // Удалить продукт из списка сравнения по id
-    public ResponseEntity<String> removeProductFromComparison(Long productId) {
-        User user = getCurrentUser();
+    public ResponseEntity<String> removeProductFromComparison(Long productId, Principal principal) {
+        User user = getCurrentUser(principal);
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND));
 
@@ -75,8 +76,8 @@ public class ProductCompareService {
     }
 
     // Очистить список сравнения
-    public ResponseEntity<String> clearComparisonList() {
-        User user = getCurrentUser();
+    public ResponseEntity<String> clearComparisonList(Principal principal) {
+        User user = getCurrentUser(principal);
         if (user.getComparedProducts().isEmpty()) {
             return ResponseEntity.ok("Compare list is already empty");
         }
@@ -86,12 +87,56 @@ public class ProductCompareService {
         return ResponseEntity.ok("Compare list cleared successfully");
     }
 
+    // Получить все продукты из списка сравнения
+    public ResponseEntity<List<ProductResponse>> getAllProductsInComparison(Principal principal) {
+        User user = getCurrentUser(principal);
+        List<ProductResponse> comparedProducts = user.getComparedProducts().stream()
+                .map(this::convertToProductResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(comparedProducts);
+    }
+
+    // Метод для конвертации Product в ProductResponse
+    private ProductResponse convertToProductResponse(Product product) {
+        return ProductResponse.builder()
+                .id(product.getId())
+                .productName(product.getProductName())
+                .productStatus(product.getProductStatus())
+                .operationMemory(product.getOperationMemory())
+                .operationSystem(product.getOperationSystem())
+                .subCategory(product.getSubCategory())
+                .brand(product.getBrand())
+                .createDate(product.getCreateDate())
+                .memory(product.getMemory())
+                .color(product.getColor())
+                .operationSystemNum(product.getOperationSystemNum())
+                .dateOfRelease(product.getDateOfRelease())
+                .processor(product.getProcessor())
+                .guarantee(product.getGuarantee())
+                .screen(product.getScreen())
+                .simCard(product.getSimCard())
+                .rating(product.getRating())
+                .discount(product.getDiscount())
+                .weight(product.getWeight())
+                .price(product.getPrice())
+                .build();
+    }
+
+
     // Сравнить продукты по категории
-    public String compareProductsByCategory(Long categoryId, boolean showDifferences) {
-        User user = getCurrentUser();
-        List<Product> products = filterProductsByCategory(user.getComparedProducts(), categoryId);
+    public ResponseEntity<String> compareProductsByCategory(Long categoryId, boolean showDifferences, Principal principal) {
+        User user = getCurrentUser(principal);
+        List<Product> products;
+
+        // Если categoryId равен null, сравниваем все продукты
+        if (categoryId == null) {
+            products = user.getComparedProducts();
+        } else {
+            products = filterProductsByCategory(user.getComparedProducts(), categoryId);
+        }
+
         if (products.size() < 2) {
-            return "Not enough products to compare in the selected category.";
+            return ResponseEntity.ok("Not enough products to compare.");
         }
 
         StringBuilder result = new StringBuilder();
@@ -115,7 +160,7 @@ public class ProductCompareService {
                 }
             }
         }
-        return result.toString();
+        return ResponseEntity.ok(result.toString());
     }
 
     // Фильтровать продукты по категории

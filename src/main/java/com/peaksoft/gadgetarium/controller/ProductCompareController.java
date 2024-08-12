@@ -1,5 +1,6 @@
 package com.peaksoft.gadgetarium.controller;
 
+import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.service.ProductCompareService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
@@ -7,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.List;
 
 @RestController
 @Tag(name = "Product compare")
@@ -18,25 +22,32 @@ public class ProductCompareController {
     ProductCompareService productCompareService;
 
     // Добавить продукт в список сравнения
-    @PostMapping("/add/{productId}")
-    public ResponseEntity<String> addProductToComparison(@PathVariable Long productId) {
-        return productCompareService.addProductToComparison(productId);
+    @PostMapping("/add")
+    public ResponseEntity<String> addProductToComparison(@RequestParam Long productId, Principal principal) {
+        return productCompareService.addProductToComparison(productId, principal);
     }
 
-    // Удалить продукт из списка сравнения
-    @DeleteMapping("/remove/{productId}")
-    public ResponseEntity<String> removeProductFromComparison(@PathVariable Long productId) {
-        return productCompareService.removeProductFromComparison(productId);
+    @DeleteMapping
+    public ResponseEntity<String> removeProductFromComparison(@RequestParam Long productId, Principal principal) {
+        return productCompareService.removeProductFromComparison(productId, principal);
     }
 
     @DeleteMapping("/clear")
-    public ResponseEntity<String> clearComparisonList() {
-        return productCompareService.clearComparisonList();
+    public ResponseEntity<String> clearComparisonList(Principal principal) {
+        return productCompareService.clearComparisonList(principal);
     }
 
-    // Сравнить продукты по категории
-    @GetMapping("/compareByCategory/{categoryId}/{showDifferences}")
-    public String compareProductsByCategory(@PathVariable Long categoryId, @PathVariable boolean showDifferences) {
-        return productCompareService.compareProductsByCategory(categoryId, showDifferences);
+    // Получить все продукты из списка сравнения
+    @GetMapping("/all")
+    public ResponseEntity<List<ProductResponse>> getAllProductsInComparison(Principal principal) {
+        return productCompareService.getAllProductsInComparison(principal);
+    }
+
+    @GetMapping
+    public ResponseEntity<String> compareProductsByCategory(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam boolean showDifferences,
+            Principal principal) {
+        return productCompareService.compareProductsByCategory(categoryId, showDifferences, principal);
     }
 }
