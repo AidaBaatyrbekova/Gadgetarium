@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    @Query("SELECT p FROM Product p WHERE p.discount > 0")
+    @Query("SELECT p FROM Product p WHERE p.discount > 0 and p.productStatus='SALES'")
     List<Product> findDiscounted();
 
     @Query("SELECT p FROM Product p WHERE p.productStatus = :status")
