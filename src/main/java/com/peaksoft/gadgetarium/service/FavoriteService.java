@@ -31,7 +31,7 @@ public class FavoriteService {
     ProductRepository productRepository;
     ProductMapper productMapper;
 
-    public FavoriteResponse addFavorite(Long productId, Principal principal) {
+    public ProductResponse addFavorite(Long productId, Principal principal) {
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> {
                     log.error("User not found with email:{}", principal.getName());
@@ -44,12 +44,8 @@ public class FavoriteService {
                 });
         user.getFavorites().add(product);
         userRepository.save(user);
-        ProductResponse productResponse = productMapper.mapToResponse(product);
-        return FavoriteResponse.builder()
-                .userId(user.getId())
-                .productId(product.getId())
-                .productResponse(productResponse)
-                .build();
+        return productMapper.mapToResponse(product);
+
     }
 
     //очищает все избранные товары текущего пользователя по его email.
@@ -65,19 +61,14 @@ public class FavoriteService {
         return new ResponseEntity<>("All favorite successfully deleted", HttpStatus.OK);
     }
 
-    public List<FavoriteResponse> getFavorites(String email) {
+    public List<ProductResponse> getFavorites(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     log.error("User not found with email: {}", email);
                     return new NotFoundException(ExceptionMassage.USER_NOT_FOUND);
                 });
         return user.getFavorites().stream()
-                .map(product -> FavoriteResponse.builder()
-                        .userId(user.getId())
-                        .productId(product.getId())
-                        .productResponse(productMapper.mapToResponse(product))
-                        .build())
-                .collect(Collectors.toList());
+                .map(productMapper::mapToResponse).collect(Collectors.toList());
     }
 
     // удаляет один избранный товар по productId и email текущего пользователя.

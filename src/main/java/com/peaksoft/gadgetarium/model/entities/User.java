@@ -62,11 +62,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     List<OrderHistory> orderHistories;
 
-    @OneToMany(mappedBy = "user")
-    List<Favorite> favoriteProducts;
-
     @ManyToMany
-    @JoinTable(name = "user_favorites",
+    @JoinTable(name = "favorites",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
