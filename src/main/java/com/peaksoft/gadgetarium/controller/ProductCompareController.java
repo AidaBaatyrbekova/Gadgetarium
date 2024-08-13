@@ -38,16 +38,16 @@ public class ProductCompareController {
     }
 
     // Получить все продукты из списка сравнения
-    @GetMapping("/all")
+    @GetMapping("/find-all")
     public ResponseEntity<List<ProductResponse>> getAllProductsInComparison(Principal principal) {
         return productCompareService.getAllProductsInComparison(principal);
     }
 
     @GetMapping
     public ResponseEntity<String> compareProductsByCategory(
-            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String categoryName,
             @RequestParam boolean showDifferences,
             Principal principal) {
-        return productCompareService.compareProductsByCategory(categoryId, showDifferences, principal);
+        return productCompareService.compareProductsByCategory(categoryName, showDifferences, principal);
     }
 }

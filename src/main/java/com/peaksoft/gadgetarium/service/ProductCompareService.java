@@ -2,6 +2,7 @@ package com.peaksoft.gadgetarium.service;
 
 import com.peaksoft.gadgetarium.exception.ExceptionMessage;
 import com.peaksoft.gadgetarium.exception.NotFoundException;
+import com.peaksoft.gadgetarium.mapper.ProductMapper;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.User;
@@ -28,6 +29,7 @@ public class ProductCompareService {
 
     ProductRepository productRepository;
     UserRepository userRepository;
+    ProductMapper productMapper;
 
     // Получить пользователя из контекста безопасности через Principal
     private User getCurrentUser(Principal principal) {
@@ -91,48 +93,26 @@ public class ProductCompareService {
     public ResponseEntity<List<ProductResponse>> getAllProductsInComparison(Principal principal) {
         User user = getCurrentUser(principal);
         List<ProductResponse> comparedProducts = user.getComparedProducts().stream()
-                .map(this::convertToProductResponse)
+                .map(productMapper::mapToResponse)
                 .collect(Collectors.toList());
+
+        if (comparedProducts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+
         return ResponseEntity.ok(comparedProducts);
     }
 
-    // Метод для конвертации Product в ProductResponse
-    private ProductResponse convertToProductResponse(Product product) {
-        return ProductResponse.builder()
-                .id(product.getId())
-                .productName(product.getProductName())
-                .productStatus(product.getProductStatus())
-                .operationMemory(product.getOperationMemory())
-                .operationSystem(product.getOperationSystem())
-                .subCategory(product.getSubCategory())
-                .brand(product.getBrand())
-                .createDate(product.getCreateDate())
-                .memory(product.getMemory())
-                .color(product.getColor())
-                .operationSystemNum(product.getOperationSystemNum())
-                .dateOfRelease(product.getDateOfRelease())
-                .processor(product.getProcessor())
-                .guarantee(product.getGuarantee())
-                .screen(product.getScreen())
-                .simCard(product.getSimCard())
-                .rating(product.getRating())
-                .discount(product.getDiscount())
-                .weight(product.getWeight())
-                .price(product.getPrice())
-                .build();
-    }
-
-
     // Сравнить продукты по категории
-    public ResponseEntity<String> compareProductsByCategory(Long categoryId, boolean showDifferences, Principal principal) {
+    public ResponseEntity<String> compareProductsByCategory(String categoryName, boolean showDifferences, Principal principal) {
         User user = getCurrentUser(principal);
         List<Product> products;
 
-        // Если categoryId равен null, сравниваем все продукты
-        if (categoryId == null) {
+        // Если categoryName равен null сравниваем все продукты
+        if (categoryName == null || categoryName.isEmpty()) {
             products = user.getComparedProducts();
         } else {
-            products = filterProductsByCategory(user.getComparedProducts(), categoryId);
+            products = filterProductsByCategory(user.getComparedProducts(), categoryName);
         }
 
         if (products.size() < 2) {
@@ -164,9 +144,11 @@ public class ProductCompareService {
     }
 
     // Фильтровать продукты по категории
-    private List<Product> filterProductsByCategory(List<Product> products, Long categoryId) {
+    private List<Product> filterProductsByCategory(List<Product> products, String categoryName) {
         return products.stream()
-                .filter(product -> product.getSubCategory().getCategoryOfSubCategory().getId().equals(categoryId))
+                .filter(product -> product.getSubCategory() != null &&
+                        product.getSubCategory().getCategoryOfSubCategory() != null &&
+                        product.getSubCategory().getCategoryOfSubCategory().getElectronicType().equalsIgnoreCase(categoryName))
                 .collect(Collectors.toList());
     }
 
