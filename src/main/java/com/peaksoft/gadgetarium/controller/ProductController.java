@@ -52,8 +52,8 @@ public class ProductController {
         return productService.deleteProduct(id);
     }
 
-    @Operation(summary = "Find Catalog order filtration")
-    @GetMapping("/products-filter")
+    @Operation(summary = "Find order with filtration")
+    @GetMapping("/filter")
     public List<Product> getFilteredProducts(
             @RequestParam(required = false) String productName,
             @RequestParam(required = false) String color,
