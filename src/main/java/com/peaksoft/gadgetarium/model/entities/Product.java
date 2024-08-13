@@ -69,10 +69,6 @@ public class Product {
 
     @ManyToMany(cascade = {
             CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "products")
-    List<Favorite> favorites;
-
-    @ManyToMany(cascade = {
-            CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, mappedBy = "products")
     List<Order> orders;
 
     @ManyToMany(cascade = {

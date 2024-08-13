@@ -75,4 +75,8 @@ public class ProductService {
         productRepository.delete(product);
         return "Successfully deleted product by id " + id;
     }
+
+    public List<Product> getFilteredProducts(String productName, String color, Integer memory, Integer operationMemory, Integer priceMin, Integer priceMax) {
+        return productRepository.filterProducts(productName, color, memory, operationMemory, priceMin, priceMax);
+    }
 }
