@@ -1,6 +1,5 @@
 package com.peaksoft.gadgetarium.controller;
 
-import com.peaksoft.gadgetarium.model.dto.response.FavoriteResponse;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.service.FavoriteService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,6 +40,7 @@ public class FavoriteController {
         return favoriteService.getFavorites(principal.getName());
 
     }
+
 @Operation(summary = "The User will be delete one by productId ")
     @DeleteMapping("/{productId}")
     public ResponseEntity<String> removeFavorite(@PathVariable Long productId, Principal principal) {

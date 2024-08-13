@@ -45,7 +45,6 @@ public class FavoriteService {
         user.getFavorites().add(product);
         userRepository.save(user);
         return productMapper.mapToResponse(product);
-
     }
 
     //очищает все избранные товары текущего пользователя по его email.
