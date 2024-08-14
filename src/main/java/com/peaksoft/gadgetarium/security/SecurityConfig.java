@@ -64,6 +64,7 @@ public class SecurityConfig {
                                     "/api/auth/resetPasswordToken").permitAll()
                             .requestMatchers(HttpMethod.PUT, "/api/auth/updatePassword").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/products/save").permitAll()
+                            .requestMatchers(HttpMethod.POST,"/api/compare/add/**").permitAll()
                             .requestMatchers("/swagger-ui/**",
                                     "/swagger-resources/**",
                                     "v3/api-docs/**").permitAll()

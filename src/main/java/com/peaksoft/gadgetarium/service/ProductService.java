@@ -47,7 +47,7 @@ public class ProductService {
 
     public ProductResponse getProductById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID + id));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND + id));
         return productMapper.mapToResponse(product);
     }
 
@@ -55,13 +55,13 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Product not found by id: {}", id);
-                    return new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID + id);
+                    return new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND + id);
                 });
         productMapper.updateProductFromRequest(request, product);
 
         if (request.getSubCategoryId() != null) {
             SubCategory subCategory = subCategoryRepository.findById(request.getSubCategoryId())
-                    .orElseThrow(() -> new NotFoundException(ExceptionMessage.SUB_CATEGORY_NOT_FOUND_WITH_ID + request.getSubCategoryId()));
+                    .orElseThrow(() -> new NotFoundException(ExceptionMessage.SUB_CATEGORY_NOT_FOUND + request.getSubCategoryId()));
             product.setSubCategory(subCategory);
         }
         if (request.getBrandId() != null) {
@@ -75,7 +75,7 @@ public class ProductService {
     public String deleteProduct(Long id) {
         log.info("Deleting product with id: {}", id);
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID + id));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND + id));
         productRepository.delete(product);
         return "Successfully deleted product by id " + id;
     }
