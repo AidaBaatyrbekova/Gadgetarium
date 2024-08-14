@@ -65,6 +65,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     List<Favorite> favoriteProducts;
 
+    @OneToMany
+    List<Product> comparedProducts;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
