@@ -8,17 +8,20 @@ import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Brand;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.SubCategory;
+import com.peaksoft.gadgetarium.model.enums.ProductStatus;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
 import com.peaksoft.gadgetarium.repository.ProductRepository;
 import com.peaksoft.gadgetarium.repository.SubCategoryRepository;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Getter
+@Setter
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class ProductService {
     ProductRepository productRepository;
     SubCategoryRepository subCategoryRepository;
     BrandRepository brandRepository;
+    MainPageService mainPageService;
 
     public ProductResponse createProduct(ProductRequest request) {
         return productMapper.mapToResponse(productRepository.save(productMapper.productMapper(request)));
