@@ -3,7 +3,6 @@ package com.peaksoft.gadgetarium.service;
 import com.peaksoft.gadgetarium.exception.ExceptionMassage;
 import com.peaksoft.gadgetarium.exception.NotFoundException;
 import com.peaksoft.gadgetarium.mapper.ProductMapper;
-import com.peaksoft.gadgetarium.model.dto.response.FavoriteResponse;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.User;
