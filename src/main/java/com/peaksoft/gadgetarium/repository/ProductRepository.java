@@ -21,6 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.productStatus = com.peaksoft.gadgetarium.model.enums." +
             "ProductStatus.RECOMMENDATIONS")
     List<Product> findRecommended();
+
     @Query("SELECT p FROM Product p WHERE " +
             "(:productName IS NULL OR p.productName = :productName) AND " +
             "(:color IS NULL OR p.color = :color) AND " +
