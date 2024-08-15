@@ -16,8 +16,8 @@ import java.util.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
 @Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User implements UserDetails {
@@ -38,8 +38,6 @@ public class User implements UserDetails {
     String phoneNumber;
 
     String password;
-
-    String confirmThePassword;
 
     String resetPasswordToken;
 
@@ -68,6 +66,9 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     Set<Product> favorites = new HashSet<>();
+
+    @OneToMany
+    List<Product> comparedProducts;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

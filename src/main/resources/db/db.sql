@@ -1,15 +1,15 @@
-insert into users(create_date, confirm_the_password, email, gender, last_name, local, name, password, phone_number,
+insert into users(create_date, email, gender, last_name, local, name, password, phone_number,
                   role)
-values ('05-12-2023', '$2a$12$21dcsWqrwZuVaBst7YU/9uLY8IhkCVuRyB68JG/QOM5I45YaAG.ry', 'admin@gmail.com', 'male',
+values ('05-12-2023', 'admin@gmail.com', 'male',
         'Adminov', 'ky_KG', 'Admin',
         '$2a$12$21dcsWqrwZuVaBst7YU/9uLY8IhkCVuRyB68JG/QOM5I45YaAG.ry',
         '+796657646',
         'ADMIN'),
-       ('05-03-2024', '$2a$12$t9LPvZjsr04gTWJSB886dOS5bzpI5uW3Hm/nRnQltQ5awCqKuY3fK', 'user@gmail.com', 'female',
+       ('05-03-2024', 'user@gmail.com', 'female',
         'User1', 'ky_KG', 'User1',
         '$2a$12$t9LPvZjsr04gTWJSB886dOS5bzpI5uW3Hm/nRnQltQ5awCqKuY3fK', '+799987689',
         'USER'),
-       ('2024-07-10', '$2a$12$.0uBxKL//rIxaSOxxLWozeoD9WZj1574XZ8lfu35pJIFTJhg12eAC', 'user1@gmail.com', 'male',
+       ('2024-07-10', 'user2@gmail.com', 'male',
         'User2', 'ky_KG', 'User2',
         '$2a$12$.0uBxKL//rIxaSOxxLWozeoD9WZj1574XZ8lfu35pJIFTJhg12eAC', '+709786756',
         'USER');
@@ -52,7 +52,7 @@ values ('2023-07-01', 1000, 69999, 150, 1, 4, 'BLACK', '2023-06-15', '24 months'
         'Snapdragon 888', 'Galaxy S21', 'NEW_DEVICES', '4.5', '6.2 inches', 'Dual'),
        ('2023-06-15', 1500, 99999, 160, 1, 2, 'SILVER', '2023-05-20', '24 months', 'GB_256', 'GB_12', 'IOS', '14.5',
         'A14 Bionic', 'iPhone 12 Pro', 'SALES', '4.7', '6.1 inches', 'Single'),
-       ('2023-05-30', 5, 79999, 155, 1, 1, 'WHITE', '2023-04-10', '12 months', 'GB_128', 'GB_8', 'ANDROID', '11.0',
+       ('2023-05-30', 5, 79999, 155, 1, 2, 'WHITE', '2023-04-10', '12 months', 'GB_128', 'GB_8', 'ANDROID', '11.0',
         'Exynos 2100', 'Galaxy S21+', 'BY_REDUCING_THE_PRICE', '4.6', '6.7 inches', 'Dual'),
        ('2023-07-10', 20, 119999, 180, 1, 3, 'BLUE', '2023-07-01', '24 months', 'GB_512', 'GB_16', 'ANDROID', '12.0',
         'Snapdragon 895', 'OnePlus 9 Pro', 'BY_INCREASING_THE_PRICE', '4.8', '6.7 inches', 'Dual'),
@@ -60,9 +60,8 @@ values ('2023-07-01', 1000, 69999, 150, 1, 4, 'BLACK', '2023-06-15', '24 months'
         'Kirin 9000', 'Huawei P40 Pro', 'SALES', '4.6', '6.6 inches', 'Dual');
 
 insert into baskets (id, user_id, quantity, total_amount, total_discount, total_sum)
-values
-(1, 1, 0, 0, 0, 0),
-(2, 2, 0, 0, 0, 0),
-(3, 3, 0, 0, 0, 0);
+values (1, 1, 0, 0, 0, 0),
+       (2, 2, 0, 0, 0, 0),
+       (3, 3, 0, 0, 0, 0);
 
 select setval('baskets_id_seq', (SELECT MAX(id) FROM baskets));
