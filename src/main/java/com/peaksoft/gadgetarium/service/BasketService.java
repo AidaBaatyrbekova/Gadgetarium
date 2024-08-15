@@ -44,7 +44,7 @@ public class BasketService {
         Basket basket = basketRepository.findByUser(user)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.BASKET_NOT_FOUND));
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND));
 
         basket.getProducts().add(product);
 
@@ -124,7 +124,7 @@ public class BasketService {
         Basket basket = basketRepository.findByUser(user)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.BASKET_NOT_FOUND));
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND));
 
         if (!basket.getProducts().contains(product)) {
             return new ResponseEntity<>("Product not found in the basket", HttpStatus.NOT_FOUND);
@@ -165,7 +165,7 @@ public class BasketService {
         Basket basket = basketRepository.findByUser(user)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.BASKET_NOT_FOUND));
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND));
 
         if (!basket.getProducts().contains(product)) {
             throw new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_THE_BASKET);
