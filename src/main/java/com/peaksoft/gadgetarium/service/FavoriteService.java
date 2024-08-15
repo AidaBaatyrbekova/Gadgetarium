@@ -1,6 +1,6 @@
 package com.peaksoft.gadgetarium.service;
 
-import com.peaksoft.gadgetarium.exception.ExceptionMassage;
+import com.peaksoft.gadgetarium.exception.ExceptionMessage;
 import com.peaksoft.gadgetarium.exception.NotFoundException;
 import com.peaksoft.gadgetarium.mapper.ProductMapper;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
@@ -34,12 +34,12 @@ public class FavoriteService {
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> {
                     log.error("User not found with email:{}", principal.getName());
-                    return new NotFoundException(ExceptionMassage.USER_NOT_FOUND);
+                    return new NotFoundException(ExceptionMessage.USER_NOT_FOUND);
                 });
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> {
                     log.error("Product not found with Id:{}", productId);
-                    return new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID);
+                    return new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID);
                 });
         user.getFavorites().add(product);
         userRepository.save(user);
@@ -51,7 +51,7 @@ public class FavoriteService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     log.error("User not found with email: {}", email);
-                    return new NotFoundException(ExceptionMassage.USER_NOT_FOUND);
+                    return new NotFoundException(ExceptionMessage.USER_NOT_FOUND);
                 });
         user.getFavorites().clear();
         userRepository.save(user);
@@ -63,7 +63,7 @@ public class FavoriteService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     log.error("User not found with email: {}", email);
-                    return new NotFoundException(ExceptionMassage.USER_NOT_FOUND);
+                    return new NotFoundException(ExceptionMessage.USER_NOT_FOUND);
                 });
         return user.getFavorites().stream()
                 .map(productMapper::mapToResponse).collect(Collectors.toList());
@@ -74,16 +74,16 @@ public class FavoriteService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     log.error("User not found with email: {}", email);
-                    return new NotFoundException(ExceptionMassage.USER_NOT_FOUND);
+                    return new NotFoundException(ExceptionMessage.USER_NOT_FOUND);
                 });
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> {
                     log.error("Product not found with ID: {}", productId);
-                    return new NotFoundException(ExceptionMassage.PRODUCT_NOT_FOUND_BY_ID);
+                    return new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID);
                 });
         if (!user.getFavorites().contains(product)) {
             log.error("Favorite not found with product ID: {} for user with email: {}", productId, email);
-            throw new NotFoundException(ExceptionMassage.FAVORITE_NOT_FOUND);
+            throw new NotFoundException(ExceptionMessage.FAVORITE_NOT_FOUND);
         }
         user.getFavorites().remove(product);
         userRepository.save(user);

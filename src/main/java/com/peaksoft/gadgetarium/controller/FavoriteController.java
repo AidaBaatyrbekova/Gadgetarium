@@ -41,7 +41,7 @@ public class FavoriteController {
 
     }
 
-@Operation(summary = "The User will be delete one by productId ")
+    @Operation(summary = "The User will be delete one by productId ")
     @DeleteMapping("/{productId}")
     public ResponseEntity<String> removeFavorite(@PathVariable Long productId, Principal principal) {
         return favoriteService.removeFavorite(productId, principal.getName());
