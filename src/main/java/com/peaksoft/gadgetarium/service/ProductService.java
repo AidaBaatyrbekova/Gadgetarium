@@ -8,11 +8,11 @@ import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Brand;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.SubCategory;
+import com.peaksoft.gadgetarium.model.enums.ProductStatus;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
 import com.peaksoft.gadgetarium.repository.ProductRepository;
 import com.peaksoft.gadgetarium.repository.SubCategoryRepository;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
+@Setter
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class ProductService {
     ProductRepository productRepository;
     SubCategoryRepository subCategoryRepository;
     BrandRepository brandRepository;
+    MainPageService mainPageService;
 
     public ProductResponse createProduct(ProductRequest request) {
         return productMapper.mapToResponse(productRepository.save(productMapper.productMapper(request)));
@@ -44,7 +47,7 @@ public class ProductService {
 
     public ProductResponse getProductById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID + id));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND + id));
         return productMapper.mapToResponse(product);
     }
 
@@ -52,13 +55,13 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Product not found by id: {}", id);
-                    return new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID + id);
+                    return new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND + id);
                 });
         productMapper.updateProductFromRequest(request, product);
 
         if (request.getSubCategoryId() != null) {
             SubCategory subCategory = subCategoryRepository.findById(request.getSubCategoryId())
-                    .orElseThrow(() -> new NotFoundException(ExceptionMessage.SUB_CATEGORY_NOT_FOUND_WITH_ID + request.getSubCategoryId()));
+                    .orElseThrow(() -> new NotFoundException(ExceptionMessage.SUB_CATEGORY_NOT_FOUND + request.getSubCategoryId()));
             product.setSubCategory(subCategory);
         }
         if (request.getBrandId() != null) {
@@ -72,7 +75,7 @@ public class ProductService {
     public String deleteProduct(Long id) {
         log.info("Deleting product with id: {}", id);
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID + id));
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND + id));
         productRepository.delete(product);
         return "Successfully deleted product by id " + id;
     }
