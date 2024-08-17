@@ -3,6 +3,9 @@ package com.peaksoft.gadgetarium.controller;
 import com.peaksoft.gadgetarium.model.dto.request.ProductRequest;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Product;
+import com.peaksoft.gadgetarium.model.enums.Color;
+import com.peaksoft.gadgetarium.model.enums.Memory;
+import com.peaksoft.gadgetarium.model.enums.OperationMemory;
 import com.peaksoft.gadgetarium.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -56,9 +59,9 @@ public class ProductController {
     @GetMapping("/filter")
     public List<Product> getFilteredProducts(
             @RequestParam(required = false) String productName,
-            @RequestParam(required = false) String color,
-            @RequestParam(required = false) Integer memory,
-            @RequestParam(required = false) Integer operationMemory,
+            @RequestParam(required = false) Color color,
+            @RequestParam(required = false) Memory memory,
+            @RequestParam(required = false) OperationMemory operationMemory,
             @RequestParam(required = false) Integer priceMin,
             @RequestParam(required = false) Integer priceMax) {
         return productService.getFilteredProducts(productName, color, memory, operationMemory, priceMin, priceMax);

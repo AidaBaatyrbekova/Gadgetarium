@@ -8,6 +8,9 @@ import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Brand;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.SubCategory;
+import com.peaksoft.gadgetarium.model.enums.Color;
+import com.peaksoft.gadgetarium.model.enums.Memory;
+import com.peaksoft.gadgetarium.model.enums.OperationMemory;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
 import com.peaksoft.gadgetarium.repository.ProductRepository;
 import com.peaksoft.gadgetarium.repository.SubCategoryRepository;
@@ -81,7 +84,7 @@ public class ProductService {
         return "Successfully deleted product by id " + id;
     }
 
-    public List<Product> getFilteredProducts(String productName, String color, Integer memory, Integer operationMemory, Integer priceMin, Integer priceMax) {
+    public List<Product> getFilteredProducts(String productName, Color color, Memory memory, OperationMemory operationMemory, Integer priceMin, Integer priceMax) {
         return productRepository.filterProducts(productName, color, memory, operationMemory, priceMin, priceMax);
     }
 }
