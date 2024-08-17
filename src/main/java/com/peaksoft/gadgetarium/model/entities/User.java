@@ -12,9 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
@@ -62,8 +60,12 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     List<OrderHistory> orderHistories;
 
-    @OneToMany(mappedBy = "user")
-    List<Favorite> favoriteProducts;
+    @ManyToMany
+    @JoinTable(name = "favorites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    Set<Product> favorites = new HashSet<>();
 
     @OneToMany
     List<Product> comparedProducts;

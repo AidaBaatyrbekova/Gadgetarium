@@ -3,14 +3,19 @@ package com.peaksoft.gadgetarium.service;
 import com.peaksoft.gadgetarium.exception.ExceptionMessage;
 import com.peaksoft.gadgetarium.exception.InvalidPasswordException;
 import com.peaksoft.gadgetarium.exception.NotFoundException;
+import com.peaksoft.gadgetarium.exception.UserAlreadyExistsException;
 import com.peaksoft.gadgetarium.mapper.AuthMapper;
 import com.peaksoft.gadgetarium.model.dto.request.*;
+import com.peaksoft.gadgetarium.model.dto.response.FavoriteResponse;
 import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
+import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
 import com.peaksoft.gadgetarium.model.entities.Basket;
+import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.User;
 import com.peaksoft.gadgetarium.model.enums.Role;
 import com.peaksoft.gadgetarium.repository.BasketRepository;
+import com.peaksoft.gadgetarium.repository.ProductRepository;
 import com.peaksoft.gadgetarium.repository.UserRepository;
 import com.peaksoft.gadgetarium.security.jwt.JwtUtil;
 import jakarta.transaction.Transactional;
@@ -29,6 +34,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -40,6 +46,7 @@ import java.util.UUID;
 @Slf4j
 public class UserService {
 
+    ProductRepository productRepository;
     UserRepository userRepository;
     BasketRepository basketRepository;
     PasswordEncoder passwordEncoder;

@@ -1,6 +1,7 @@
 package com.peaksoft.gadgetarium.controller;
 
 import com.peaksoft.gadgetarium.model.dto.request.*;
+import com.peaksoft.gadgetarium.model.dto.response.FavoriteResponse;
 import com.peaksoft.gadgetarium.model.dto.response.LoginResponse;
 import com.peaksoft.gadgetarium.model.dto.response.UserResponse;
 import com.peaksoft.gadgetarium.service.UserService;
@@ -60,3 +61,4 @@ public class AuthController {
         return userService.updatePassword(request);
     }
 }
+
