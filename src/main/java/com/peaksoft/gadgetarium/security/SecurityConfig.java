@@ -55,7 +55,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> {
+                .authorizeHttpRequests(authorize ->{
                     authorize.requestMatchers(HttpMethod.POST,
                                     "/api/auth/",
                                     "/api/auth/login",
