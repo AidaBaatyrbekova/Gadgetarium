@@ -64,4 +64,37 @@ values (1, 1, 0, 0, 0, 0),
        (2, 2, 0, 0, 0, 0),
        (3, 3, 0, 0, 0, 0);
 
+-- Вставляем данные в таблицу orders
+insert into orders (image, address, payment_id, payment_type, user_id, amount, delivery_type)
+values ('image1.png', '123 Main St', 1, 'PAYMENT_BY_CARD_ONLINE', 1, 100.00, 'PICKUP_FROM_STORE'),
+       ('image2.png', '456 Elm St', 2, 'PAYMENT_BY_CARD_ON_RECEIPT', 2, 200.00, 'DELIVERY_BY_COURIER');
+
+-- Вставляем данные в таблицу order_products (связь между заказами и продуктами)
+insert into order_products (order_id, product_id)
+VALUES (1, 1),
+       (1, 2),
+       (2, 3);
+
+-- Вставляем данные в таблицу order_order_histories (связь между заказами и историей заказов)
+insert into order_order_histories (order_id, order_history_id)
+VALUES (1, 1),
+       (2, 2);
+
+-- Вставка данных в таблицу delivery_histories
+insert into delivery_histories (delivery_status, order_time, user_id)
+values ('DELIVERED', '2024-08-15 10:30:00', 1),
+       ('DELIVERED', '2024-08-16 11:45:00', 2),
+       ('ON_THE_WAY', '2024-08-17 09:20:00', 3),
+       ('ON_THE_WAY', '2024-08-18 14:15:00', 1),
+       ('CANCELLATION', '2024-08-19 16:50:00', 2);
+
+insert into deliveries(order_time, order_history_id, delivery_status)
+values ('2024-08-15 10:30:00', 1, 'DELIVERED'),
+       ('2024-08-16 11:45:00', 2, 'DELIVERED'),
+       ('2024-08-17 09:20:00', 3, 'ON_THE_WAY'),
+       ('2024-08-18 14:15:00', 4, 'ON_THE_WAY'),
+       ('2024-08-19 16:50:00', 5, 'CANCELLATION');
+
+
+
 select setval('baskets_id_seq', (SELECT MAX(id) FROM baskets));
