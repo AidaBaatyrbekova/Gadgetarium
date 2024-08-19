@@ -19,8 +19,12 @@ public class Newsletter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     String title;
+
     String description;
+
     LocalDate startDate;
+
     LocalDate endDate;
 }
