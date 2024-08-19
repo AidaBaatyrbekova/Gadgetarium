@@ -99,28 +99,24 @@ public class ProductService {
         }
         return List.of();
     }
-
     private List<ProductResponse> searchByName(String name) {
         List<Product> products = productRepository.findByProductNameContainingIgnoreCase(name);
         return products.stream()
                 .map(productMapper::mapToResponse)
                 .collect(Collectors.toList());
     }
-
     private List<ProductResponse> searchByPriceRange(int minPrice, int maxPrice) {
         List<Product> products = productRepository.findByPriceBetween(minPrice, maxPrice);
         return products.stream()
                 .map(productMapper::mapToResponse)
                 .collect(Collectors.toList());
     }
-
     private List<ProductResponse> searchByCategory(String categoryName) {
         List<Product> products = productRepository.findBySubCategory_nameOfSubCategoryIgnoreCase(categoryName);
         return products.stream()
                 .map(productMapper::mapToResponse)
                 .collect(Collectors.toList());
     }
-
     private List<ProductResponse> searchByBrand(String brandName) {
         List<Product> products = productRepository.findByBrand_BrandNameIgnoreCase(brandName);
         return products.stream()

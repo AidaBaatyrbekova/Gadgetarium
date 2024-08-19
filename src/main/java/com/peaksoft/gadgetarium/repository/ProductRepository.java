@@ -1,7 +1,6 @@
 package com.peaksoft.gadgetarium.repository;
 
 import com.peaksoft.gadgetarium.model.entities.Product;
-import com.peaksoft.gadgetarium.model.entities.SubCategory;
 import com.peaksoft.gadgetarium.model.enums.ProductStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
