@@ -21,4 +21,7 @@ public class ExceptionMessage {
     public static final String PRODUCT_NOT_FOUND_BY_ID = "Not found product by id ";
     public static final String FAVORITE_NOT_FOUND = "Favorite not found";
 
+    public static final String NO_ORDERS = "You have no orders";
+    public static final String ORDER_PROCESSING_ERROR = "Order processing error";
+    public static final String ORDER_NOT_FOUND = "Order not found for id";
 }
