@@ -1,20 +1,22 @@
 package com.peaksoft.gadgetarium.model.entities;
 
+import com.peaksoft.gadgetarium.model.enums.DeliveryStatus;
 import com.peaksoft.gadgetarium.model.enums.DeliveryType;
 import com.peaksoft.gadgetarium.model.enums.PaymentType;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "orders")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Order {
@@ -23,12 +25,14 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    String applicationNumber;
+
     String image;
 
     String address;
 
     @OneToOne(cascade = {
-            CascadeType.MERGE , CascadeType.REFRESH , CascadeType.PERSIST , CascadeType.DETACH})
+            CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.DETACH})
     @JoinColumn(name = "payment_id")
     Payment payment;
 
@@ -36,8 +40,27 @@ public class Order {
     PaymentType paymentType;
 
     @ManyToOne
-    @JoinColumn (name = "user_id")
+    @JoinColumn(name = "user_id")
     User user;
+
+    @JoinColumn(name = "first_name")
+    String firstName;
+
+    @JoinColumn(name = "last_name")
+    String lastName;
+
+    String email;
+
+    @JoinColumn(name = "phone_number")
+    String phoneNumber;
+
+    String photo;
+
+    @CreationTimestamp
+    LocalDateTime created;
+
+    @Enumerated(EnumType.STRING)
+    DeliveryStatus status;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "order_products",
