@@ -1,8 +1,12 @@
 package com.peaksoft.gadgetarium.service;
 
+import com.peaksoft.gadgetarium.exception.ExceptionMessage;
+import com.peaksoft.gadgetarium.exception.NotFoundException;
 import com.peaksoft.gadgetarium.model.dto.response.BrandResponse;
 import com.peaksoft.gadgetarium.model.entities.Brand;
+import com.peaksoft.gadgetarium.model.entities.User;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
+import com.peaksoft.gadgetarium.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,32 +23,30 @@ import java.security.Principal;
 public class BrandService {
 
     BrandRepository brandRepository;
+    UserRepository userRepository;
 
     @Transactional
     public BrandResponse addBrand(String brandName, Principal principal) {
-        // Получаем аутентификацию текущего пользователя
+        String userEmail = principal.getName();
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new NotFoundException(ExceptionMessage.USER_NOT_FOUND));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // Проверяем, является ли текущий пользователь администратором
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+        boolean isAdmin = authentication.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
 
         if (!isAdmin) {
             throw new SecurityException("У вас нет прав для добавления нового бренда.");
         }
 
-        // Проверяем, существует ли уже бренд с таким именем
         if (brandRepository.existsByBrandName(brandName)) {
             throw new IllegalArgumentException("Бренд с именем " + brandName + " уже существует.");
         }
 
-        // Создаем новый объект бренда и сохраняем его в базу данных
         Brand brand = new Brand();
         brand.setBrandName(brandName);
 
         Brand savedBrand = brandRepository.save(brand);
 
-        // Возвращаем ответ с данными о новом бренде
         return new BrandResponse(savedBrand.getId(), savedBrand.getBrandName());
     }
 }
