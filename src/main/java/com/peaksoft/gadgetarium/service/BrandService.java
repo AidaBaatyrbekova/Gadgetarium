@@ -19,7 +19,6 @@ public class BrandService {
     private final BrandRepository brandRepository;
 
     @Transactional
-    @PreAuthorize("hasRole('ADMIN')")  // Ограничение доступа только для администраторов
     public BrandResponse addBrand(BrandRequest brandRequest) {
         if (brandRepository.existsByBrandName(brandRequest.getBrandName())) {
             throw new IllegalArgumentException("Бренд с именем " + brandRequest.getBrandName() + " уже существует.");
