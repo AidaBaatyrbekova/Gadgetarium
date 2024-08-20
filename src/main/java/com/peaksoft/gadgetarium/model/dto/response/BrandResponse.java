@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 public class BrandResponse {
     Long id;
     String brandName;
+    String message;
 
     public BrandResponse(Long id, String brandName) {
         this.id = id;
