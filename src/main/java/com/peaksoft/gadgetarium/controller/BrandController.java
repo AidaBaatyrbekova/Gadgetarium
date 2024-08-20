@@ -19,7 +19,7 @@ public class BrandController {
 
     @Operation(summary = "add new brand")
     @PostMapping
-    public BrandResponse addBrand(@PathVariable String brandName, Principal principal) {
+    public BrandResponse addBrand(@PathVariable String brandName,Principal principal) {
         return brandService.addBrand(brandName, principal);
     }
 }
