@@ -24,15 +24,20 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "ProductStatus.RECOMMENDATIONS")
     List<Product> findRecommended();
 
-    @Query("SELECT p FROM Product p WHERE " +
-            "(:productName IS NULL OR p.productName = :productName) AND " +
+    @Query("SELECT p FROM Product p " +
+            "JOIN p.subCategory sc " +
+            "JOIN p.brand b " +
+            "WHERE " +
+            "(:nameOfSubCategory IS NULL OR sc.nameOfSubCategory = :nameOfSubCategory) AND " +
+            "(:brandName IS NULL OR b.brandName = :brandName) AND " +
             "(:color IS NULL OR p.color = :color) AND " +
             "(:memory IS NULL OR p.memory = :memory) AND " +
             "(:operationMemory IS NULL OR p.operationMemory = :operationMemory) AND " +
             "(:priceMin IS NULL OR p.price >= :priceMin) AND " +
             "(:priceMax IS NULL OR p.price <= :priceMax)")
     List<Product> filterProducts(
-            @Param("productName") String productName,
+            @Param("nameOfSubCategory") String nameOfSubCategory,
+            @Param("brandName") String brandName,
             @Param("color") Color color,
             @Param("memory") Memory memory,
             @Param("operationMemory") OperationMemory operationMemory,

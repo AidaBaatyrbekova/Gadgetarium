@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -57,13 +58,18 @@ public class ProductController {
 
     @Operation(summary = "Find order with filtration")
     @GetMapping("/filter")
-    public List<Product> getFilteredProducts(
-            @RequestParam(required = false) String productName,
+    public ResponseEntity<List<Product>> filterProducts(
+            @RequestParam(required = false) String nameOfSubCategory,
+            @RequestParam(required = false) String brandName,
             @RequestParam(required = false) Color color,
             @RequestParam(required = false) Memory memory,
             @RequestParam(required = false) OperationMemory operationMemory,
             @RequestParam(required = false) Integer priceMin,
             @RequestParam(required = false) Integer priceMax) {
-        return productService.getFilteredProducts(productName, color, memory, operationMemory, priceMin, priceMax);
+
+        List<Product> products = productService.filterProducts(nameOfSubCategory, brandName, color,
+                memory, operationMemory,
+                priceMin, priceMax);
+        return ResponseEntity.ok(products);
     }
 }

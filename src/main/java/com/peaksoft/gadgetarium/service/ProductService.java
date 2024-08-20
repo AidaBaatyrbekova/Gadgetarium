@@ -84,7 +84,10 @@ public class ProductService {
         return "Successfully deleted product by id " + id;
     }
 
-    public List<Product> getFilteredProducts(String productName, Color color, Memory memory, OperationMemory operationMemory, Integer priceMin, Integer priceMax) {
-        return productRepository.filterProducts(productName, color, memory, operationMemory, priceMin, priceMax);
+    public List<Product> filterProducts(String nameOfSubCategory, String brandName, Color color,
+                                        Memory memory, OperationMemory operationMemory,
+                                        Integer priceMin, Integer priceMax) {
+        return productRepository.filterProducts(nameOfSubCategory, brandName, color, memory,
+                operationMemory, priceMin, priceMax);
     }
 }
