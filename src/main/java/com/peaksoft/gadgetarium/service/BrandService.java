@@ -15,17 +15,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BrandService {
-    BrandRepository brandRepository;
+
+    private final BrandRepository brandRepository;
 
     @Transactional
-    @PreAuthorize("hasRole('ADMIN')")  // Проверка на роль администратора
+    @PreAuthorize("hasRole('ADMIN')")  // Ограничение доступа только для администраторов
     public BrandResponse addBrand(BrandRequest brandRequest) {
         if (brandRepository.existsByBrandName(brandRequest.getBrandName())) {
-            throw new IllegalArgumentException("Brand with name " + brandRequest.getBrandName() + " already exists.");
+            throw new IllegalArgumentException("Бренд с именем " + brandRequest.getBrandName() + " уже существует.");
         }
+
         Brand brand = new Brand();
         brand.setBrandName(brandRequest.getBrandName());
         Brand savedBrand = brandRepository.save(brand);
+
         return new BrandResponse(savedBrand.getId(), savedBrand.getBrandName());
     }
 }
