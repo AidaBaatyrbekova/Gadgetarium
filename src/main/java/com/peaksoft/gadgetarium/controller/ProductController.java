@@ -2,6 +2,8 @@ package com.peaksoft.gadgetarium.controller;
 
 import com.peaksoft.gadgetarium.model.dto.request.ProductRequest;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
+import com.peaksoft.gadgetarium.model.entities.Product;
+import com.peaksoft.gadgetarium.repository.ProductRepository;
 import com.peaksoft.gadgetarium.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +22,6 @@ import java.util.List;
 public class ProductController {
 
     ProductService productService;
-
     @Operation(summary = "Save Product")
     @PostMapping("/save")
     public ProductResponse save(@RequestBody ProductRequest request) {
@@ -49,5 +50,17 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Long id) {
         return productService.deleteProduct(id);
+    }
+
+    @Operation(summary = "Search Products by various criteria",
+            description = "Search products by name, price range, category, or brand.")
+    @GetMapping("/search")
+    public List<ProductResponse> searchProducts(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String brand) {
+        return productService.searchProducts(name, minPrice, maxPrice, category, brand);
     }
 }
