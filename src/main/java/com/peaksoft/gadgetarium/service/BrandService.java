@@ -1,20 +1,15 @@
 package com.peaksoft.gadgetarium.service;
 
-import com.peaksoft.gadgetarium.exception.AccessDeniedException;
-import com.peaksoft.gadgetarium.exception.ExceptionMessage;
-import com.peaksoft.gadgetarium.exception.NotFoundException;
-import com.peaksoft.gadgetarium.model.dto.response.BrandResponse;
 import com.peaksoft.gadgetarium.model.entities.Brand;
-import com.peaksoft.gadgetarium.model.entities.User;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
-import com.peaksoft.gadgetarium.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -26,22 +21,13 @@ import java.security.Principal;
 public class BrandService {
 
     BrandRepository brandRepository;
-    UserRepository userRepository;
 
     @Transactional
-    public BrandResponse addBrand(String brandName, Principal principal) {
-        User user = userRepository.findByEmail(principal.getName())
-                .orElseThrow(() -> {
-                    log.error("User not found with email: {}", principal.getName());
-                    return new NotFoundException(ExceptionMessage.USER_NOT_FOUND);
-                });
+    public Brand addBrand(String brandName, Principal principal) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
-
-        if (!isAdmin) {
-            throw new AccessDeniedException(ExceptionMessage.USER_NOT_FOUND);
+        // Проверка, что пользователь является администратором
+        if (!isAdmin(principal)) {
+            throw new AccessDeniedException("Only admins can add a brand.");
         }
 
         if (brandRepository.existsByBrandName(brandName)) {
@@ -51,8 +37,15 @@ public class BrandService {
         Brand brand = new Brand();
         brand.setBrandName(brandName);
 
-        Brand savedBrand = brandRepository.save(brand);
+        brandRepository.save(brand);
 
-        return new BrandResponse(savedBrand.getId(), savedBrand.getBrandName());
+        return brand;
+    }
+
+    private boolean isAdmin(Principal principal) {
+        UserDetails userDetails = (UserDetails) ((Authentication) principal).getPrincipal();
+
+        return userDetails.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ADMIN"));
     }
 }
