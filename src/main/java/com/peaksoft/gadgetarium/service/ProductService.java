@@ -8,7 +8,6 @@ import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Brand;
 import com.peaksoft.gadgetarium.model.entities.Product;
 import com.peaksoft.gadgetarium.model.entities.SubCategory;
-import com.peaksoft.gadgetarium.model.enums.ProductStatus;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
 import com.peaksoft.gadgetarium.repository.ProductRepository;
 import com.peaksoft.gadgetarium.repository.SubCategoryRepository;
@@ -78,5 +77,49 @@ public class ProductService {
                 .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND + id));
         productRepository.delete(product);
         return "Successfully deleted product by id " + id;
+    }
+
+    public List<ProductResponse> searchProducts(String name, Integer minPrice, Integer maxPrice, String category, String brand) {
+        if (name != null) {
+            return searchByName(name);
+        }
+        if (minPrice != null && maxPrice != null) {
+            if (minPrice > maxPrice) {
+                throw new IllegalArgumentException("minPrice cannot be greater than maxPrice");
+            }
+            return searchByPriceRange(minPrice, maxPrice);
+        }
+        if (category != null) {
+            return searchByCategory(category);
+
+        }
+        if (brand != null) {
+            return searchByBrand(brand);
+        }
+        return List.of();
+    }
+    private List<ProductResponse> searchByName(String name) {
+        List<Product> products = productRepository.findByProductNameContainingIgnoreCase(name);
+        return products.stream()
+                .map(productMapper::mapToResponse)
+                .collect(Collectors.toList());
+    }
+    private List<ProductResponse> searchByPriceRange(int minPrice, int maxPrice) {
+        List<Product> products = productRepository.findByPriceBetween(minPrice, maxPrice);
+        return products.stream()
+                .map(productMapper::mapToResponse)
+                .collect(Collectors.toList());
+    }
+    private List<ProductResponse> searchByCategory(String categoryName) {
+        List<Product> products = productRepository.findBySubCategory_nameOfSubCategoryIgnoreCase(categoryName);
+        return products.stream()
+                .map(productMapper::mapToResponse)
+                .collect(Collectors.toList());
+    }
+    private List<ProductResponse> searchByBrand(String brandName) {
+        List<Product> products = productRepository.findByBrand_BrandNameIgnoreCase(brandName);
+        return products.stream()
+                .map(productMapper::mapToResponse)
+                .collect(Collectors.toList());
     }
 }
