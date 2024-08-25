@@ -66,7 +66,6 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.PUT, "/api/auth/updatePassword").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/products/save").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/compare/add/**").permitAll()
-                            .requestMatchers(HttpMethod.POST, "/api/brands/add/**").hasAnyAuthority("ADMIN", "USER")
                             .requestMatchers(HttpMethod.POST, "/api/compare/add/**").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/brands/add").hasRole("ADMIN") // Только админы могут добавлять бренды
                             .requestMatchers("/swagger-ui/**",
