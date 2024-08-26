@@ -72,7 +72,7 @@ public class BrandService {
     }
 
     private void checkAdmin(Principal principal) {
-        String userRole = principal.getName(); // Assuming you have a method to get user role from Principal
+        String userRole = principal.getName();
         if (!"ADMIN".equals(userRole)) {
             throw new AccessDeniedException("Only admins can perform this action.");
         }
