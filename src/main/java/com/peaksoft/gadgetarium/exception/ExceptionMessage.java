@@ -24,4 +24,5 @@ public class ExceptionMessage {
     public static final String NO_ORDERS = "You have no orders";
     public static final String ORDER_PROCESSING_ERROR = "Order processing error";
     public static final String ORDER_NOT_FOUND = "Order not found for id";
+    public static final String BRAND_NOT_FOUND="Brand with name already exists";
 }
