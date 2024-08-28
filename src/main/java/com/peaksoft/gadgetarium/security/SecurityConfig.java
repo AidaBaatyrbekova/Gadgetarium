@@ -70,6 +70,7 @@ public class SecurityConfig {
                             .requestMatchers("/swagger-ui/**",
                                     "/swagger-resources/**",
                                     "v3/api-docs/**").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/newsletter/create").hasRole("ADMIN")
                             .anyRequest().authenticated();
                 })
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
