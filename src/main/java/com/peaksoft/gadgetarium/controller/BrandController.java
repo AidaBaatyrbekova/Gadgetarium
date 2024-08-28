@@ -24,13 +24,10 @@ public class BrandController {
 
     @Operation(summary = "Create a new brand")
     @PostMapping
-    public ResponseEntity<Brand> createBrand(
-            @RequestParam String brandName,
-            Principal principal) {
+    public ResponseEntity<Brand> createBrand(@RequestParam String brandName, Principal principal) {
         Brand brand = brandService.addBrand(brandName, principal);
         return ResponseEntity.ok(brand);
     }
-
     @Operation(summary = "Get all brands")
     @GetMapping
     public ResponseEntity<List<Brand>> getAllBrands(Principal principal) {
@@ -40,19 +37,14 @@ public class BrandController {
 
     @Operation(summary = "Update an existing brand")
     @PutMapping("/{id}")
-    public ResponseEntity<Brand> updateBrand(
-            @PathVariable Long id,
-            @RequestParam String newBrandName,
-            Principal principal) {
+    public ResponseEntity<Brand> updateBrand(@PathVariable Long id, @RequestParam String newBrandName, Principal principal) {
         Brand updatedBrand = brandService.updateBrand(id, newBrandName, principal);
         return ResponseEntity.ok(updatedBrand);
     }
 
     @Operation(summary = "Delete a brand by ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBrand(
-            @PathVariable Long id,
-            Principal principal) {
+    public ResponseEntity<Void> deleteBrand(@PathVariable Long id, Principal principal) {
         brandService.deleteBrand(id, principal);
         return ResponseEntity.noContent().build();
     }
