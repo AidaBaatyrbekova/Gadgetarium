@@ -18,4 +18,10 @@ public class ExceptionMessage {
     public static final String CURRENT_PASSWORD_INCORRECT = "The current password is incorrect!";
     public static final String TOKEN_MUST_NOT_BE_NULL = "The token must not be null!";
     public static final String PASSWORD_MISMATCH = "Password mismatch!";
+    public static final String PRODUCT_NOT_FOUND_BY_ID = "Not found product by id ";
+    public static final String FAVORITE_NOT_FOUND = "Favorite not found";
+
+    public static final String NO_ORDERS = "You have no orders";
+    public static final String ORDER_PROCESSING_ERROR = "Order processing error";
+    public static final String ORDER_NOT_FOUND = "Order not found for id";
 }

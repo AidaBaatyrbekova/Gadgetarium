@@ -10,7 +10,9 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -91,4 +93,7 @@ public class Product {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "sub_category_id")
     SubCategory subCategory;
+
+    @ManyToMany(mappedBy = "favorites")
+    Set<User> users=new HashSet<>();
 }

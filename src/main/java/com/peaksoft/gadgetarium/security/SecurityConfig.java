@@ -55,20 +55,22 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> {
+                .authorizeHttpRequests(authorize ->{
                     authorize.requestMatchers(HttpMethod.POST,
-                                    "/api/auth",
+                                    "/api/auth/",
                                     "/api/auth/login",
                                     "/api/auth/sign-up",
+                                    "/api/favorites/**",
                                     "/api/auth/resetPassword",
                                     "/api/auth/resetPasswordToken").permitAll()
                             .requestMatchers(HttpMethod.PUT, "/api/auth/updatePassword").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/products/save").permitAll()
-                            .requestMatchers(HttpMethod.POST,"/api/compare/add/**").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/compare/add/**").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/brands/add").hasRole("ADMIN") // Только админы могут добавлять бренды
                             .requestMatchers("/swagger-ui/**",
                                     "/swagger-resources/**",
                                     "v3/api-docs/**").permitAll()
-                            .requestMatchers("/api/products/**").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/newsletter/create").hasRole("ADMIN")
                             .anyRequest().authenticated();
                 })
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
