@@ -22,9 +22,11 @@ import java.util.List;
 public class BrandService {
 
     BrandRepository brandRepository;
-
     @Transactional
     public Brand createBrand(String brandName) {
+        if (brandRepository.existsByBrandName(brandName)) {
+            throw new IllegalArgumentException("Brand with this name already exists");
+        }
         Brand brand = new Brand();
         brand.setBrandName(brandName);
         return brandRepository.save(brand);
