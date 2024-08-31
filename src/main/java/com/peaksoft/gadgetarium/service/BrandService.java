@@ -23,7 +23,7 @@ public class BrandService {
     BrandMapper brandMapper;
     BrandRepository brandRepository;
 
-    public BrandResponse creat(BrandRequest brandRequest) {
+    public BrandResponse create(BrandRequest brandRequest) {
         if (brandRepository.findByName(brandRequest.getBrandName()).isPresent()) {
             throw new IllegalArgumentException("Brand with name " + brandRequest.getBrandName() + " already exists.");
         }
