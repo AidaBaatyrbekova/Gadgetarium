@@ -21,7 +21,7 @@ public class BrandController {
     BrandService brandService;
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
+    @PostMapping("/{Creat}")
     public ResponseEntity<Brand> createBrand(@RequestParam String brandName) {
         Brand brand = brandService.createBrand(brandName);
         return ResponseEntity.ok(brand);
