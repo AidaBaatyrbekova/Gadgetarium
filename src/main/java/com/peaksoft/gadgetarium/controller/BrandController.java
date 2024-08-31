@@ -33,7 +33,6 @@ public class BrandController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
-
     @Operation(summary = "delete brand by Id")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {
@@ -44,7 +43,6 @@ public class BrandController {
             return new ResponseEntity<>("Brand not found with id " + id, HttpStatus.NOT_FOUND);
         }
     }
-
     @GetMapping()
     public List<BrandResponse> getAllBrand() {
         return brandService.getAll();
@@ -55,7 +53,6 @@ public class BrandController {
     public BrandResponse findById(@PathVariable Long id) {
         return brandService.getBrandById(id);
     }
-
     @Operation(summary = "Update the brand by Id")
     @PatchMapping("/update/{id}")
     public BrandResponse brandResponse(@PathVariable("id") Long id, @RequestBody BrandRequest brandRequest) {
