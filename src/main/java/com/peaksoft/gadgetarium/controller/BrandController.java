@@ -26,7 +26,6 @@ public class BrandController {
         Brand brand = brandService.createBrand(brandName);
         return ResponseEntity.ok(brand);
     }
-
     @GetMapping
     public ResponseEntity<List<Brand>> getAllBrands() {
         List<Brand> brands = brandService.getAllBrands();
