@@ -25,7 +25,7 @@ public class DiscountController {
 
     DiscountService discountService;
 
-@Operation(summary = "Метод бир продукт үчүн 15% скидканы түзүп, аны базада сактайт." +
+@Operation(summary = "Метод бир продукт үчүн 15% скидканы түзүп, аны базада сактайт" +
         " Ошондой эле скидканын башталуу жана аяктаган күндөрүн кошот.")
     @PostMapping("/create")
     public Discount createDiscount(@RequestParam Long productId,
