@@ -1,18 +1,18 @@
 package com.peaksoft.gadgetarium.service;
 
-import com.peaksoft.gadgetarium.exception.ExceptionMessage;
-import com.peaksoft.gadgetarium.exception.NotFoundException;
+import com.peaksoft.gadgetarium.mapper.BrandMapper;
+import com.peaksoft.gadgetarium.model.dto.request.BrandRequest;
+import com.peaksoft.gadgetarium.model.dto.response.BrandResponse;
 import com.peaksoft.gadgetarium.model.entities.Brand;
 import com.peaksoft.gadgetarium.repository.BrandRepository;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,40 +20,43 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class BrandService {
-
+    BrandMapper brandMapper;
     BrandRepository brandRepository;
-    @Transactional
-    public Brand createBrand(String brandName) {
-        if (brandRepository.existsByBrandName(brandName)) {
-            throw new IllegalArgumentException("Brand with this name already exists");
+
+    public BrandResponse creat(BrandRequest brandRequest) {
+        if (brandRepository.findByName(brandRequest.getBrandName()).isPresent()) {
+            throw new IllegalArgumentException("Brand with name " + brandRequest.getBrandName() + " already exists.");
         }
-        Brand brand = new Brand();
-        brand.setBrandName(brandName);
-        return brandRepository.save(brand);
+        Brand brand = brandMapper.mapToEntity(brandRequest);
+        brandRepository.save(brand);
+        return brandMapper.mapToResponse(brand);
     }
 
-    @Transactional
-    public List<Brand> getAllBrands() {
-        return brandRepository.findAll();
+    public List<BrandResponse> getAll() {
+        List<BrandResponse> brandResponses = new ArrayList<>();
+        for (Brand brand : brandRepository.findAll()) {
+            brandResponses.add(brandMapper.mapToResponse(brand));
+        }
+        return brandResponses;
     }
 
-    @Transactional
-    public Brand getBrandById(Long brandId) {
-        return brandRepository.findById(brandId)
-                .orElseThrow(() -> new NotFoundException(ExceptionMessage.BRAND_NOT_FOUND));
+    public void delete(Long brandById) {
+        brandRepository.findById(brandById)
+                .orElseThrow(() -> new EntityNotFoundException("Brand with id " + brandById + " not found"));
+        brandRepository.deleteById(brandById);
     }
 
-    @Transactional
-    public Brand updateBrand(Long brandId, String newBrandName) {
-        Brand brand = getBrandById(brandId);
-        brand.setBrandName(newBrandName);
-        return brandRepository.save(brand);
+    public BrandResponse getBrandById(Long brandId) {
+        Brand brand = brandRepository.findById(brandId)
+                .orElseThrow(() -> new EntityNotFoundException("Brand with id " + brandId + " not found"));
+        return brandMapper.mapToResponse(brand);
     }
 
-    @Transactional
-    public ResponseEntity<String> deleteBrand(Long brandId) {
-        Brand brand = getBrandById(brandId);
-        brandRepository.delete(brand);
-        return new ResponseEntity<>("Brand deleted successfully", HttpStatus.OK);
+    public BrandResponse update(Long id, BrandRequest brandRequest) {
+        Brand brand = brandRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Brand with id " + id + " not found"));
+        brand.setBrandName(brandRequest.getBrandName());
+        brandRepository.save(brand);
+        return brandMapper.mapToResponse(brand);
     }
 }
