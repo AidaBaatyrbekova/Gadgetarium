@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @Tag(name = "The Discount-Product")
 @RequiredArgsConstructor
-@RequestMapping("/api/discount")
+@RequestMapping("/api/discounts")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DiscountController {
 
