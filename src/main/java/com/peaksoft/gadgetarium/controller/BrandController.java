@@ -33,6 +33,7 @@ public class BrandController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
+
     @Operation(summary = "delete brand by Id")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {
