@@ -28,7 +28,7 @@ public class BrandController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "add new brand")
     @PostMapping("/create")
-    public ResponseEntity<BrandResponse> add(@RequestBody BrandRequest brandRequest) {
+    public ResponseEntity<BrandResponse> create(@RequestBody BrandRequest brandRequest) {
         try {
             BrandResponse brandResponse = brandService.create(brandRequest);
             return new ResponseEntity<>(brandResponse, HttpStatus.CREATED);
