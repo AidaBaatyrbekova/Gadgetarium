@@ -58,7 +58,7 @@ public class BrandController {
     }
 
     @Operation(summary = "Update the brand by Id")
-    @PatchMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public BrandResponse brandResponse(@PathVariable("id") Long id, @RequestBody BrandRequest brandRequest) {
         return brandService.update(id, brandRequest);
     }
