@@ -3,13 +3,16 @@ package com.peaksoft.gadgetarium.controller;
 import com.peaksoft.gadgetarium.model.dto.request.ProductRequest;
 import com.peaksoft.gadgetarium.model.dto.response.ProductResponse;
 import com.peaksoft.gadgetarium.model.entities.Product;
-import com.peaksoft.gadgetarium.repository.ProductRepository;
+import com.peaksoft.gadgetarium.model.enums.Color;
+import com.peaksoft.gadgetarium.model.enums.Memory;
+import com.peaksoft.gadgetarium.model.enums.OperationMemory;
 import com.peaksoft.gadgetarium.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +25,7 @@ import java.util.List;
 public class ProductController {
 
     ProductService productService;
+
     @Operation(summary = "Save Product")
     @PostMapping("/save")
     public ProductResponse save(@RequestBody ProductRequest request) {
@@ -63,4 +67,20 @@ public class ProductController {
             @RequestParam(required = false) String brand) {
         return productService.searchProducts(name, minPrice, maxPrice, category, brand);
     }
+
+    @Operation(summary = "Find order by filtration")
+    @GetMapping("/filter")
+    public ResponseEntity<List<Product>> filterProducts(
+            @RequestParam(required = false) String nameOfSubCategory,
+            @RequestParam(required = false) String brandName,
+            @RequestParam(required = false) Color color,
+            @RequestParam(required = false) Memory memory,
+            @RequestParam(required = false) OperationMemory operationMemory,
+            @RequestParam(required = false) Integer priceMin,
+            @RequestParam(required = false) Integer priceMax) {
+        List<Product> products = productService.filterProducts(nameOfSubCategory, brandName, color,
+                memory, operationMemory, priceMin, priceMax);
+        return ResponseEntity.ok(products);
+    }
+
 }

@@ -96,4 +96,7 @@ public class Product {
 
     @ManyToMany(mappedBy = "favorites")
     Set<User> users=new HashSet<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Discount> discounts;
 }
