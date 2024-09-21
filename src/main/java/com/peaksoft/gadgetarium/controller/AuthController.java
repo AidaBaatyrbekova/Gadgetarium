@@ -22,7 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AuthController {
+public class gAuthController {
 
     UserService userService;
 
